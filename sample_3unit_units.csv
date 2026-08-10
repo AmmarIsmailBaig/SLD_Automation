@@ -1,0 +1,4 @@
+unit,bus,tag,description,archetype,voltage,amp_rating,ka_rating,relay,destination,ct_protection,ct_metering,arrester,diff_note
+1,A,52-GEN1,,gen_feeder,17.5kV,3150A,40kA,SEL-751-GEN1 FEEDER PROTECTION RELAY,INCOMING 13.8KV LINE FROM GEN-1,400:5A (3),3000:5A (3),L.A. 18kV 15.3kV MCOV,
+2,A,52-F1,CUSTOMER FEEDER,customer_feeder,17.5kV,3150A,40kA,SEL-751-F1 FEEDER PROTECTION RELAY,CUSTOMER FEEDER 1,400:5A (3),3000:5A (3),L.A. 18kV 15.3kV MCOV,
+3,A,PT,BUS PT,pt_riser_tie,17.5kV,,,GE-850-A FEEDER PROTECTION RELAY WITH HID MODULE,,,,,

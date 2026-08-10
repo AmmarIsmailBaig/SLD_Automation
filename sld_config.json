@@ -1,0 +1,1151 @@
+{
+  "_comment": "Geometry and archetype definitions for the IOM switchgear SLD generator. All dimensions in drawing units, taken from 8508+A01-000-053/054. 'dx' is measured from the unit power centreline; 'y' is an absolute sheet elevation shared by every unit. Sheet 053 is the datum -- 054 sits about 0.74 lower and is not perfectly parallel, so elevations are read off 053 and 054 is used only for units 053 does not contain.",
+  "sheet": {
+    "pitch": 3.61,
+    "_pitch_note": "Widest cubicle observed in the reference set (unit 8, XFMR feeder). Per IOM practice all units are drawn to the widest unit's width. Reference sheets vary 2.427-3.610 due to hand placement; this generator makes them uniform.",
+    "centreline_from_left": 1.297,
+    "cubicle_top": 20.602,
+    "cubicle_bottom": 9.435,
+    "bus_y": 18.583,
+    "bus_extension": 0.3,
+    "first_cubicle_x": 0.133,
+    "bus_label": "17.5KV, 3150A\\P3PH, 40KAIC, BIL 95kV\\PBUS {bus}",
+    "_bus_label_note": "Reference sheet 054 omits 'BIL 95kV' and labels its bus 'BUS A' while carrying B-designated units. Generating from one template removes that inconsistency."
+  },
+  "_text_comment": "Placements measured from the reference sheets. 'align' is centre (on the unit centreline) or left (offset by dx). The reference uses MTEXT with no wrap width, so lines break only on explicit \\P.",
+  "text": {
+    "unit_number": {
+      "y": 21.037,
+      "height": 0.3,
+      "align": "centre"
+    },
+    "unit_tag": {
+      "y": 20.173,
+      "height": 0.3,
+      "align": "centre",
+      "wrap": 10
+    },
+    "bus_label": {
+      "y": 19.088,
+      "height": 0.1,
+      "align": "left",
+      "dx": 0.035
+    },
+    "spec_block": {
+      "y": 15.408,
+      "height": 0.093,
+      "align": "left",
+      "dx": -0.376
+    },
+    "relay_label": {
+      "y": 14.677,
+      "height": 0.093,
+      "align": "centre",
+      "dx": 1.336,
+      "wrap": 13
+    },
+    "destination": {
+      "y": 8.87,
+      "height": 0.093,
+      "align": "centre",
+      "wrap": 16
+    }
+  },
+  "roles": {
+    "cpt_fuse": {
+      "kind": "block",
+      "block": "VFU1_1-",
+      "dx": 1.431,
+      "y": 16.204,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "RATING1": "@6A"
+      },
+      "_note": "Control power transformer fuse, tapped off the bus to the right."
+    },
+    "cpt_fuse_tie_a": {
+      "kind": "block",
+      "block": "VFU1_1-",
+      "dx": 1.055,
+      "y": 16.204,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "RATING1": "@6A"
+      },
+      "_note": "The tie unit carries two CPT fuses, not one."
+    },
+    "cpt_fuse_tie_b": {
+      "kind": "block",
+      "block": "VFU1_1-",
+      "dx": 1.57,
+      "y": 16.203,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "RATING1": "@6A"
+      }
+    },
+    "relay_box": {
+      "kind": "box",
+      "dx": 0.747,
+      "width": 1.178,
+      "y_top": 14.715,
+      "y_bottom": 14.043,
+      "series": false,
+      "layer": "SLD_SYMS",
+      "_note": "Outline around the protection relay label."
+    },
+    "ct_compartment": {
+      "kind": "box",
+      "dx": -1.182,
+      "width": 1.593,
+      "y_top": 12.465,
+      "y_bottom": 9.912,
+      "series": false,
+      "layer": "SLD_CUBICLE",
+      "linetype": "DASHED",
+      "_note": "Dashed CT compartment boundary, tall enough for both feeder CTs."
+    },
+    "ct_compartment_single": {
+      "kind": "box",
+      "dx": -1.081,
+      "width": 1.371,
+      "y_top": 10.679,
+      "y_bottom": 9.907,
+      "series": false,
+      "layer": "SLD_CUBICLE",
+      "linetype": "DASHED",
+      "_note": "Short compartment for a unit carrying one CT (XFMR feeder / riser)."
+    },
+    "drawout_upper": {
+      "kind": "block",
+      "block": "VCN1PJ",
+      "dx": 0.0,
+      "y": 16.144,
+      "rotation": 0,
+      "series": true,
+      "gap": [
+        16.207,
+        16.051
+      ]
+    },
+    "breaker": {
+      "kind": "breaker",
+      "dx": -0.415,
+      "width": 0.777,
+      "y_top": 15.622,
+      "y_bottom": 14.701,
+      "series": true,
+      "gap": [
+        15.622,
+        14.701
+      ]
+    },
+    "drawout_lower": {
+      "kind": "block",
+      "block": "VCN1PJ",
+      "dx": 0.0,
+      "y": 14.252,
+      "rotation": 180,
+      "series": true,
+      "gap": [
+        14.346,
+        14.189
+      ]
+    },
+    "disconnect": {
+      "kind": "block",
+      "block": "VDS11F",
+      "dx": 0.0,
+      "y": 14.282,
+      "rotation": 0,
+      "series": true,
+      "gap": [
+        14.469,
+        13.657
+      ],
+      "attribs": {
+        "TAG1": "@DS1",
+        "DESC1": "@FUSED DISCONNECT",
+        "DESC2": "@50A MV FUSE"
+      }
+    },
+    "kirk_key_body": {
+      "kind": "box",
+      "dx": 0.217,
+      "width": 0.284,
+      "y_top": 13.255,
+      "y_bottom": 12.988,
+      "series": false,
+      "layer": "SLD_SYMS"
+    },
+    "kirk_key_lock": {
+      "kind": "circle",
+      "dx": 0.359,
+      "y": 13.121,
+      "radius": 0.11,
+      "layer": "SLD_SYMS",
+      "_note": "Kirk key interlock on the fused disconnect -- a circle centred in a small box."
+    },
+    "kirk_key_note": {
+      "kind": "note",
+      "dx": 0.727,
+      "y": 12.87,
+      "height": 0.1,
+      "align": "left",
+      "text": "@KIRK KEY CAN\\P ONLY\\PBE REMOVED \\PWHEN THE \\PDISCONNECT\\PIS OPEN."
+    },
+    "arrester": {
+      "kind": "block",
+      "block": "ARRESTER",
+      "dx": -0.002,
+      "y": 13.359,
+      "rotation": 0,
+      "series": false,
+      "_note": "Self-contained branch: WDDOT tap at (0,0), wire out to HGND2 at +0.677, and a static MTEXT label 'L.A. / 18kV / 15.3kV MCOV'. Because the label is baked in as MTEXT rather than an ATTDEF, the arrester rating is fixed for every unit -- see the 'arrester' column note in units.csv."
+    },
+    "ct_protection": {
+      "kind": "block",
+      "block": "VXF1CT",
+      "dx": 0.19,
+      "y": 12.007,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "DESC1": "ct_protection",
+        "DESC2": "@CT 5P20"
+      },
+      "_note": "CTs encircle the conductor -- they do not break the wire run. 'attribs' maps ATTDEF tag -> units.csv column, or a literal when prefixed with @. Roles with no 'attribs' are left blank rather than being filled with the unit tag: in the reference drawings connectors and fuses carry their own ACADE-assigned designations (201PJ121, 201FU72), not the breaker tag.",
+      "polarity_dot": {
+        "dx": 0.05,
+        "dy": 0.318
+      }
+    },
+    "ct_protection_phase": {
+      "kind": "note",
+      "dx": -0.777,
+      "y": 11.774,
+      "height": 0.1,
+      "align": "centre",
+      "text": "@1%%C",
+      "_note": "Single-phase mark beside the CT. %%C is AutoCAD's diameter/phase symbol."
+    },
+    "ct_metering": {
+      "kind": "block",
+      "block": "VXF1CT",
+      "dx": 0.19,
+      "y": 10.308,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "DESC1": "ct_metering",
+        "DESC2": "@CT 5P20"
+      },
+      "polarity_dot": {
+        "dx": 0.044,
+        "dy": 0.298
+      }
+    },
+    "ct_metering_phase": {
+      "kind": "note",
+      "dx": -0.777,
+      "y": 10.08,
+      "height": 0.1,
+      "align": "centre",
+      "text": "@1%%C"
+    },
+    "ct_horizontal": {
+      "kind": "block",
+      "block": "HXF1CT",
+      "dx": 0.875,
+      "y": 11.054,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "DESC1": "ct_metering",
+        "DESC2": "@CT 5P20"
+      },
+      "polarity_dot": {
+        "dx": 0.534,
+        "dy": 0.122
+      },
+      "_note": "Tie unit only: the outgoing run leaves sideways, so its CT lies on its side and the polarity dot sits beside it rather than above."
+    },
+    "ct_horizontal_phase": {
+      "kind": "note",
+      "dx": 0.789,
+      "y": 11.66,
+      "height": 0.1,
+      "align": "centre",
+      "text": "@1%%C"
+    },
+    "control_xfmr": {
+      "kind": "block",
+      "block": "HXF1T1_1-",
+      "dx": 0.0,
+      "y": 12.77,
+      "rotation": 0,
+      "series": false
+    },
+    "extra_fuse": {
+      "kind": "block",
+      "block": "VFU1_1-",
+      "dx": 1.5,
+      "y": 13.09,
+      "rotation": 0,
+      "series": false
+    },
+    "feeder_xfmr": {
+      "kind": "block",
+      "block": "VXF1T1_1-",
+      "dx": 0.0,
+      "y": 7.849,
+      "rotation": 0,
+      "series": true,
+      "gap": [
+        8.005,
+        7.693
+      ],
+      "attribs": {
+        "TAG1": "@XFMR1",
+        "DESC1": "@500KVA",
+        "DESC2": "@13.8KV:0.48KV",
+        "DESC3": "@Z=7.5%"
+      }
+    },
+    "feeder_xfmr_leader": {
+      "kind": "lead",
+      "layer": "SLD_WIRE",
+      "points": [
+        [
+          0.0,
+          8.005
+        ],
+        [
+          0.397,
+          8.402
+        ],
+        [
+          1.918,
+          8.402
+        ]
+      ],
+      "_note": "Leader from the transformer tap out to the continuation note."
+    },
+    "panel_pp1": {
+      "kind": "box",
+      "dx": -0.54,
+      "width": 1.08,
+      "y_top": 6.804,
+      "y_bottom": 5.517,
+      "series": false,
+      "layer": "SLD_SYMS"
+    },
+    "panel_pp1_note": {
+      "kind": "note",
+      "dx": -0.337,
+      "y": 6.676,
+      "height": 0.1,
+      "align": "left",
+      "text": "@PP-1\\P10CCT\\P480V\\P3PH, 4W\\P600A BUS\\P600A MB"
+    },
+    "lighting_xfmr_lead": {
+      "kind": "lead",
+      "layer": "SLD_WIRE",
+      "points": [
+        [
+          0.54,
+          6.161
+        ],
+        [
+          1.914,
+          6.161
+        ],
+        [
+          1.914,
+          5.838
+        ]
+      ]
+    },
+    "lighting_xfmr": {
+      "kind": "block",
+      "block": "VXF1T1_1-",
+      "dx": 1.912,
+      "y": 5.681,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "TAG1": "@LTR-1",
+        "DESC1": "@75KVA",
+        "DESC2": "@240V:120V",
+        "DESC3": "@Z=9%"
+      }
+    },
+    "panel_lp1_lead": {
+      "kind": "lead",
+      "layer": "SLD_WIRE",
+      "points": [
+        [
+          1.912,
+          5.525
+        ],
+        [
+          1.912,
+          4.743
+        ]
+      ]
+    },
+    "panel_lp1": {
+      "kind": "box",
+      "dx": 1.372,
+      "width": 1.081,
+      "y_top": 4.743,
+      "y_bottom": 3.457,
+      "series": false,
+      "layer": "SLD_SYMS"
+    },
+    "panel_lp1_note": {
+      "kind": "note",
+      "dx": 1.575,
+      "y": 4.615,
+      "height": 0.1,
+      "align": "left",
+      "text": "@LP-1\\P42CCT\\P240V:120V\\P1PH,3W\\P200A BUS\\P200A MB"
+    },
+    "bus_pt": {
+      "kind": "block",
+      "block": "VXF1T1_1-",
+      "dx": 0.0,
+      "y": 17.704,
+      "rotation": 0,
+      "series": true,
+      "gap": [
+        17.861,
+        17.548
+      ],
+      "attribs": {
+        "DESC1": "@PT (3)",
+        "DESC2": "@7.98KV/120V"
+      }
+    },
+    "pt_fuse": {
+      "kind": "block",
+      "block": "VFU1_1-",
+      "dx": 0.0,
+      "y": 17.001,
+      "rotation": 0,
+      "series": true,
+      "gap": [
+        17.157,
+        16.845
+      ],
+      "attribs": {
+        "RATING1": "@6A"
+      }
+    },
+    "pt_relay_box": {
+      "kind": "box",
+      "dx": 0.29,
+      "width": 1.517,
+      "y_top": 11.31,
+      "y_bottom": 10.637,
+      "series": false,
+      "layer": "SLD_SYMS",
+      "_note": "The PT unit's relay sits far lower than a feeder's, level with the metering wiring it watches."
+    },
+    "pt_diff_lead": {
+      "kind": "lead",
+      "layer": "SLD_CONTROL",
+      "points": [
+        [
+          0.29,
+          10.97
+        ],
+        [
+          -0.113,
+          10.97
+        ]
+      ],
+      "_note": "Bus-B PT only: the differential CT connection leaves the relay box towards the other bus, which is on another sheet."
+    },
+    "pt_diff_note": {
+      "kind": "note",
+      "dx": -0.929,
+      "y": 11.0,
+      "height": 0.1,
+      "align": "centre",
+      "text": "diff_note",
+      "wrap": 9
+    },
+    "outgoing": {
+      "kind": "block",
+      "block": "VCN1PJ",
+      "dx": 0.0,
+      "y": 9.034,
+      "rotation": 0,
+      "series": true,
+      "gap": [
+        9.097,
+        8.9
+      ],
+      "terminal": true
+    },
+    "lockout_86": {
+      "kind": "bubble",
+      "block": "DEVICE_BUBBLE",
+      "dx": 1.054,
+      "y": 15.318,
+      "label": "86",
+      "series": false,
+      "attrib_tag": "DB",
+      "radius": 0.217,
+      "leads": {
+        "left_to_dx": 0.362,
+        "down_to_y": 14.715
+      }
+    },
+    "ground_switch": {
+      "kind": "block",
+      "block": "SLD_STUB_GND_SWITCH",
+      "dx": -0.7,
+      "y": 13.0,
+      "rotation": 0,
+      "series": false
+    },
+    "selector_43lr": {
+      "kind": "block",
+      "block": "SLD_STUB_43LR",
+      "dx": 1.9,
+      "y": 12.4,
+      "rotation": 0,
+      "series": false
+    },
+    "ct_tie_upper": {
+      "kind": "block",
+      "block": "VXF1CT",
+      "dx": 0.227,
+      "y": 17.54,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "DESC1": "ct_metering",
+        "DESC2": "@CT 5P20"
+      },
+      "_note": "Third CT, above the tie breaker -- main/tie units only. Its polarity dot sits below it, unlike a feeder CT.",
+      "polarity_dot": {
+        "dx": 0.072,
+        "dy": -0.341
+      }
+    },
+    "ct_tie_upper_phase": {
+      "kind": "note",
+      "dx": -0.742,
+      "y": 17.732,
+      "height": 0.1,
+      "align": "centre",
+      "text": "@1%%C"
+    },
+    "ct_tie_upper_lead": {
+      "kind": "lead",
+      "layer": "SLD_CONTROL",
+      "points": [
+        [
+          0.259,
+          17.789
+        ],
+        [
+          0.995,
+          17.789
+        ]
+      ],
+      "_note": "Upper CT secondary out to the bus differential relay on the other bus."
+    },
+    "ct_tie_mid": {
+      "kind": "block",
+      "block": "VXF1CT",
+      "dx": 0.192,
+      "y": 15.089,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "DESC1": "ct_protection",
+        "DESC2": "@CT 5P20"
+      },
+      "polarity_dot": {
+        "dx": 0.091,
+        "dy": -0.318
+      }
+    },
+    "ct_tie_mid_phase": {
+      "kind": "note",
+      "dx": -0.777,
+      "y": 15.281,
+      "height": 0.1,
+      "align": "centre",
+      "text": "@1%%C"
+    },
+    "ct_compartment_tie_upper": {
+      "kind": "box",
+      "dx": -1.064,
+      "width": 1.531,
+      "y_top": 18.213,
+      "y_bottom": 14.603,
+      "series": false,
+      "layer": "SLD_CUBICLE",
+      "linetype": "DASHED"
+    },
+    "ct_compartment_tie_lower": {
+      "kind": "box",
+      "dx": 0.395,
+      "width": 1.046,
+      "y_top": 12.069,
+      "y_bottom": 10.749,
+      "series": false,
+      "layer": "SLD_CUBICLE",
+      "linetype": "DASHED"
+    },
+    "drawout_upper_tie": {
+      "kind": "block",
+      "block": "VCN1PJ",
+      "dx": 0.0,
+      "y": 14.323,
+      "rotation": 0,
+      "series": true,
+      "gap": [
+        14.386,
+        14.229
+      ]
+    },
+    "breaker_tie": {
+      "kind": "breaker",
+      "dx": -0.464,
+      "width": 0.928,
+      "y_top": 13.8,
+      "y_bottom": 12.88,
+      "series": true,
+      "gap": [
+        13.8,
+        12.88
+      ]
+    },
+    "breaker_tie_note": {
+      "kind": "note",
+      "dx": -0.879,
+      "y": 12.754,
+      "height": 0.1,
+      "align": "left",
+      "text": "@NORMALLY\\PCLOSED"
+    },
+    "drawout_lower_tie": {
+      "kind": "block",
+      "block": "VCN1PJ",
+      "dx": 0.0,
+      "y": 12.43,
+      "rotation": 180,
+      "series": true,
+      "gap": [
+        12.524,
+        12.368
+      ]
+    },
+    "tie_outgoing": {
+      "kind": "lead",
+      "layer": "SLD_WIRE",
+      "points": [
+        [
+          0.0,
+          11.246
+        ],
+        [
+          2.66,
+          11.246
+        ]
+      ],
+      "_note": "The tie leaves sideways towards the other bus instead of terminating on a connector."
+    },
+    "relay_box_tie": {
+      "kind": "box",
+      "dx": 0.589,
+      "width": 1.463,
+      "y_top": 14.523,
+      "y_bottom": 13.821,
+      "series": false,
+      "layer": "SLD_SYMS"
+    },
+    "lockout_86_tie": {
+      "kind": "bubble",
+      "block": "DEVICE_BUBBLE",
+      "dx": 1.103,
+      "y": 13.373,
+      "label": "86",
+      "series": false,
+      "attrib_tag": "DB",
+      "radius": 0.217,
+      "leads": {
+        "left_to_dx": 0.464,
+        "up_to_y": 13.821
+      },
+      "_note": "The tie's relay box sits above its 86, so the drop runs upward. Unlike the feeder 86, nothing shares this elevation -- every riser stops at the relay box top -- so it keeps the reference offset."
+    }
+  },
+  "archetypes": {
+    "gen_feeder": {
+      "description": "Generator incoming feeder -- drawout breaker, dual CT, arrester",
+      "roles": [
+        "cpt_fuse",
+        "drawout_upper",
+        "breaker",
+        "drawout_lower",
+        "arrester",
+        "ct_protection",
+        "ct_protection_phase",
+        "ct_metering",
+        "ct_metering_phase",
+        "outgoing",
+        "lockout_86",
+        "relay_box",
+        "ct_compartment"
+      ],
+      "control_wiring": {
+        "risers": [
+          {
+            "dx": 0.966,
+            "y_from": 8.936,
+            "y_to": 12.255
+          },
+          {
+            "dx": 1.337,
+            "y_from": 8.936,
+            "y_to": 14.043
+          },
+          {
+            "dx": 1.789,
+            "y_from": 10.059,
+            "y_to": 10.97
+          },
+          {
+            "dx": 1.431,
+            "y_from": 14.715,
+            "y_to": 16.59,
+            "gaps": [
+              [
+                16.048,
+                16.36
+              ]
+            ],
+            "_gap_note": "breaks for the CPT fuse body"
+          }
+        ],
+        "spurs": [
+          {
+            "y": 12.255,
+            "dx_from": 0.224,
+            "dx_to": 0.966,
+            "_note": "protection CT secondary"
+          },
+          {
+            "y": 10.059,
+            "dx_from": 0.224,
+            "dx_to": 1.789,
+            "_note": "metering CT secondary, stepping up to the lineup bus at 1.789"
+          }
+        ]
+      }
+    },
+    "customer_feeder": {
+      "description": "Customer feeder -- gen feeder plus control transformer",
+      "roles": [
+        "cpt_fuse",
+        "drawout_upper",
+        "breaker",
+        "drawout_lower",
+        "arrester",
+        "control_xfmr",
+        "ct_protection",
+        "ct_protection_phase",
+        "ct_metering",
+        "ct_metering_phase",
+        "outgoing",
+        "lockout_86",
+        "relay_box",
+        "ct_compartment"
+      ],
+      "control_wiring": {
+        "risers": [
+          {
+            "dx": 0.966,
+            "y_from": 8.936,
+            "y_to": 12.255
+          },
+          {
+            "dx": 1.337,
+            "y_from": 8.936,
+            "y_to": 14.043
+          },
+          {
+            "dx": 1.789,
+            "y_from": 10.059,
+            "y_to": 10.97
+          },
+          {
+            "dx": 1.431,
+            "y_from": 14.715,
+            "y_to": 16.59,
+            "gaps": [
+              [
+                16.048,
+                16.36
+              ]
+            ]
+          }
+        ],
+        "spurs": [
+          {
+            "y": 12.255,
+            "dx_from": 0.224,
+            "dx_to": 0.966
+          },
+          {
+            "y": 10.059,
+            "dx_from": 0.224,
+            "dx_to": 1.789
+          }
+        ]
+      }
+    },
+    "bess_feeder": {
+      "description": "BESS feeder -- gen feeder plus second fuse",
+      "roles": [
+        "cpt_fuse",
+        "drawout_upper",
+        "breaker",
+        "drawout_lower",
+        "extra_fuse",
+        "arrester",
+        "ct_protection",
+        "ct_protection_phase",
+        "ct_metering",
+        "ct_metering_phase",
+        "outgoing",
+        "lockout_86",
+        "relay_box",
+        "ct_compartment"
+      ],
+      "control_wiring": {
+        "risers": [
+          {
+            "dx": 0.966,
+            "y_from": 8.936,
+            "y_to": 12.255
+          },
+          {
+            "dx": 1.337,
+            "y_from": 8.936,
+            "y_to": 14.043
+          },
+          {
+            "dx": 1.789,
+            "y_from": 10.059,
+            "y_to": 10.97
+          },
+          {
+            "dx": 1.431,
+            "y_from": 14.715,
+            "y_to": 16.59,
+            "gaps": [
+              [
+                16.048,
+                16.36
+              ]
+            ]
+          }
+        ],
+        "spurs": [
+          {
+            "y": 12.255,
+            "dx_from": 0.224,
+            "dx_to": 0.966
+          },
+          {
+            "y": 10.059,
+            "dx_from": 0.224,
+            "dx_to": 1.789
+          }
+        ]
+      }
+    },
+    "xfmr_feeder": {
+      "description": "Transformer feeder -- fused disconnect with Kirk key, one CT, and the load-side one-line down to the LV panels (reference unit 8)",
+      "conductor_bottom": 6.804,
+      "roles": [
+        "disconnect",
+        "kirk_key_body",
+        "kirk_key_lock",
+        "kirk_key_note",
+        "ct_metering",
+        "ct_metering_phase",
+        "ct_compartment_single",
+        "feeder_xfmr_leader",
+        "feeder_xfmr",
+        "panel_pp1",
+        "panel_pp1_note",
+        "lighting_xfmr_lead",
+        "lighting_xfmr",
+        "panel_lp1_lead",
+        "panel_lp1",
+        "panel_lp1_note"
+      ],
+      "text_overrides": {
+        "destination": {
+          "y": 8.598,
+          "dx": 1.98,
+          "align": "centre",
+          "wrap": 10
+        },
+        "spec_block": {
+          "hide": true
+        }
+      },
+      "control_wiring": {
+        "risers": [
+          {
+            "dx": 1.157,
+            "y_from": 10.059,
+            "y_to": 10.97
+          }
+        ],
+        "spurs": [
+          {
+            "y": 10.059,
+            "dx_from": 0.23,
+            "dx_to": 1.157
+          }
+        ]
+      }
+    },
+    "xfmr_riser": {
+      "description": "Transformer feeder continuation -- same disconnect, Kirk key and CT, but terminating on a connector instead of a transformer (reference unit 14)",
+      "roles": [
+        "disconnect",
+        "kirk_key_body",
+        "kirk_key_lock",
+        "kirk_key_note",
+        "ct_metering",
+        "ct_metering_phase",
+        "ct_compartment_single",
+        "outgoing"
+      ],
+      "control_wiring": {
+        "risers": [
+          {
+            "dx": 1.157,
+            "y_from": 10.059,
+            "y_to": 10.97
+          }
+        ],
+        "spurs": [
+          {
+            "y": 10.059,
+            "dx_from": 0.23,
+            "dx_to": 1.157
+          }
+        ]
+      },
+      "text_overrides": {
+        "spec_block": {
+          "hide": true
+        }
+      }
+    },
+    "pt_riser_tie": {
+      "description": "Bus PT / riser adjacent to a tie -- its relay takes the differential CT from the tie unit (reference unit 9)",
+      "conductor_bottom": 16.59,
+      "roles": [
+        "bus_pt",
+        "pt_fuse",
+        "pt_relay_box"
+      ],
+      "text_overrides": {
+        "relay_label": {
+          "y": 11.272,
+          "dx": 0.345,
+          "align": "left",
+          "wrap": 18
+        },
+        "spec_block": {
+          "hide": true
+        }
+      },
+      "control_wiring": {
+        "joins": [
+          "control_power"
+        ],
+        "_joins_note": "The PT feeds control power through its power conductor, which lands on the bus rather than ending on a connector -- there is no riser to infer the connection from.",
+        "bus_dx": {
+          "control_power": 0.0,
+          "ct_metering": 0.29
+        },
+        "risers": [
+          {
+            "dx": -0.143,
+            "y_from": 10.97,
+            "y_to": 10.255
+          }
+        ],
+        "spurs": []
+      }
+    },
+    "pt_riser": {
+      "description": "Bus PT / riser whose differential CT comes from the other bus, on another sheet (reference unit 11)",
+      "conductor_bottom": 16.59,
+      "roles": [
+        "bus_pt",
+        "pt_fuse",
+        "pt_relay_box",
+        "pt_diff_lead",
+        "pt_diff_note"
+      ],
+      "text_overrides": {
+        "relay_label": {
+          "y": 11.272,
+          "dx": 0.345,
+          "align": "left",
+          "wrap": 18
+        },
+        "spec_block": {
+          "hide": true
+        }
+      },
+      "control_wiring": {
+        "joins": [
+          "control_power",
+          "ct_metering"
+        ],
+        "bus_dx": {
+          "control_power": 0.0,
+          "ct_metering": 1.807
+        },
+        "risers": [],
+        "spurs": []
+      }
+    },
+    "main_tie": {
+      "description": "Main / tie breaker -- three CTs, two CPT fuses, breaker stack lowered to clear the upper CT, outgoing run leaving sideways",
+      "conductor_bottom": 11.246,
+      "bus_terminates_here": true,
+      "roles": [
+        "ct_compartment_tie_upper",
+        "ct_tie_upper",
+        "ct_tie_upper_phase",
+        "ct_tie_upper_lead",
+        "cpt_fuse_tie_a",
+        "cpt_fuse_tie_b",
+        "ct_tie_mid",
+        "ct_tie_mid_phase",
+        "drawout_upper_tie",
+        "relay_box_tie",
+        "breaker_tie",
+        "breaker_tie_note",
+        "lockout_86_tie",
+        "drawout_lower_tie",
+        "tie_outgoing",
+        "ct_compartment_tie_lower",
+        "ct_horizontal",
+        "ct_horizontal_phase"
+      ],
+      "text_overrides": {
+        "spec_block": {
+          "y": 13.655,
+          "dx": -0.232
+        },
+        "relay_label": {
+          "y": 14.468,
+          "dx": 0.657,
+          "wrap": 15,
+          "align": "left"
+        },
+        "destination": {
+          "y": 17.988,
+          "dx": 1.059,
+          "align": "left",
+          "wrap": 10
+        }
+      },
+      "control_wiring": {
+        "bus_dx": {
+          "control_power": 1.57
+        },
+        "risers": [
+          {
+            "dx": 1.055,
+            "y_from": 14.523,
+            "y_to": 16.59,
+            "gaps": [
+              [
+                16.048,
+                16.36
+              ]
+            ]
+          },
+          {
+            "dx": 1.57,
+            "y_from": 14.523,
+            "y_to": 16.59,
+            "gaps": [
+              [
+                16.048,
+                16.36
+              ]
+            ]
+          },
+          {
+            "dx": 1.341,
+            "y_from": 14.523,
+            "y_to": 15.338
+          },
+          {
+            "dx": 1.124,
+            "y_from": 10.255,
+            "y_to": 11.021
+          }
+        ],
+        "spurs": [
+          {
+            "y": 15.338,
+            "dx_from": 0.224,
+            "dx_to": 1.341,
+            "priority": "horizontal",
+            "_note": "Mid CT secondary. Unlike a feeder's, this one hops over the CPT riser rather than the riser hopping over it -- that is how the reference draws it."
+          }
+        ]
+      }
+    }
+  },
+  "control": {
+    "_comment": "Lineup-wide horizontal control runs. Each spans only the units carrying a participating role, so a run stops where the archetype changes. start_dx/end_dx are offsets from the first/last participating unit's centreline, and an archetype may override its own meeting point via control_wiring.bus_dx. Note that a unit's CT secondary horizontal is NOT a bus -- it is a per-unit spur that steps up to the metering bus, which is why y=10.059 appears in the archetypes rather than here.",
+    "hop_radius": 0.05,
+    "buses": [
+      {
+        "name": "control_power",
+        "y": 16.59,
+        "start_dx": 1.431,
+        "end_dx": 1.431
+      },
+      {
+        "name": "ct_metering",
+        "y": 10.97,
+        "start_dx": 1.789,
+        "end_dx": 1.789
+      },
+      {
+        "name": "diff_ct",
+        "y": 10.255,
+        "start_dx": -0.143,
+        "end_dx": 1.124,
+        "_note": "Bus differential CT run from the tie unit back to the PT unit's relay. Only exists on a lineup containing both."
+      }
+    ]
+  }
+}
