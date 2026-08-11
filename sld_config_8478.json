@@ -1,0 +1,114 @@
+{
+  "_standard": "8478 -- 38kV single-cubicle switchgear, GEIS VB-40.5/T1250-31.5W.",
+  "_provenance": "Sheet frame proportions measured off the blank 8298 template (pitch 107.1pt, cubicle 404.8pt tall, ANSI B) and scaled x2.5 so the shared symbol library reads at the same relative size it does on 8513. No device elevation on this sheet was measured from any drawing: every one is computed by stacker.py from the symbol library's own block heights plus the gaps declared below. Gaps are a drafting choice -- measuring 8513 showed the same two CTs spaced 0.944 apart on one deck and 0.772 on the other -- so they are chosen for even spacing rather than recovered.",
+
+  "sheet": {
+    "pitch": 5.6,
+    "_pitch_note": "The 8298 sheet is two-high, so its 3.78 height:width ratio describes a cubicle holding two breakers. 8478 has one breaker and is single-high, and inheriting that ratio drew a box far too narrow for its height. 5.60 against an 11.50 cubicle gives 2.05, which is about the proportion of real metal-clad 38kV gear.",
+    "centreline_from_left": 2.5,
+    "_centreline_note": "Just left of centre: the PT branch, relay and test switch all live on the right, the CPT branch alone on the left.",
+    "cubicle_top": 22.51,
+    "cubicle_bottom": 11.01,
+    "bus_y": 11.6,
+    "bus_extension": 0.0,
+    "_bus_note": "A single cubicle has no lineup bus. bus_y is simply where the power conductor terminates below the cable exit, and a zero extension means no horizontal run is drawn at all.",
+    "bus_dot_at_ends": false,
+    "first_cubicle_x": 0.0,
+    "bus_label": ""
+  },
+
+  "text": {
+    "unit_number": {"dx": 0.0, "y": 24.4, "height": 0.18, "align": "centre", "centre_mode": "paragraph"},
+    "unit_tag": {"hide": true, "dx": 0.0, "y": 0.0, "height": 0.1},
+    "spec_block": {"dx": -2.3, "y": 15.3, "height": 0.13, "align": "left"},
+    "relay_label": {"dx": 1.45, "y": 16.92, "height": 0.11, "align": "left", "wrap": 12},
+    "destination": {"dx": 0.0, "y": 10.8, "height": 0.13, "align": "centre", "centre_mode": "paragraph", "wrap": 24},
+    "bus_label": {"hide": true, "dx": 0.0, "y": 0.0, "height": 0.1}
+  },
+
+  "control": {
+    "hop_radius": 0.05,
+    "buses": []
+  },
+
+  "roles": {
+    "_note": "Roles carry no y. Those named in the archetype's stack get one computed from the block heights; the rest hang off a stacked role by name, so moving a device drags its satellites with it.",
+
+    "cable_entry": {"kind": "block", "block": "VCN1PJ", "dx": 0.0, "rotation": 180, "series": false},
+    "pt_tap": {"kind": "block", "block": "WDDOT", "dx": 0.0, "rotation": 0, "series": false},
+    "cpt_tap": {"kind": "block", "block": "WDDOT", "dx": 0.0, "rotation": 0, "series": false},
+    "ct_line": {
+      "kind": "block", "block": "VXF1CT", "dx": 0.192, "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_protection", "DESC2": "@CT C400"},
+      "attrib_pos": {"DESC1": [-1.3, -0.02], "DESC2": [-1.42, -0.18]},
+      "polarity_dot": {"dx": 0.049, "dy": 0.295},
+      "_note": "1000:5A, breaker line side per the BOM -- above the breaker, not on the load side."
+    },
+    "drawout_upper": {"kind": "block", "block": "VCN1PJ", "dx": 0.0, "rotation": 0, "series": true},
+    "breaker": {"kind": "breaker", "dx": -0.4, "width": 0.8, "height": 0.92, "series": true},
+    "drawout_lower": {"kind": "block", "block": "VCN1PJ", "dx": 0.0, "rotation": 0, "series": true},
+    "cable_exit": {"kind": "block", "block": "VCN1PJ", "dx": 0.0, "rotation": 0, "series": false},
+
+    "_branch_note": "Both taps drop 1.70. The first draft dropped 2.10 and put the CPT's ground symbol level with the CT ratio text, which is the sort of collision no amount of care about individual numbers prevents -- it needs the check in validate_sld.py.",
+
+    "pt_branch": {"kind": "lead", "layer": "SLD_WIRE", "anchor": "pt_tap", "points_dy": [[0.0, 0.0], [1.6, 0.0], [1.6, -1.7]]},
+    "pt_fuse": {
+      "kind": "block", "block": "VFU1", "dx": 1.6, "anchor": "pt_tap", "dy": -0.55, "rotation": 0,
+      "attribs": {"RATING1": "@6A"}, "attrib_pos": {"RATING1": [0.14, -0.03]}
+    },
+    "pt_xfmr": {"kind": "block", "block": "VXF1T1_1-", "dx": 1.6, "anchor": "pt_tap", "dy": -1.15, "rotation": 0},
+    "pt_ground": {"kind": "block", "block": "HGND2", "dx": 1.55, "anchor": "pt_tap", "dy": -1.7, "rotation": 0},
+    "pt_label": {"kind": "note", "dx": 1.87, "anchor": "pt_tap", "dy": -1.02, "height": 0.1, "align": "left", "text": "@PT 34.5kV/120V\\P500VA (3)"},
+
+    "cpt_branch": {"kind": "lead", "layer": "SLD_WIRE", "anchor": "cpt_tap", "points_dy": [[0.0, 0.0], [-1.8, 0.0], [-1.8, -1.7]]},
+    "cpt_fuse": {
+      "kind": "block", "block": "VFU1", "dx": -1.8, "anchor": "cpt_tap", "dy": -0.55, "rotation": 0,
+      "attribs": {"RATING1": "@2A"}, "attrib_pos": {"RATING1": [0.14, -0.03]},
+      "_note": "2A E-rated, CPT primary."
+    },
+    "cpt_xfmr": {"kind": "block", "block": "VXF1T1_1-", "dx": -1.8, "anchor": "cpt_tap", "dy": -1.15, "rotation": 0},
+    "cpt_ground": {"kind": "block", "block": "HGND2", "dx": -1.85, "anchor": "cpt_tap", "dy": -1.7, "rotation": 0},
+    "cpt_label": {"kind": "note", "dx": -2.35, "anchor": "cpt_tap", "dy": 0.42, "height": 0.1, "align": "left", "text": "@CPT 34.5kV/120V\\P2500VA FUSED"},
+
+    "relay_bubble": {
+      "kind": "bubble", "block": "DEVICE_BUBBLE", "dx": 1.05, "anchor": "ct_line", "dy": 0.25,
+      "radius": 0.217, "attrib_tag": "DB", "label": "51", "leads": {"left_to_dx": 0.24}
+    },
+    "test_switch_ct": {"kind": "box", "dx": 0.72, "width": 0.58, "height": 0.34, "anchor": "ct_line", "dy": -0.62, "layer": "SLD_SYMS"},
+    "test_switch_label": {"kind": "note", "dx": 1.01, "anchor": "ct_line", "dy": -0.72, "height": 0.085, "align": "centre", "centre_mode": "paragraph", "text": "@FT-1"},
+
+    "lockout_circle": {"kind": "circle", "dx": -1.15, "anchor": "drawout_lower", "dy": -0.6, "radius": 0.135, "layer": "SLD_SYMS"},
+    "lockout_label": {"kind": "note", "dx": -1.15, "anchor": "drawout_lower", "dy": -0.5, "height": 0.095, "align": "centre", "centre_mode": "paragraph", "text": "@86"},
+    "lockout_lead": {"kind": "lead", "layer": "SLD_CONTROL", "anchor": "drawout_lower", "points_dy": [[-1.015, -0.6], [0.0, -0.6]]}
+  },
+
+  "archetypes": {
+    "feeder_38kv": {
+      "description": "The single 38kV cubicle of job 8478: cable enters at the top, taps off to the bus PT set and the fused control-power transformer, passes the line-side CT, and runs down through the withdrawable VCB to the load-side cable exit.",
+      "conductor_top": 23.2,
+      "stack": {
+        "start_y": 23.2,
+        "default_gap": 1.5,
+        "_gap_note": "Chosen, not measured. Even spacing across the 14-unit cubicle height, tightened either side of the breaker so the drawout disconnects read as a pair.",
+        "items": [
+          {"role": "cable_entry"},
+          {"role": "pt_tap", "gap_before": 1.7},
+          {"role": "cpt_tap", "gap_before": 1.4},
+          {"role": "ct_line", "gap_before": 1.55},
+          {"role": "drawout_upper", "gap_before": 1.5},
+          {"role": "breaker", "gap_before": 0.45},
+          {"role": "drawout_lower", "gap_before": 0.45},
+          {"role": "cable_exit", "gap_before": 2.2}
+        ]
+      },
+      "roles": [
+        "cable_entry", "pt_tap", "cpt_tap", "ct_line",
+        "drawout_upper", "breaker", "drawout_lower", "cable_exit",
+        "pt_branch", "pt_fuse", "pt_xfmr", "pt_ground", "pt_label",
+        "cpt_branch", "cpt_fuse", "cpt_xfmr", "cpt_ground", "cpt_label",
+        "relay_bubble", "test_switch_ct", "test_switch_label",
+        "lockout_circle", "lockout_label", "lockout_lead"
+      ]
+    }
+  }
+}

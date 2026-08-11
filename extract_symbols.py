@@ -33,6 +33,16 @@ HARVEST = [
     "WDDOT",         # wire junction dot
     "ARRESTER",      # surge arrester -- whole branch: tap dot, wire, ground, label
     "DEVICE_BUBBLE", # ANSI device bubble, function number in the DB attribute
+    "VFU1",          # fuse, vertical (plain)
+    "HFU1",          # fuse, horizontal
+    # The 8372 sheets are drawn from a different ACADE symbol set than the
+    # 8508/8513 ones -- same devices, different blocks -- so both live in the
+    # library and a config picks the set its standard was drawn with.
+    "VC01PJ_1-",     # drawout primary disconnect, vertical (8372's VCN1PJ)
+    "HC01PJ_1-",     # drawout primary disconnect, horizontal
+    "1LCT1A",        # current transformer (8372's VXF1CT)
+    "CSHEXA",        # relay / instrument block
+    "WD1005",        # wire junction dot (8372's WDDOT)
 ]
 
 STUB_LAYER = "SLD_STUB"
@@ -85,7 +95,17 @@ def main():
         sys.exit(1)
 
     out_path, sources = sys.argv[1], sys.argv[2:]
-    lib = ezdxf.new("R2013", setup=True)
+    # Build on the existing library rather than replacing it. Not every symbol
+    # in it came from a source drawing -- ARRESTER and DEVICE_BUBBLE were drawn
+    # by hand -- so starting from an empty document silently deleted them the
+    # moment this ran against a drawing that happened not to contain them.
+    # Harvesting is meant to add symbols, never to remove one.
+    try:
+        lib = ezdxf.readfile(out_path)
+        kept = sorted(b.name for b in lib.blocks if not b.name.startswith(("*", "_")))
+        print(f"  extending {out_path} ({len(kept)} existing blocks)")
+    except (IOError, ezdxf.DXFError):
+        lib = ezdxf.new("R2013", setup=True)
 
     found = {}
     for src_path in sources:

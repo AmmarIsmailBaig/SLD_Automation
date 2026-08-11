@@ -1,0 +1,12 @@
+# AutoCAD writes a lock file beside every drawing it has open. They are per
+# machine and per session, so tracking them means every open/close shows as a
+# change.
+*.dwl
+*.dwl2
+*.bak
+
+# AutoCAD crash dumps.
+ErrorReports/
+
+__pycache__/
+*.pyc

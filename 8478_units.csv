@@ -1,0 +1,2 @@
+unit,cubicle,bus,tag,description,archetype,extras,voltage,amp_rating,ka_rating,relay,destination,ct_protection
+1,1,A,52-M1,,feeder_38kv,,38kV,1250A,31.5kA,SEL-751 FEEDER PROTECTION RELAY,FEEDER,1000:5A (3)

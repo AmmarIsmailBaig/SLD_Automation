@@ -1,0 +1,1121 @@
+{
+ "_standard": "8372 -- 4.76kV metal-clad switchgear, 14 cubicles, 17 breakers, three of them two-high.",
+ "_provenance": "Emit sld_config_8372.json -- the 4.76kV standard for job 8372.\n\nMeasured off the two reference sheets 8372+A01-050-001 and -002, replacing the\nfirst draft of this file, which was written before those existed and guessed\nthe frame from 8513. Nothing here is inferred any more except where the two\nsheets disagree with each other, and those places say so.\n\nThe sheets do disagree. They are the same lineup drawn twice -- units 1-7 on\n001, units 8-14 on 002 -- and each was laid out to fit its own contents:\n\n    sheet      cubicle height   bus      breaker below bus\n    001        14.927           15.489   3.668\n    002        14.352           13.592   2.314\n\nWhat does *not* vary is the breaker assembly. Both sheets put 1.600 between the\nprimary disconnects and 0.881 from the lower disconnect to the CT. That is the\nsame result 8513 gave: device dimensions are real and fixed, the space around\nthem is a drafting choice. Since a generator emits one sheet, this file takes\nsheet 002's frame -- it is the one carrying the two-high cubicles, so it is the\nconstrained case -- and puts every breaker in the lineup at the elevations that\nsheet uses.\n\nTwo engineering facts recovered from the reference that the BOM and the CSV\ncould not have told us:\n\n  CT side     A generator feeder carries its CT on the machine side, below the\n              breaker (unit 8: CT at 8.796, breaker at 11.278..9.677). A load\n              feeder carries it on the bus side, above (unit 12 lower: CT at\n              12.241). The utility main carries one of each, straddling the\n              breaker, which is what an SEL-787 bus differential needs.\n\n  relay       'SEL-751 (25, 50P, 51P, 50G, 51G)' is not a caption. The sheets\n              draw the device name in a box and circle each ANSI function\n              beside it. The relay column was already written that way, so the\n              builder parses it -- see place_relay_functions.\n\nUsage:\n    python make_config_8372.py > sld_config_8372.json",
+ "sheet": {
+  "pitch": 4.402,
+  "_pitch_note": "Thirteen of the fourteen cubicles are 4.402 wide; unit 14 alone is 4.787. The house rule is to draw every unit to the widest, which would make the sheet 5.4 wider than the reference, so the repeated pitch is used and the odd cubicle is flagged as a question rather than propagated.",
+  "centreline_from_left": 2.457,
+  "cubicle_top": 21.485,
+  "cubicle_bottom": 7.133,
+  "bus_y": 13.592,
+  "bus_extension": 0.0,
+  "bus_dot_at_ends": false,
+  "first_cubicle_x": 2.093,
+  "bus_label": ""
+ },
+ "text": {
+  "_note": "Placements are the lower deck's, because eleven of the fourteen cubicles are single-high and sit there. The two upper decks suppress most of these and letter their destination at the top of the sheet instead.",
+  "unit_number": {
+   "dx": -1.821,
+   "y": 21.626,
+   "height": 0.203,
+   "align": "left"
+  },
+  "unit_tag": {
+   "hide": true,
+   "dx": 0.0,
+   "y": 0.0,
+   "height": 0.2
+  },
+  "spec_block": {
+   "hide": true,
+   "dx": 0.0,
+   "y": 0.0,
+   "height": 0.1,
+   "_note": "The reference letters the rating inside the breaker body, not in a spec block."
+  },
+  "relay_label": {
+   "hide": true,
+   "dx": 0.0,
+   "y": 0.0,
+   "height": 0.09,
+   "_note": "The relay is drawn by the relay_functions role, which parses the same column."
+  },
+  "destination": {
+   "dx": -0.801,
+   "y": 6.323,
+   "height": 0.125,
+   "align": "left",
+   "wrap": 26
+  },
+  "bus_label": {
+   "hide": true,
+   "dx": 0.0,
+   "y": 0.0,
+   "height": 0.1
+  }
+ },
+ "control": {
+  "hop_radius": 0.05,
+  "buses": []
+ },
+ "roles": {
+  "_note": "Every elevation here is measured off the 8372 reference sheets. No stack is used: the standard has a drawing, so it is ruled rather than derived.",
+  "drawout_upper_g": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 11.278,
+   "rotation": 0,
+   "series": true,
+   "gap": [
+    11.350900000000001,
+    11.1495
+   ]
+  },
+  "breaker_g": {
+   "kind": "breaker",
+   "dx": -0.2815,
+   "width": 0.563,
+   "y_top": 10.989,
+   "y_bottom": 9.966,
+   "series": true,
+   "gap": [
+    10.989,
+    9.966
+   ]
+  },
+  "drawout_lower_g": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 9.677,
+   "rotation": 180,
+   "series": true,
+   "gap": [
+    9.7499,
+    9.548499999999999
+   ]
+  },
+  "relay_g": {
+   "kind": "relay_functions",
+   "text": "relay",
+   "dx": -1.815,
+   "width": 2.288,
+   "y_top": 15.904,
+   "y_bottom": 14.893,
+   "layer": "SLD_SYMS",
+   "radius": 0.138,
+   "per_row": 3,
+   "step_x": 0.372,
+   "step_y": 0.37,
+   "first_dx": 1.356,
+   "first_dy": -0.166,
+   "name_style": {
+    "dx": 0.089,
+    "dy": 0.108,
+    "height": 0.125,
+    "align": "left"
+   },
+   "label_dy": -0.051
+  },
+  "ct_g": {
+   "kind": "block",
+   "block": "1LCT1A",
+   "dx": 0.0,
+   "y": 8.796,
+   "rotation": 0,
+   "series": false,
+   "attribs": {
+    "DESC1": "ct_protection"
+   }
+  },
+  "ct_label_g": {
+   "kind": "note",
+   "dx": 0.52,
+   "y": 8.913,
+   "height": 0.125,
+   "align": "left",
+   "text": "ct_protection"
+  },
+  "cpt_riser_g": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.0,
+     13.592
+    ],
+    [
+     0.0,
+     14.893
+    ]
+   ]
+  },
+  "cpt_tap_g": {
+   "kind": "block",
+   "block": "WD1005",
+   "dx": 0.0,
+   "y": 14.406,
+   "rotation": 0,
+   "series": false
+  },
+  "cable_exit_g": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 6.695,
+   "rotation": 0,
+   "series": true,
+   "gap": [
+    6.7679,
+    6.5665000000000004
+   ],
+   "terminal": true
+  },
+  "pt_disc_lpt": {
+   "kind": "block",
+   "block": "HC01PJ_1-",
+   "dx": 0.272,
+   "y": 19.533,
+   "rotation": 270,
+   "series": false
+  },
+  "pt_lead_top_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.272,
+     19.685
+    ],
+    [
+     0.272,
+     19.596
+    ]
+   ]
+  },
+  "pt_lead_fuse_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.272,
+     19.439
+    ],
+    [
+     0.272,
+     19.322
+    ]
+   ]
+  },
+  "pt_fuse_body_lpt": {
+   "kind": "box",
+   "dx": 0.22500000000000003,
+   "width": 0.094,
+   "y_top": 19.322,
+   "y_bottom": 19.01,
+   "layer": "SLD_SYMS"
+  },
+  "pt_fuse_ticks_lpt": {
+   "kind": "lead",
+   "layer": "SLD_SYMS",
+   "points": [
+    [
+     0.22500000000000003,
+     19.26
+    ],
+    [
+     0.319,
+     19.26
+    ]
+   ]
+  },
+  "pt_fuse_ticks2_lpt": {
+   "kind": "lead",
+   "layer": "SLD_SYMS",
+   "points": [
+    [
+     0.22500000000000003,
+     19.072
+    ],
+    [
+     0.319,
+     19.072
+    ]
+   ]
+  },
+  "pt_lead_pri_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.272,
+     19.01
+    ],
+    [
+     0.272,
+     18.682
+    ]
+   ]
+  },
+  "pt_lead_sec_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.272,
+     17.247
+    ],
+    [
+     0.272,
+     18.265
+    ]
+   ]
+  },
+  "pt_tap_hi_lpt": {
+   "kind": "block",
+   "block": "WDDOT",
+   "dx": 0.272,
+   "y": 17.938,
+   "rotation": 0,
+   "series": false
+  },
+  "pt_tap_lo_lpt": {
+   "kind": "block",
+   "block": "WDDOT",
+   "dx": 0.272,
+   "y": 17.558,
+   "rotation": 0,
+   "series": false
+  },
+  "pt_label_lpt": {
+   "kind": "note",
+   "dx": -0.354,
+   "y": 20.213,
+   "height": 0.11,
+   "align": "left",
+   "wrap": 14,
+   "text": "pt"
+  },
+  "pt_fuse_label_lpt": {
+   "kind": "note",
+   "dx": 0.42200000000000004,
+   "y": 19.24,
+   "height": 0.1,
+   "align": "left",
+   "wrap": 14,
+   "text": "pt_fuse"
+  },
+  "pt_coil_pri0_lpt": {
+   "kind": "arc",
+   "dx": 0.12900000000000003,
+   "y": 18.682,
+   "radius": 0.143,
+   "start_angle": 180.0,
+   "end_angle": 0.0,
+   "layer": "SLD_SYMS"
+  },
+  "pt_coil_sec0_lpt": {
+   "kind": "arc",
+   "dx": 0.12900000000000003,
+   "y": 18.262,
+   "radius": 0.143,
+   "start_angle": 0.0,
+   "end_angle": 180.0,
+   "layer": "SLD_SYMS"
+  },
+  "pt_coil_pri1_lpt": {
+   "kind": "arc",
+   "dx": 0.41400000000000003,
+   "y": 18.682,
+   "radius": 0.143,
+   "start_angle": 180.0,
+   "end_angle": 0.0,
+   "layer": "SLD_SYMS"
+  },
+  "pt_coil_sec1_lpt": {
+   "kind": "arc",
+   "dx": 0.41400000000000003,
+   "y": 18.262,
+   "radius": 0.143,
+   "start_angle": 0.0,
+   "end_angle": 180.0,
+   "layer": "SLD_SYMS"
+  },
+  "pt_wind_hi0_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     -0.012999999999999956,
+     18.682
+    ],
+    [
+     -0.012999999999999956,
+     18.86
+    ]
+   ]
+  },
+  "pt_wind_lo0_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     -0.012999999999999956,
+     18.262
+    ],
+    [
+     -0.012999999999999956,
+     18.084
+    ]
+   ]
+  },
+  "pt_wind_hi1_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.5569999999999999,
+     18.682
+    ],
+    [
+     0.5569999999999999,
+     18.86
+    ]
+   ]
+  },
+  "pt_wind_lo1_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.5569999999999999,
+     18.262
+    ],
+    [
+     0.5569999999999999,
+     18.084
+    ]
+   ]
+  },
+  "pt_ref_spur_lpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     -0.2909999999999999,
+     17.558
+    ],
+    [
+     0.272,
+     17.558
+    ]
+   ]
+  },
+  "pt_ref_box_lpt": {
+   "kind": "box",
+   "dx": -2.282,
+   "width": 1.991,
+   "y_top": 17.868,
+   "y_bottom": 17.248,
+   "layer": "SLD_SYMS"
+  },
+  "pt_ref_text_lpt": {
+   "kind": "note",
+   "dx": -2.218,
+   "y": 17.8,
+   "height": 0.093,
+   "align": "left",
+   "wrap": 24,
+   "text": "pt_reference"
+  },
+  "drawout_upper_c": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 11.278,
+   "rotation": 0,
+   "series": true,
+   "gap": [
+    11.350900000000001,
+    11.1495
+   ]
+  },
+  "breaker_c": {
+   "kind": "breaker",
+   "dx": -0.2815,
+   "width": 0.563,
+   "y_top": 10.989,
+   "y_bottom": 9.966,
+   "series": true,
+   "gap": [
+    10.989,
+    9.966
+   ]
+  },
+  "drawout_lower_c": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 9.677,
+   "rotation": 180,
+   "series": true,
+   "gap": [
+    9.7499,
+    9.548499999999999
+   ]
+  },
+  "relay_c": {
+   "kind": "relay_functions",
+   "text": "relay",
+   "dx": -1.815,
+   "width": 2.288,
+   "y_top": 13.558,
+   "y_bottom": 12.547,
+   "layer": "SLD_SYMS",
+   "radius": 0.138,
+   "per_row": 3,
+   "step_x": 0.372,
+   "step_y": 0.37,
+   "first_dx": 1.356,
+   "first_dy": -0.166,
+   "name_style": {
+    "dx": 0.089,
+    "dy": 0.108,
+    "height": 0.125,
+    "align": "left"
+   },
+   "label_dy": -0.051
+  },
+  "ct_c": {
+   "kind": "block",
+   "block": "1LCT1A",
+   "dx": 0.0,
+   "y": 12.241,
+   "rotation": 0,
+   "series": false,
+   "attribs": {
+    "DESC1": "ct_protection"
+   }
+  },
+  "ct_label_c": {
+   "kind": "note",
+   "dx": 0.52,
+   "y": 12.358,
+   "height": 0.125,
+   "align": "left",
+   "text": "ct_protection"
+  },
+  "cable_exit_c": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 6.695,
+   "rotation": 0,
+   "series": true,
+   "gap": [
+    6.7679,
+    6.5665000000000004
+   ],
+   "terminal": true
+  },
+  "pt_disc_bpt": {
+   "kind": "block",
+   "block": "HC01PJ_1-",
+   "dx": 0.004,
+   "y": 19.533,
+   "rotation": 270,
+   "series": false
+  },
+  "pt_lead_top_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.004,
+     19.685
+    ],
+    [
+     0.004,
+     19.596
+    ]
+   ]
+  },
+  "pt_lead_fuse_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.004,
+     19.439
+    ],
+    [
+     0.004,
+     19.322
+    ]
+   ]
+  },
+  "pt_fuse_body_bpt": {
+   "kind": "box",
+   "dx": -0.043,
+   "width": 0.094,
+   "y_top": 19.322,
+   "y_bottom": 19.01,
+   "layer": "SLD_SYMS"
+  },
+  "pt_fuse_ticks_bpt": {
+   "kind": "lead",
+   "layer": "SLD_SYMS",
+   "points": [
+    [
+     -0.043,
+     19.26
+    ],
+    [
+     0.051000000000000004,
+     19.26
+    ]
+   ]
+  },
+  "pt_fuse_ticks2_bpt": {
+   "kind": "lead",
+   "layer": "SLD_SYMS",
+   "points": [
+    [
+     -0.043,
+     19.072
+    ],
+    [
+     0.051000000000000004,
+     19.072
+    ]
+   ]
+  },
+  "pt_lead_pri_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.004,
+     19.01
+    ],
+    [
+     0.004,
+     18.682
+    ]
+   ]
+  },
+  "pt_lead_sec_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.004,
+     17.247
+    ],
+    [
+     0.004,
+     18.265
+    ]
+   ]
+  },
+  "pt_tap_hi_bpt": {
+   "kind": "block",
+   "block": "WDDOT",
+   "dx": 0.004,
+   "y": 17.938,
+   "rotation": 0,
+   "series": false
+  },
+  "pt_tap_lo_bpt": {
+   "kind": "block",
+   "block": "WDDOT",
+   "dx": 0.004,
+   "y": 17.558,
+   "rotation": 0,
+   "series": false
+  },
+  "pt_label_bpt": {
+   "kind": "note",
+   "dx": -0.622,
+   "y": 20.213,
+   "height": 0.11,
+   "align": "left",
+   "wrap": 14,
+   "text": "pt"
+  },
+  "pt_fuse_label_bpt": {
+   "kind": "note",
+   "dx": 0.154,
+   "y": 19.24,
+   "height": 0.1,
+   "align": "left",
+   "wrap": 14,
+   "text": "pt_fuse"
+  },
+  "pt_coil_pri0_bpt": {
+   "kind": "arc",
+   "dx": -0.13899999999999998,
+   "y": 18.682,
+   "radius": 0.143,
+   "start_angle": 180.0,
+   "end_angle": 0.0,
+   "layer": "SLD_SYMS"
+  },
+  "pt_coil_sec0_bpt": {
+   "kind": "arc",
+   "dx": -0.13899999999999998,
+   "y": 18.262,
+   "radius": 0.143,
+   "start_angle": 0.0,
+   "end_angle": 180.0,
+   "layer": "SLD_SYMS"
+  },
+  "pt_coil_pri1_bpt": {
+   "kind": "arc",
+   "dx": 0.146,
+   "y": 18.682,
+   "radius": 0.143,
+   "start_angle": 180.0,
+   "end_angle": 0.0,
+   "layer": "SLD_SYMS"
+  },
+  "pt_coil_sec1_bpt": {
+   "kind": "arc",
+   "dx": 0.146,
+   "y": 18.262,
+   "radius": 0.143,
+   "start_angle": 0.0,
+   "end_angle": 180.0,
+   "layer": "SLD_SYMS"
+  },
+  "pt_wind_hi0_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     -0.28099999999999997,
+     18.682
+    ],
+    [
+     -0.28099999999999997,
+     18.86
+    ]
+   ]
+  },
+  "pt_wind_lo0_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     -0.28099999999999997,
+     18.262
+    ],
+    [
+     -0.28099999999999997,
+     18.084
+    ]
+   ]
+  },
+  "pt_wind_hi1_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.289,
+     18.682
+    ],
+    [
+     0.289,
+     18.86
+    ]
+   ]
+  },
+  "pt_wind_lo1_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.289,
+     18.262
+    ],
+    [
+     0.289,
+     18.084
+    ]
+   ]
+  },
+  "pt_riser_bpt": {
+   "kind": "lead",
+   "layer": "SLD_WIRE",
+   "points": [
+    [
+     0.004,
+     13.592
+    ],
+    [
+     0.004,
+     17.247
+    ]
+   ]
+  },
+  "drawout_upper_u": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 17.665,
+   "rotation": 0,
+   "series": true,
+   "gap": [
+    17.7379,
+    17.5365
+   ]
+  },
+  "breaker_u": {
+   "kind": "breaker",
+   "dx": -0.2815,
+   "width": 0.563,
+   "y_top": 17.375999999999998,
+   "y_bottom": 16.353,
+   "series": true,
+   "gap": [
+    17.375999999999998,
+    16.353
+   ]
+  },
+  "drawout_lower_u": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 16.064,
+   "rotation": 180,
+   "series": true,
+   "gap": [
+    16.1369,
+    15.9355
+   ]
+  },
+  "relay_u": {
+   "kind": "relay_functions",
+   "text": "relay",
+   "dx": -1.815,
+   "width": 2.288,
+   "y_top": 16.539,
+   "y_bottom": 15.528000000000002,
+   "layer": "SLD_SYMS",
+   "radius": 0.138,
+   "per_row": 3,
+   "step_x": 0.372,
+   "step_y": 0.37,
+   "first_dx": 1.356,
+   "first_dy": -0.166,
+   "name_style": {
+    "dx": 0.089,
+    "dy": 0.108,
+    "height": 0.125,
+    "align": "left"
+   },
+   "label_dy": -0.051
+  },
+  "ct_u": {
+   "kind": "block",
+   "block": "1LCT1A",
+   "dx": 0.0,
+   "y": 15.072,
+   "rotation": 0,
+   "series": false,
+   "attribs": {
+    "DESC1": "ct_protection"
+   }
+  },
+  "ct_label_u": {
+   "kind": "note",
+   "dx": 0.52,
+   "y": 15.189,
+   "height": 0.125,
+   "align": "left",
+   "text": "ct_protection"
+  },
+  "cable_entry_u": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 19.685,
+   "rotation": 180,
+   "series": false
+  },
+  "drawout_upper_utl": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 17.665,
+   "rotation": 0,
+   "series": true,
+   "gap": [
+    17.7379,
+    17.5365
+   ]
+  },
+  "breaker_utl": {
+   "kind": "breaker",
+   "dx": -0.2815,
+   "width": 0.563,
+   "y_top": 17.375999999999998,
+   "y_bottom": 16.353,
+   "series": true,
+   "gap": [
+    17.375999999999998,
+    16.353
+   ]
+  },
+  "drawout_lower_utl": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 16.064,
+   "rotation": 180,
+   "series": true,
+   "gap": [
+    16.1369,
+    15.9355
+   ]
+  },
+  "relay_utl": {
+   "kind": "relay_functions",
+   "text": "relay",
+   "dx": -1.815,
+   "width": 2.288,
+   "y_top": 16.539,
+   "y_bottom": 15.528000000000002,
+   "layer": "SLD_SYMS",
+   "radius": 0.138,
+   "per_row": 3,
+   "step_x": 0.372,
+   "step_y": 0.37,
+   "first_dx": 1.356,
+   "first_dy": -0.166,
+   "name_style": {
+    "dx": 0.089,
+    "dy": 0.108,
+    "height": 0.125,
+    "align": "left"
+   },
+   "label_dy": -0.051
+  },
+  "ct_utl": {
+   "kind": "block",
+   "block": "1LCT1A",
+   "dx": 0.0,
+   "y": 18.659,
+   "rotation": 0,
+   "series": false,
+   "attribs": {
+    "DESC1": "ct_protection"
+   }
+  },
+  "ct_label_utl": {
+   "kind": "note",
+   "dx": 0.52,
+   "y": 18.776,
+   "height": 0.125,
+   "align": "left",
+   "text": "ct_protection"
+  },
+  "cable_entry_utl": {
+   "kind": "block",
+   "block": "VC01PJ_1-",
+   "dx": 0.0,
+   "y": 19.685,
+   "rotation": 180,
+   "series": false
+  },
+  "ct_bus_utl": {
+   "kind": "block",
+   "block": "1LCT1A",
+   "dx": 0.0,
+   "y": 15.072,
+   "rotation": 0,
+   "series": false,
+   "attribs": {
+    "DESC1": "ct_metering"
+   }
+  },
+  "ct_bus_label_utl": {
+   "kind": "note",
+   "dx": 0.52,
+   "y": 15.189,
+   "height": 0.125,
+   "align": "left",
+   "text": "ct_metering"
+  }
+ },
+ "archetypes": {
+  "gen_feeder": {
+   "description": "Generator incoming, single-high. Bus at the top of the run, machine at the bottom, so the CT sits below the breaker on the line side.",
+   "roles": [
+    "cpt_riser_g",
+    "cpt_tap_g",
+    "drawout_upper_g",
+    "breaker_g",
+    "drawout_lower_g",
+    "ct_g",
+    "ct_label_g",
+    "cable_exit_g",
+    "relay_g"
+   ]
+  },
+  "gen_with_line_pt": {
+   "description": "Generator incoming carrying the line PT set. The PTs are fed from the machine's own reference off-sheet, so they stand clear of the power conductor and feed the mains relay through the boxed note.",
+   "roles": [
+    "cpt_riser_g",
+    "cpt_tap_g",
+    "drawout_upper_g",
+    "breaker_g",
+    "drawout_lower_g",
+    "ct_g",
+    "ct_label_g",
+    "cable_exit_g",
+    "relay_g",
+    "pt_coil_pri0_lpt",
+    "pt_coil_pri1_lpt",
+    "pt_coil_sec0_lpt",
+    "pt_coil_sec1_lpt",
+    "pt_disc_lpt",
+    "pt_fuse_body_lpt",
+    "pt_fuse_label_lpt",
+    "pt_fuse_ticks2_lpt",
+    "pt_fuse_ticks_lpt",
+    "pt_label_lpt",
+    "pt_lead_fuse_lpt",
+    "pt_lead_pri_lpt",
+    "pt_lead_sec_lpt",
+    "pt_lead_top_lpt",
+    "pt_ref_box_lpt",
+    "pt_ref_spur_lpt",
+    "pt_ref_text_lpt",
+    "pt_tap_hi_lpt",
+    "pt_tap_lo_lpt",
+    "pt_wind_hi0_lpt",
+    "pt_wind_hi1_lpt",
+    "pt_wind_lo0_lpt",
+    "pt_wind_lo1_lpt"
+   ]
+  },
+  "customer_feeder": {
+   "description": "Load feeder hanging below the bus. Bus at the top of the run and the load at the bottom, so the CT sits above the breaker on the bus side.",
+   "roles": [
+    "drawout_upper_c",
+    "breaker_c",
+    "drawout_lower_c",
+    "ct_c",
+    "ct_label_c",
+    "cable_exit_c",
+    "relay_c"
+   ]
+  },
+  "customer_feeder_lower": {
+   "description": "Load feeder hanging below the bus. Bus at the top of the run and the load at the bottom, so the CT sits above the breaker on the bus side.",
+   "roles": [
+    "drawout_upper_c",
+    "breaker_c",
+    "drawout_lower_c",
+    "ct_c",
+    "ct_label_c",
+    "cable_exit_c",
+    "relay_c"
+   ]
+  },
+  "main_with_bus_pt": {
+   "description": "Main breaker carrying the three-phase bus PT set, tapped off the bus and feeding the sync reference.",
+   "roles": [
+    "drawout_upper_c",
+    "breaker_c",
+    "drawout_lower_c",
+    "ct_c",
+    "ct_label_c",
+    "cable_exit_c",
+    "relay_c",
+    "pt_coil_pri0_bpt",
+    "pt_coil_pri1_bpt",
+    "pt_coil_sec0_bpt",
+    "pt_coil_sec1_bpt",
+    "pt_disc_bpt",
+    "pt_fuse_body_bpt",
+    "pt_fuse_label_bpt",
+    "pt_fuse_ticks2_bpt",
+    "pt_fuse_ticks_bpt",
+    "pt_label_bpt",
+    "pt_lead_fuse_bpt",
+    "pt_lead_pri_bpt",
+    "pt_lead_sec_bpt",
+    "pt_lead_top_bpt",
+    "pt_riser_bpt",
+    "pt_tap_hi_bpt",
+    "pt_tap_lo_bpt",
+    "pt_wind_hi0_bpt",
+    "pt_wind_hi1_bpt",
+    "pt_wind_lo0_bpt",
+    "pt_wind_lo1_bpt"
+   ]
+  },
+  "customer_feeder_upper": {
+   "description": "Feeder on the upper deck of a two-high cubicle. The cable enters at the top of the sheet and the run comes down through the breaker to the bus, which is what the reference letters 'LINE ... BUS'.",
+   "conductor_top": 19.685,
+   "roles": [
+    "cable_entry_u",
+    "drawout_upper_u",
+    "breaker_u",
+    "drawout_lower_u",
+    "ct_u",
+    "ct_label_u",
+    "relay_u"
+   ],
+   "text_overrides": {
+    "unit_number": {
+     "hide": true
+    },
+    "spec_block": {
+     "hide": true
+    },
+    "relay_label": {
+     "hide": true
+    },
+    "destination": {
+     "dx": -0.801,
+     "y": 20.9
+    }
+   }
+  },
+  "utility_main_787": {
+   "description": "Utility main on the upper deck. SEL-751 line protection above the breaker and the SEL-787 bus differential CT below it, which is why this is the one unit in the lineup carrying two CT sets.",
+   "conductor_top": 19.685,
+   "roles": [
+    "cable_entry_utl",
+    "ct_utl",
+    "ct_label_utl",
+    "drawout_upper_utl",
+    "breaker_utl",
+    "drawout_lower_utl",
+    "ct_bus_utl",
+    "ct_bus_label_utl",
+    "relay_utl"
+   ],
+   "text_overrides": {
+    "unit_number": {
+     "hide": true
+    },
+    "spec_block": {
+     "hide": true
+    },
+    "relay_label": {
+     "hide": true
+    },
+    "destination": {
+     "dx": -0.801,
+     "y": 20.9
+    }
+   }
+  }
+ }
+}

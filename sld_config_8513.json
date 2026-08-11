@@ -1,0 +1,876 @@
+{
+  "_comment": "Job 8513 -- two-high lineup, derived from 8513+A01-000-052.dxf. This is a different sheet standard from the 8508 set, not a variant of it: the bus runs through the MIDDLE of the sheet at 12.609, upper-deck breakers sit above it and feed down into it, lower-deck breakers hang below. Upper-deck cables leave the top of the sheet, lower-deck cables leave the bottom. Cubicles carry no unit-number or tag header; each breaker is identified by the small spec block beside it. Five archetypes -- feeder_upper, feeder_lower, main_pt, main_pt_b, tie_horizontal -- plus one-off fittings attached per unit through the 'extras' column. Verified cubicle by cubicle against the reference with compare_source.py; the full sheet matches 673 of 756 entities. What remains is hand-drafting variation that this generator deliberately normalises: cable-entry elevations drift 0.051 between cubicles, phase marks and destination text drift a few thousandths each, the arrester tap is dotted twice on the original, and bus segment lengths follow the uniform 3.610 pitch rather than the reference's 3.067-3.610.",
+
+  "sheet": {
+    "pitch": 3.610,
+    "_pitch_note": "Widest cubicle on the reference (3.610; the sheet runs 3.067-3.610). Per IOM practice all units are drawn to the widest, which makes the generated lineup 36.10 wide against the reference's 34.0.",
+    "centreline_from_left": 1.334,
+    "_centreline_note": "Taken from a two-high feeder cubicle (centre 5.187, left edge 3.853), which is 14 of the 17 breakers. The reference's main cubicles sit at 1.507 from their own left edge; because archetype offsets are stored relative to the centreline, that difference moves a main's contents bodily within its box but leaves their relationships intact.",
+    "cubicle_top": 18.281,
+    "cubicle_bottom": 4.231,
+    "bus_y": 12.609,
+    "bus_extension": 0.0,
+    "_bus_extension_note": "The reference bus runs 1.750..31.891, which is exactly the first and last cubicle centrelines -- it stops dead on them rather than overhanging.",
+    "bus_dot_at_ends": false,
+    "_bus_dot_note": "Because the buses stop dead on a centreline, their ends are corners rather than tees and the reference draws them bare -- on both the main bus and the control bus, whose left end is the bus PT in the first main cubicle. The 8508 sheets do the opposite: their tie also sits on a bus end and does carry a dot.",
+    "first_cubicle_x": 0.243,
+    "bus_label": "BUS {bus}, 2000A, 37KAIC,3PH,13.8kV",
+    "_bus_label_note": "Verbatim from the reference sheet, which settles the rating question the earlier 8513 build had to guess at: the bus is 13.8kV, not the 15kV breaker class, and the reference carries no BIL note."
+  },
+
+  "text": {
+    "_note": "Sheet-level placements here are the UPPER deck's. The lower deck annotates the same fields at its own elevations and supplies them through text_overrides, as will the mains and the tie.",
+    "unit_number": {"y": 0.0, "height": 0.3, "align": "centre", "centre_mode": "paragraph", "hide": true,
+                    "_note": "The reference has no unit-number header above the cubicles -- checked across the whole sheet above y=18.281, which holds only destination notes, cable-entry connectors and conductor."},
+    "unit_tag": {"y": 0.0, "height": 0.3, "align": "centre", "centre_mode": "paragraph", "hide": true,
+                 "_note": "Likewise no large per-cubicle tag; a two-high cubicle holds two breakers and could not carry one anyway."},
+    "spec_block": {"dx": -0.259, "y": 14.799, "height": 0.093, "align": "left"},
+    "relay_label": {"dx": 1.105, "y": 17.350, "height": 0.093, "align": "centre", "centre_mode": "paragraph", "wrap": 13},
+    "destination": {"dx": -0.016, "y": 19.310, "height": 0.100, "align": "centre", "centre_mode": "paragraph", "wrap": 9,
+                    "_wrap_note": "9 reproduces the reference's four lines (INCOMING / 13.8kV / MPU-60-1 / 5.7MW). The reference breaks by meaning rather than by width, so no single wrap will suit every destination string -- check long ones."},
+    "arrester_label": {"dx": 0.765, "y": 18.168, "height": 0.093, "align": "left", "wrap": 6,
+                       "_note": "A live label, not baked into a block. The 8508 set draws its arrester as a composite ARRESTER block carrying its own L.A./MCOV text, which is what made the units.csv 'arrester' column dead. Here the arrester is built from explicit roles and the label reads the column."},
+    "bus_label": {"dx": -0.655, "y": 12.825, "height": 0.100, "align": "left", "hide": true,
+                  "_note": "Suppressed as a sheet-level label because this standard carries one nameplate per main cubicle -- two on a full sheet, not one. It is drawn instead by main_pt's bus_nameplate_m role, which reads a units.csv column so each main states its own bus."}
+  },
+
+  "control": {
+    "hop_radius": 0.05,
+    "buses": [
+      {"name": "control_power", "y": 11.386, "start_dx": 1.104, "end_dx": 1.104,
+       "_note": "Runs below the main bus. Every cubicle's CPT riser drops onto it, crossing the main bus on the way -- which is why the main bus hops."}
+    ]
+  },
+
+  "roles": {
+    "cable_entry": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 18.635,
+      "rotation": 180, "series": false,
+      "_note": "Cable-entry connector above the top of the conductor run."
+    },
+    "drawout_upper": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 15.535,
+      "rotation": 0, "series": true, "gap": [15.598, 15.442]
+    },
+    "breaker": {
+      "kind": "breaker", "dx": -0.415, "width": 0.790,
+      "y_top": 15.013, "y_bottom": 14.092,
+      "series": true, "gap": [15.013, 14.092]
+    },
+    "drawout_lower": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 13.643,
+      "rotation": 180, "series": true, "gap": [13.736, 13.580]
+    },
+
+    "arrester_tap": {
+      "kind": "block", "block": "WDDOT", "dx": 0.0, "y": 17.879,
+      "rotation": 0, "series": false
+    },
+    "arrester_lead_in": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[0.0, 17.879], [0.241, 17.879]]
+    },
+    "arrester_gap_lower": {
+      "kind": "circle", "dx": 0.270, "y": 17.879, "radius": 0.029, "layer": "SLD_SYMS"
+    },
+    "arrester_gap_upper": {
+      "kind": "circle", "dx": 0.395, "y": 17.879, "radius": 0.029, "layer": "SLD_SYMS"
+    },
+    "arrester_lead_out": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[0.424, 17.879], [0.617, 17.879]]
+    },
+    "arrester_ground": {
+      "kind": "block", "block": "HGND2", "dx": 0.617, "y": 17.879,
+      "rotation": 180, "series": false
+    },
+
+    "ct_protection": {
+      "kind": "block", "block": "VXF1CT", "dx": 0.192, "y": 17.072,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_protection", "DESC2": "@CT C200 MR"},
+      "attrib_pos": {"DESC1": [-1.261, -0.017], "DESC2": [-1.387, -0.178]},
+      "_attrib_pos_note": "The ratio and class sit out to the left of the CT on this standard, clear of the conductor. The library block's ATTDEF defaults put them underneath, which is the 8508 convention.",
+      "polarity_dot": {"dx": 0.049, "dy": 0.295}
+    },
+    "ct_protection_phase": {
+      "kind": "note", "dx": -0.892, "y": 16.849, "height": 0.100,
+      "align": "centre", "centre_mode": "paragraph", "text": "@1%%C"
+    },
+    "ct_metering": {
+      "kind": "block", "block": "VXF1CT", "dx": 0.192, "y": 16.128,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_metering", "DESC2": "@CT C200 MR"},
+      "attrib_pos": {"DESC1": [-1.290, -0.017], "DESC2": [-1.387, -0.178]},
+      "polarity_dot": {"dx": 0.049, "dy": 0.295}
+    },
+    "ct_metering_phase": {
+      "kind": "note", "dx": -0.885, "y": 15.900, "height": 0.100,
+      "align": "centre", "centre_mode": "paragraph", "text": "@1%%C"
+    },
+
+    "relay_box": {
+      "kind": "box", "dx": 0.515, "width": 1.179,
+      "y_top": 17.388, "y_bottom": 16.716,
+      "series": false, "layer": "SLD_SYMS"
+    },
+
+    "test_switch_box": {
+      "kind": "box", "dx": 0.6581, "width": 0.1317,
+      "y_top": 16.4384, "y_bottom": 16.3157,
+      "series": false, "layer": "SLD_SYMS",
+      "_note": "Shorting/test switch on the metering CT secondary, drawn as a small crossed box. Carried to four decimals rather than three: at 0.1227 high it is the one item on this archetype small enough that a third-decimal round shifts it by a whole comparison quantum.",
+      "_todo": "Confirm what this device is before issue -- geometry is measured, the name is inferred from its position on the CT secondary."
+    },
+    "test_switch_lid": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[0.7898, 16.4384], [0.6581, 16.4384]],
+      "_note": "The reference redraws the box's top edge as a separate line. Reproduced so the comparison closes; it is duplicate geometry on the original, not something meaningful."
+    },
+    "test_switch_cross_a": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[0.6581, 16.3157], [0.7898, 16.4384]]
+    },
+    "test_switch_cross_b": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[0.6581, 16.4384], [0.7898, 16.3157]]
+    },
+
+    "cpt_fuse": {
+      "kind": "block", "block": "VFU1", "dx": 1.104, "y": 13.643,
+      "rotation": 0, "series": false,
+      "attribs": {"RATING1": "@6A"},
+      "attrib_pos": {"RATING1": [0.1323, -0.0332]}
+    },
+
+    "_lower_deck": "Roles below belong to feeder_lower. It is not a mirror of the upper deck: the arrester hangs to the LEFT rather than the right, the test switch sits at +1.136 rather than +0.658, the CT class reads 'CT C200' rather than 'CT C200 MR', and only the lower deck carries an 86 lockout.",
+
+    "cable_exit_l": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 3.830,
+      "rotation": 0, "series": false,
+      "_note": "Cable-exit connector below the bottom of the conductor run."
+    },
+    "drawout_upper_l": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 9.346,
+      "rotation": 0, "series": true, "gap": [9.408, 9.252]
+    },
+    "breaker_l": {
+      "kind": "breaker", "dx": -0.4148, "width": 0.7896,
+      "y_top": 8.8231, "y_bottom": 7.9025,
+      "series": true, "gap": [8.8231, 7.9025]
+    },
+    "drawout_lower_l": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 7.453,
+      "rotation": 180, "series": true, "gap": [7.547, 7.391]
+    },
+
+    "lockout_circle_l": {
+      "kind": "circle", "dx": 1.055, "y": 8.522, "radius": 0.176, "layer": "SLD_SYMS",
+      "_note": "Drawn as a bare circle and a label rather than the DEVICE_BUBBLE block the 8508 set uses -- this reference draws it that way, and at r=0.176 against DEVICE_BUBBLE's 0.217 the block would be the wrong size anyway."
+    },
+    "lockout_label_l": {
+      "kind": "note", "dx": 0.971, "y": 8.576, "height": 0.093,
+      "align": "centre", "centre_mode": "paragraph", "text": "@86"
+    },
+    "lockout_lead_left_l": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.375, 8.522], [0.879, 8.522]]
+    },
+    "lockout_lead_down_l": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[1.055, 8.345], [1.055, 7.918]]
+    },
+
+    "relay_box_l": {
+      "kind": "box", "dx": 0.5160, "width": 1.2034,
+      "y_top": 7.9183, "y_bottom": 7.2459,
+      "series": false, "layer": "SLD_SYMS"
+    },
+
+    "ct_protection_l": {
+      "kind": "block", "block": "VXF1CT", "dx": 0.1917, "y": 6.8035,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_protection", "DESC2": "@CT C200"},
+      "attrib_pos": {"DESC1": [-1.2611, -0.0174], "DESC2": [-1.2555, -0.1781]},
+      "polarity_dot": {"dx": 0.055, "dy": -0.305},
+      "_polarity_note": "Dot below the CT here, above it on the upper deck -- on both decks it faces away from the bus."
+    },
+    "ct_protection_phase_l": {
+      "kind": "note", "dx": -0.777, "y": 6.571, "height": 0.100,
+      "align": "centre", "centre_mode": "paragraph", "text": "@1%%C"
+    },
+    "ct_metering_l": {
+      "kind": "block", "block": "VXF1CT", "dx": 0.1917, "y": 6.0313,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_metering", "DESC2": "@CT C200"},
+      "attrib_pos": {"DESC1": [-1.2482, -0.0174], "DESC2": [-1.1520, -0.1781]},
+      "polarity_dot": {"dx": 0.053, "dy": -0.308}
+    },
+    "ct_metering_phase_l": {
+      "kind": "note", "dx": -0.777, "y": 5.803, "height": 0.100,
+      "align": "centre", "centre_mode": "paragraph", "text": "@1%%C"
+    },
+
+    "test_switch_box_l": {
+      "kind": "box", "dx": 1.1362, "width": 0.1317,
+      "y_top": 5.8436, "y_bottom": 5.7209,
+      "series": false, "layer": "SLD_SYMS"
+    },
+    "test_switch_lid_l": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[1.2679, 5.8436], [1.1362, 5.8436]]
+    },
+    "test_switch_cross_a_l": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[1.1362, 5.7209], [1.2679, 5.8436]]
+    },
+    "test_switch_cross_b_l": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[1.1362, 5.8436], [1.2679, 5.7209]]
+    },
+
+    "arrester_tap_l": {
+      "kind": "block", "block": "WDDOT", "dx": 0.0, "y": 5.2652,
+      "rotation": 0, "series": false
+    },
+    "arrester_lead_in_l": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[0.0, 5.2652], [-0.2415, 5.2652]]
+    },
+    "arrester_gap_inner_l": {
+      "kind": "circle", "dx": -0.2703, "y": 5.2652, "radius": 0.0289, "layer": "SLD_SYMS"
+    },
+    "arrester_gap_outer_l": {
+      "kind": "circle", "dx": -0.3947, "y": 5.2651, "radius": 0.0289, "layer": "SLD_SYMS"
+    },
+    "arrester_lead_out_l": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[-0.4235, 5.2651], [-0.6169, 5.2651]]
+    },
+    "arrester_ground_l": {
+      "kind": "block", "block": "HGND2", "dx": -0.6169, "y": 5.2651,
+      "rotation": 0, "series": false
+    },
+
+    "cpt_fuse_l": {
+      "kind": "block", "block": "VFU1", "dx": 1.431, "y": 9.503,
+      "rotation": 0, "series": false,
+      "attribs": {"RATING1": "@6A"},
+      "attrib_pos": {"RATING1": [0.1323, -0.0332]}
+    },
+
+    "_main_cubicle": "Roles below belong to main_pt: the incoming main breaker cubicle, one at each end of the lineup. It is not a feeder. It carries THREE CTs rather than two, two potential transformers, and a second relay -- an SEL-351S system relay below the breaker in addition to the SEL-751. The bus PT at the top is what energises the control bus, which is why a lineup with no main has a control bus with no source.",
+
+    "cable_exit_m": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 3.799,
+      "rotation": 180, "series": false
+    },
+    "drawout_upper_m": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 11.129,
+      "rotation": 0, "series": true, "gap": [11.1916, 11.0353]
+    },
+    "breaker_m": {
+      "kind": "breaker", "dx": -0.4129, "width": 0.7766,
+      "y_top": 10.6065, "y_bottom": 9.6859,
+      "series": true, "gap": [10.6065, 9.6859]
+    },
+    "drawout_lower_m": {
+      "kind": "block", "block": "VCN1PJ", "dx": 0.0, "y": 9.237,
+      "rotation": 180, "series": true, "gap": [9.3303, 9.1740]
+    },
+
+    "lockout_circle_m": {
+      "kind": "circle", "dx": 1.0554, "y": 10.3030, "radius": 0.1762, "layer": "SLD_SYMS"
+    },
+    "lockout_label_m": {
+      "kind": "note", "dx": 0.971, "y": 10.358, "height": 0.093,
+      "align": "centre", "centre_mode": "paragraph", "text": "@86"
+    },
+    "lockout_lead_left_m": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.3637, 10.3030], [0.8792, 10.3030]]
+    },
+    "lockout_lead_down_m": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[1.0554, 10.1269], [1.0554, 9.6998]]
+    },
+
+    "relay_box_m": {
+      "kind": "box", "dx": 0.4754, "width": 1.1787,
+      "y_top": 9.6998, "y_bottom": 9.0274,
+      "series": false, "layer": "SLD_SYMS"
+    },
+    "system_relay_box_m": {
+      "kind": "box", "dx": 0.7750, "width": 1.1787,
+      "y_top": 6.5163, "y_bottom": 5.8439,
+      "series": false, "layer": "SLD_SYMS"
+    },
+    "system_relay_label_m": {
+      "kind": "note", "dx": 1.364, "y": 6.449, "height": 0.093,
+      "align": "centre", "centre_mode": "paragraph",
+      "text": "@SEL-351S\\P PROTECTION\\PSYSTEM \\PRELAY",
+      "_note": "Literal rather than a CSV column: units.csv has one 'relay' field and this cubicle carries two relays. The leading space in ' PROTECTION' is the reference's own spacing."
+    },
+
+    "ct_protection_m": {
+      "kind": "block", "block": "VXF1CT", "dx": 0.1919, "y": 8.3799,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_protection", "DESC2": "@CT C200 MR"},
+      "attrib_pos": {"DESC1": [-1.2902, -0.0174], "DESC2": [-1.3867, -0.1781]},
+      "polarity_dot": {"dx": 0.049, "dy": -0.304}
+    },
+    "ct_protection_phase_m": {
+      "kind": "note", "dx": -0.777, "y": 8.147, "height": 0.100,
+      "align": "centre", "centre_mode": "paragraph", "text": "@1%%C"
+    },
+    "ct_metering_m": {
+      "kind": "block", "block": "VXF1CT", "dx": 0.1919, "y": 7.5423,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_metering", "DESC2": "@CT C200 MR"},
+      "attrib_pos": {"DESC1": [-1.2975, -0.0174], "DESC2": [-1.3867, -0.1781]},
+      "polarity_dot": {"dx": 0.049, "dy": -0.304}
+    },
+    "ct_metering_phase_m": {
+      "kind": "note", "dx": -0.777, "y": 7.309, "height": 0.100,
+      "align": "centre", "centre_mode": "paragraph", "text": "@1%%C"
+    },
+    "ct_system_m": {
+      "kind": "block", "block": "VXF1CT", "dx": 0.1919, "y": 6.6973,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_system", "DESC2": "@CT C200 MR"},
+      "attrib_pos": {"DESC1": [-1.2620, 0.0072], "DESC2": [-1.3289, -0.1535]},
+      "polarity_dot": {"dx": 0.044, "dy": -0.306},
+      "_note": "The third CT, feeding the SEL-351S. It needs a units.csv column of its own -- with only ct_protection and ct_metering there is nowhere for the middle ratio to come from, which is why the extractor reported this cubicle's three CTs as 1200/1200 and dropped the 2000."
+    },
+    "ct_system_phase_m": {
+      "kind": "note", "dx": -0.788, "y": 6.494, "height": 0.100,
+      "align": "centre", "centre_mode": "paragraph", "text": "@1%%C"
+    },
+
+    "test_switch_box_m": {
+      "kind": "box", "dx": 0.6173, "width": 0.1317,
+      "y_top": 7.8527, "y_bottom": 7.7300,
+      "series": false, "layer": "SLD_SYMS"
+    },
+    "test_switch_lid_m": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[0.7490, 7.8527], [0.6173, 7.8527]]
+    },
+    "test_switch_cross_a_m": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[0.6173, 7.7300], [0.7490, 7.8527]]
+    },
+    "test_switch_cross_b_m": {
+      "kind": "lead", "layer": "SLD_SYMS",
+      "points": [[0.6173, 7.8527], [0.7490, 7.7300]]
+    },
+
+    "bus_nameplate_m": {
+      "kind": "note", "dx": -0.655, "y": 12.825, "height": 0.100,
+      "align": "left", "text": "bus_nameplate",
+      "_note": "The reference puts this at dx -0.655 on the bus-A main and -1.472 on the bus-B one. Both are drawn at -0.655 here; the difference is hand placement, and normalising it is the same choice the 8508 config makes about its own inconsistent bus labels."
+    },
+    "bus_pt_tap_m": {
+      "kind": "block", "block": "WDDOT", "dx": 0.5792, "y": 12.6085,
+      "rotation": 0, "series": false,
+      "_note": "Junction dot where the bus PT taps the main bus. Explicit, because the automatic dot only fires where a riser meets a *control* bus."
+    },
+    "bus_pt_m": {
+      "kind": "block", "block": "VXF1T1_1-", "dx": 0.5792, "y": 12.2286,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "pt_bus_label", "DESC2": "@PT (3)", "DESC3": "@14.4kV/120V"},
+      "attrib_pos": {"DESC1": [0.2024, 0.0795], "DESC2": [0.2066, -0.0861],
+                     "DESC3": [0.2061, -0.2542]},
+      "_note": "DESC1 reads 'BUS A' / 'BUS B', so it has to come from a column -- the two mains sit on different buses."
+    },
+    "bus_pt_fuse_m": {
+      "kind": "block", "block": "VFU1", "dx": 0.5792, "y": 11.7290,
+      "rotation": 0, "series": false,
+      "attribs": {"RATING1": "@6A"},
+      "attrib_pos": {"RATING1": [0.1323, -0.0332]}
+    },
+
+    "line_pt_tap_m": {
+      "kind": "block", "block": "WDDOT", "dx": 0.0, "y": 4.5847,
+      "rotation": 0, "series": false
+    },
+    "line_pt_lead_in_m": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[0.0, 4.5847], [0.5383, 4.5847]]
+    },
+    "line_pt_m": {
+      "kind": "block", "block": "HXF1T1_1-", "dx": 0.6945, "y": 4.5847,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "@PT(3)", "DESC2": "@14.4KV/120V"},
+      "attrib_pos": {"DESC1": [-0.2523, 0.3268], "DESC2": [-0.5202, 0.1798]},
+      "_note": "Second PT, tapped off the cable side of the breaker rather than off the bus."
+    },
+    "line_pt_lead_out_m": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[0.8508, 4.5847], [1.5410, 4.5847], [1.5410, 4.7614]]
+    },
+    "line_pt_fuse_m": {
+      "kind": "block", "block": "VFU1", "dx": 1.5410, "y": 4.9489,
+      "rotation": 0, "series": false,
+      "attribs": {"RATING1": "@6A"},
+      "attrib_pos": {"RATING1": [0.1323, -0.0332]}
+    },
+    "line_pt_riser_m": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[1.5410, 5.1364], [1.5410, 5.8456]]
+    },
+
+    "arrester_tap_m": {
+      "kind": "block", "block": "WDDOT", "dx": 0.0, "y": 5.2652,
+      "rotation": 0, "series": false
+    },
+    "arrester_lead_in_m": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[0.0, 5.2652], [-0.2413, 5.2652]]
+    },
+    "arrester_gap_inner_m": {
+      "kind": "circle", "dx": -0.2701, "y": 5.2652, "radius": 0.0289, "layer": "SLD_SYMS"
+    },
+    "arrester_gap_outer_m": {
+      "kind": "circle", "dx": -0.3945, "y": 5.2651, "radius": 0.0289, "layer": "SLD_SYMS"
+    },
+    "arrester_lead_out_m": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[-0.4233, 5.2651], [-0.6167, 5.2651]]
+    },
+    "arrester_ground_m": {
+      "kind": "block", "block": "HGND2", "dx": -0.6167, "y": 5.2651,
+      "rotation": 0, "series": false
+    },
+
+    "_bus_b_main": "The bus-B main is the bus-A one with its potential-transformer group and nameplate moved: the PT drops from dx +0.5792 to -0.3186 and the nameplate from -0.655 to -1.4719. Everything else -- breaker, both relay boxes, all three CTs, the arrester, the line PT -- sits at identical offsets, so main_pt_b reuses those roles and overrides only these five.",
+
+    "bus_nameplate_b": {
+      "kind": "note", "dx": -1.4719, "y": 12.825, "height": 0.100,
+      "align": "left", "text": "bus_nameplate"
+    },
+    "bus_pt_tap_b": {
+      "kind": "block", "block": "WDDOT", "dx": -0.3186, "y": 12.6085,
+      "rotation": 0, "series": false
+    },
+    "bus_pt_b": {
+      "kind": "block", "block": "VXF1T1_1-", "dx": -0.3186, "y": 12.2286,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "pt_bus_label", "DESC2": "@PT (3)", "DESC3": "@14.4kV/120V"},
+      "attrib_pos": {"DESC1": [0.2024, 0.0795], "DESC2": [0.2066, -0.0861],
+                     "DESC3": [0.2061, -0.2542]}
+    },
+    "bus_pt_fuse_b": {
+      "kind": "block", "block": "VFU1", "dx": -0.3186, "y": 11.7290,
+      "rotation": 0, "series": false,
+      "attribs": {"RATING1": "@6A"},
+      "attrib_pos": {"RATING1": [0.1323, -0.0332]}
+    },
+
+    "_kirk_key": "Two upper-deck feeders carry a Kirk key interlock on the breaker -- cubicle 4 with it to the right of the conductor, cubicle 7 to the left. Attached through the units.csv 'extras' column rather than by cloning the archetype: cubicle 4 also carries an auxiliary transformer, and one archetype per combination of one-off fittings multiplies fast.",
+
+    "kirk_lock_r": {
+      "kind": "circle", "dx": 0.6204, "y": 14.6078, "radius": 0.0966, "layer": "SLD_SYMS"
+    },
+    "kirk_letter_r": {
+      "kind": "note", "dx": 0.5919, "y": 14.6565, "height": 0.093,
+      "align": "centre", "centre_mode": "paragraph", "text": "@K"
+    },
+    "kirk_note_r": {
+      "kind": "note", "dx": 0.4406, "y": 14.4627, "height": 0.050,
+      "align": "centre", "centre_mode": "paragraph", "text": "@KIRK KEY"
+    },
+    "kirk_lock_l": {
+      "kind": "circle", "dx": -0.6819, "y": 14.5809, "radius": 0.0966, "layer": "SLD_SYMS"
+    },
+    "kirk_letter_l": {
+      "kind": "note", "dx": -0.7104, "y": 14.6297, "height": 0.093,
+      "align": "centre", "centre_mode": "paragraph", "text": "@K"
+    },
+    "kirk_note_l": {
+      "kind": "note", "dx": -0.8497, "y": 14.4444, "height": 0.050,
+      "align": "centre", "centre_mode": "paragraph", "text": "@KIRK KEY"
+    },
+
+    "_aux_power": "Auxiliary power distribution above the lineup: a 500kVA 13.8kV/480V transformer feeding power panel PP-1, and a 50kVA 240/120V transformer feeding lighting panel LP-1. Tapped off cubicle 4's upper feeder, with a run along y=19.308 back to cubicle 7. All attached through 'extras'.",
+
+    "aux_tap_pp": {
+      "kind": "block", "block": "WDDOT", "dx": 0.0004, "y": 19.3084,
+      "rotation": 0, "series": false
+    },
+    "aux_riser_pp": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.0004, 18.680], [0.0004, 20.6361]]
+    },
+    "aux_run_pp": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.0, 19.3084], [10.830, 19.3084]],
+      "_note": "The one length on this sheet that is not pitch-independent: it spans cubicle 4 to cubicle 7, so it is 3 x pitch. The reference measures 9.378 at its own varying widths; 10.830 is the same three cubicles at the uniform 3.610. Reordering the lineup would need this re-derived.",
+      "_todo": "Better modelled as a declared bus, which would derive its extent from its participants -- that needs archetype-level wiring, which 'extras' cannot supply."
+    },
+    "aux_lead_in_pp": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.0004, 20.6361], [0.4922, 20.6361]]
+    },
+    "aux_xfmr_pp": {
+      "kind": "block", "block": "HXF1T1_1-", "dx": 0.6484, "y": 20.6351,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "@XFMR-PP1", "DESC2": "@500KVA, 3PH", "DESC3": "@13.8KV/0.48KV"},
+      "attrib_pos": {"DESC1": [-0.2523, 0.3268], "DESC2": [-0.5202, 0.1798],
+                     "DESC3": [-0.5202, 0.0328]}
+    },
+    "aux_lead_out_pp": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.8047, 20.6351], [2.0846, 20.6351]]
+    },
+
+    "panel_box_pp": {
+      "kind": "box", "dx": -0.9824, "width": 1.0802,
+      "y_top": 21.2784, "y_bottom": 19.9919,
+      "series": false, "layer": "SLD_SYMS"
+    },
+    "panel_label_pp": {
+      "kind": "note", "dx": -0.7796, "y": 21.1503, "height": 0.100,
+      "align": "left",
+      "text": "@PP-1\\P10CCT\\P480V\\P3PH, 4W\\P600A BUS\\P600A MB"
+    },
+    "aux_lead_in_lp": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.0978, 20.6351], [1.3349, 20.6351]]
+    },
+    "aux_xfmr_lp": {
+      "kind": "block", "block": "HXF1T1_1-", "dx": 1.4911, "y": 20.6351,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "@XFMR-LP1", "DESC2": "@50KVA, 1PH", "DESC3": "@240V/120V"},
+      "attrib_pos": {"DESC1": [-0.2523, 0.3268], "DESC2": [-0.5202, 0.1798],
+                     "DESC3": [-0.5202, 0.0328]}
+    },
+    "aux_lead_out_lp": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[1.6474, 20.6351], [3.1484, 20.6351]]
+    },
+    "aux_riser_b": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.0, 18.680], [0.0, 19.3084]],
+      "_note": "Cubicle 7's stub up to the auxiliary run."
+    },
+
+    "_tie_cubicle": "Roles below belong to tie_horizontal. Unlike every other archetype the breaker lies ON its side, in series in the main bus rather than hanging off it, so the bus and the control bus both break around it -- see bus_gaps. Its centreline is fixed by convention at the cubicle's left edge + 1.334 because a cubicle with no vertical power conductor gives nothing to detect one from.",
+
+    "tie_conn_left_t": {
+      "kind": "block", "block": "VCN1PJ", "dx": -0.249, "y": 12.609,
+      "rotation": 90, "series": false
+    },
+    "tie_conn_right_t": {
+      "kind": "block", "block": "VCN1PJ", "dx": 1.644, "y": 12.609,
+      "rotation": 270, "series": false
+    },
+    "tie_lead_left_t": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[-0.155, 12.609], [0.201, 12.609]]
+    },
+    "tie_lead_right_t": {
+      "kind": "lead", "layer": "SLD_WIRE",
+      "points": [[1.121, 12.609], [1.550, 12.609]]
+    },
+    "tie_breaker_t": {
+      "kind": "box", "dx": 0.2009, "width": 0.9206,
+      "y_top": 13.0233, "y_bottom": 12.2337,
+      "series": false, "layer": "SLD_SYMS",
+      "_note": "Drawn as a plain box rather than kind 'breaker': the breaker kind exists to interrupt the vertical conductor, and this one interrupts the horizontal bus instead. The interruption is declared in bus_gaps."
+    },
+
+    "tie_ct_t": {
+      "kind": "block", "block": "HXF1CT", "dx": -0.851, "y": 12.410,
+      "rotation": 0, "series": false,
+      "attribs": {"DESC1": "ct_protection", "DESC2": "@CT C200"},
+      "polarity_dot": {"dx": -0.555, "dy": 0.074}
+    },
+    "tie_ct_phase_t": {
+      "kind": "note", "dx": -0.932, "y": 13.006, "height": 0.100,
+      "align": "centre", "centre_mode": "paragraph", "text": "@1%%C"
+    },
+
+    "lockout_circle_t": {
+      "kind": "circle", "dx": 0.714, "y": 11.902, "radius": 0.176, "layer": "SLD_SYMS"
+    },
+    "lockout_label_t": {
+      "kind": "note", "dx": 0.630, "y": 11.956, "height": 0.093,
+      "align": "centre", "centre_mode": "paragraph", "text": "@86"
+    },
+    "lockout_lead_up_t": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.714, 12.078], [0.714, 12.234]],
+      "_note": "Up to the breaker, not down -- the tie carries its breaker above the 86 and its relay below."
+    },
+    "lockout_lead_down_t": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.714, 11.726], [0.714, 11.555]]
+    },
+
+    "relay_box_t": {
+      "kind": "box", "dx": -0.1647, "width": 0.9627,
+      "y_top": 11.5546, "y_bottom": 10.8822,
+      "series": false, "layer": "SLD_SYMS"
+    },
+    "tie_ct_secondary_t": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[0.258, 11.555], [0.258, 11.856], [-1.100, 11.856], [-1.100, 12.377]],
+      "_note": "CT secondary from the relay box up and back along to the bus CT."
+    },
+
+    "tie_fuse_left_t": {
+      "kind": "block", "block": "HFU1", "dx": -0.868, "y": 11.386,
+      "rotation": 0, "series": false,
+      "attribs": {"RATING1": "@6A"}
+    },
+    "tie_fuse_left_lead_t": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[-0.681, 11.386], [-0.165, 11.386]]
+    },
+    "tie_fuse_right_t": {
+      "kind": "block", "block": "HFU1", "dx": 1.375, "y": 11.391,
+      "rotation": 0, "series": false,
+      "attribs": {"RATING1": "@6A"}
+    },
+    "tie_fuse_right_lead_t": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[1.187, 11.391], [0.799, 11.391]]
+    },
+
+    "panel_box_t": {
+      "kind": "box", "dx": -0.007, "width": 1.081,
+      "y_top": 21.278, "y_bottom": 19.992,
+      "series": false, "layer": "SLD_SYMS",
+      "_note": "Lighting panel schedule, floating above the cubicle top at 18.281 -- the only geometry on the sheet outside a cubicle."
+    },
+    "panel_label_t": {
+      "kind": "note", "dx": 0.196, "y": 21.142, "height": 0.100,
+      "align": "left",
+      "text": "@LP-1\\P42CCT\\P240V:120V\\P1PH,3W\\P200A BUS\\P200A MB"
+    },
+    "panel_lead_t": {
+      "kind": "lead", "layer": "SLD_CONTROL",
+      "points": [[-1.508, 20.635], [-0.007, 20.635]]
+    }
+  },
+
+  "archetypes": {
+    "feeder_upper": {
+      "description": "Upper-deck feeder on a two-high cubicle -- cable enters at the top of the sheet, runs down through arrester, both CTs and the drawout breaker, and terminates on the main bus below.",
+      "conductor_top": 18.572,
+      "_conductor_note": "The run ends on the bus at 12.609 rather than hanging below it, so the archetype declares its far end above the bus instead of below.",
+      "roles": [
+        "cable_entry",
+        "arrester_tap", "arrester_lead_in", "arrester_gap_lower",
+        "arrester_gap_upper", "arrester_lead_out", "arrester_ground",
+        "relay_box",
+        "ct_protection", "ct_protection_phase",
+        "test_switch_box", "test_switch_lid",
+        "test_switch_cross_a", "test_switch_cross_b",
+        "ct_metering", "ct_metering_phase",
+        "drawout_upper", "breaker", "drawout_lower",
+        "cpt_fuse"
+      ],
+      "control_wiring": {
+        "risers": [
+          {"dx": 1.104, "y_from": 11.386, "y_to": 16.716,
+           "gaps": [[13.830, 13.455]],
+           "_gap_note": "breaks for the CPT fuse body"}
+        ],
+        "spurs": [
+          {"y": 17.321, "dx_from": 0.224, "dx_to": 0.515,
+           "_note": "protection CT secondary into the relay"},
+          {"y": 16.377, "dx_from": 0.224, "dx_to": 0.658,
+           "_note": "metering CT secondary out to the test switch"}
+        ]
+      }
+    },
+
+    "feeder_lower": {
+      "description": "Lower-deck feeder on a two-high cubicle -- hangs below the main bus, running down through the drawout breaker, both CTs and the arrester to a cable exit at the bottom of the sheet.",
+      "conductor_bottom": 3.893,
+      "roles": [
+        "cpt_fuse_l",
+        "drawout_upper_l",
+        "lockout_circle_l", "lockout_label_l",
+        "lockout_lead_left_l", "lockout_lead_down_l",
+        "breaker_l",
+        "relay_box_l",
+        "drawout_lower_l",
+        "ct_protection_l", "ct_protection_phase_l",
+        "ct_metering_l", "ct_metering_phase_l",
+        "test_switch_box_l", "test_switch_lid_l",
+        "test_switch_cross_a_l", "test_switch_cross_b_l",
+        "arrester_tap_l", "arrester_lead_in_l",
+        "arrester_gap_inner_l", "arrester_gap_outer_l",
+        "arrester_lead_out_l", "arrester_ground_l",
+        "cable_exit_l"
+      ],
+      "text_overrides": {
+        "_note": "Every annotated field moves to the lower deck's own elevations. Without these the two breakers in a cubicle would stack their labels on top of each other.",
+        "spec_block": {"dx": -0.259, "y": 8.610},
+        "relay_label": {"dx": 1.120, "y": 7.880},
+        "destination": {"dx": 0.042, "y": 3.668},
+        "arrester_label": {"dx": -1.228, "y": 5.549}
+      },
+      "control_wiring": {
+        "risers": [
+          {"dx": 1.4306, "y_from": 6.5545, "y_to": 11.386,
+           "gaps": [[7.2459, 7.9183], [9.3156, 9.6906]],
+           "_gap_note": "breaks for the relay box and the CPT fuse body",
+           "_note": "One drawn vertical carrying two circuits: the protection CT secondary rising into the relay from below, and the control-power supply dropping from the bus above. The reference draws them on the same line."}
+        ],
+        "spurs": [
+          {"y": 6.5545, "dx_from": 0.224, "dx_to": 1.4306,
+           "_note": "protection CT secondary out to the riser"},
+          {"y": 5.7823, "dx_from": 0.2239, "dx_to": 1.1362,
+           "_note": "metering CT secondary out to the test switch"}
+        ]
+      }
+    },
+
+    "main_pt": {
+      "description": "Incoming main breaker with bus and line potential transformers -- one at each end of the lineup, feeding a transformer. Three CTs, two PTs, an SEL-751 feeder relay and an SEL-351S system relay.",
+      "conductor_bottom": 3.8927,
+      "roles": [
+        "bus_nameplate_m",
+        "bus_pt_tap_m", "bus_pt_m", "bus_pt_fuse_m",
+        "drawout_upper_m",
+        "lockout_circle_m", "lockout_label_m",
+        "lockout_lead_left_m", "lockout_lead_down_m",
+        "breaker_m",
+        "relay_box_m",
+        "drawout_lower_m",
+        "ct_protection_m", "ct_protection_phase_m",
+        "test_switch_box_m", "test_switch_lid_m",
+        "test_switch_cross_a_m", "test_switch_cross_b_m",
+        "ct_metering_m", "ct_metering_phase_m",
+        "ct_system_m", "ct_system_phase_m",
+        "system_relay_box_m", "system_relay_label_m",
+        "arrester_tap_m", "arrester_lead_in_m",
+        "arrester_gap_inner_m", "arrester_gap_outer_m",
+        "arrester_lead_out_m", "arrester_ground_m",
+        "line_pt_tap_m", "line_pt_lead_in_m", "line_pt_m",
+        "line_pt_lead_out_m", "line_pt_fuse_m", "line_pt_riser_m",
+        "cable_exit_m"
+      ],
+      "text_overrides": {
+        "spec_block": {"dx": -0.260, "y": 10.422},
+        "relay_label": {"dx": 1.065, "y": 9.662},
+        "destination": {"dx": -0.702, "y": 3.668},
+        "arrester_label": {"dx": -1.228, "y": 5.549}
+      },
+      "control_wiring": {
+        "bus_dx": {"control_power": 0.5792},
+        "_bus_dx_note": "The control bus starts at the bus-PT riser, not at the CPT riser every feeder uses -- this is the cubicle that sources it.",
+        "risers": [
+          {"dx": 0.5792, "y_from": 11.386, "y_to": 12.6085,
+           "gaps": [[12.3848, 12.0723], [11.9165, 11.5415]],
+           "_gap_note": "breaks for the bus PT body and its fuse",
+           "_note": "Control power: tapped off the main bus at the top, down through the PT and fuse onto the control bus."},
+          {"dx": 1.4308, "y_from": 9.6998, "y_to": 11.386,
+           "_note": "SEL-751 supply up to the control bus"},
+          {"dx": 1.8113, "y_from": 6.5163, "y_to": 11.386,
+           "_note": "SEL-351S supply up to the control bus"},
+          {"dx": 0.6461, "y_from": 8.6289, "y_to": 9.0274,
+           "_note": "protection CT secondary rising into the relay box"},
+          {"dx": 0.9523, "y_from": 6.5129, "y_to": 6.9464,
+           "_note": "system CT secondary dropping into the SEL-351S"}
+        ],
+        "spurs": [
+          {"y": 8.6289, "dx_from": 0.2241, "dx_to": 0.6461,
+           "_note": "protection CT secondary"},
+          {"y": 7.7913, "dx_from": 0.2241, "dx_to": 0.6173,
+           "_note": "metering CT secondary out to the test switch"},
+          {"y": 6.9464, "dx_from": 0.2241, "dx_to": 0.9523,
+           "_note": "system CT secondary"}
+        ]
+      }
+    },
+
+    "main_pt_b": {
+      "description": "Bus-B incoming main -- identical to main_pt except that its PT group and bus nameplate sit at different offsets.",
+      "conductor_bottom": 3.8927,
+      "roles": [
+        "bus_nameplate_b",
+        "bus_pt_tap_b", "bus_pt_b", "bus_pt_fuse_b",
+        "drawout_upper_m",
+        "lockout_circle_m", "lockout_label_m",
+        "lockout_lead_left_m", "lockout_lead_down_m",
+        "breaker_m",
+        "relay_box_m",
+        "drawout_lower_m",
+        "ct_protection_m", "ct_protection_phase_m",
+        "test_switch_box_m", "test_switch_lid_m",
+        "test_switch_cross_a_m", "test_switch_cross_b_m",
+        "ct_metering_m", "ct_metering_phase_m",
+        "ct_system_m", "ct_system_phase_m",
+        "system_relay_box_m", "system_relay_label_m",
+        "arrester_tap_m", "arrester_lead_in_m",
+        "arrester_gap_inner_m", "arrester_gap_outer_m",
+        "arrester_lead_out_m", "arrester_ground_m",
+        "line_pt_tap_m", "line_pt_lead_in_m", "line_pt_m",
+        "line_pt_lead_out_m", "line_pt_fuse_m", "line_pt_riser_m",
+        "cable_exit_m"
+      ],
+      "text_overrides": {
+        "spec_block": {"dx": -0.260, "y": 10.422},
+        "relay_label": {"dx": 1.065, "y": 9.662},
+        "destination": {"dx": -0.702, "y": 3.668},
+        "arrester_label": {"dx": -1.228, "y": 5.549}
+      },
+      "control_wiring": {
+        "bus_dx": {"control_power": -0.3186},
+        "risers": [
+          {"dx": -0.3186, "y_from": 11.386, "y_to": 12.6085,
+           "gaps": [[12.3848, 12.0723], [11.9165, 11.5415]],
+           "_gap_note": "breaks for the bus PT body and its fuse"},
+          {"dx": 1.4308, "y_from": 9.6998, "y_to": 11.386},
+          {"dx": 1.8113, "y_from": 6.5163, "y_to": 11.386},
+          {"dx": 0.6461, "y_from": 8.6289, "y_to": 9.0274},
+          {"dx": 0.9523, "y_from": 6.5129, "y_to": 6.9464}
+        ],
+        "spurs": [
+          {"y": 8.6289, "dx_from": 0.2241, "dx_to": 0.6461},
+          {"y": 7.7913, "dx_from": 0.2241, "dx_to": 0.6173},
+          {"y": 6.9464, "dx_from": 0.2241, "dx_to": 0.9523}
+        ]
+      }
+    },
+
+    
+    
+    "tie_horizontal": {
+      "description": "Bus tie -- a horizontal drawout breaker sitting in series in the main bus, with its CT on the bus itself. Also carries the lighting panel schedule above the lineup.",
+      "roles": [
+        "panel_box_t", "panel_label_t", "panel_lead_t",
+        "tie_breaker_t",
+        "tie_conn_left_t", "tie_conn_right_t",
+        "tie_lead_left_t", "tie_lead_right_t",
+        "tie_ct_t", "tie_ct_phase_t",
+        "lockout_circle_t", "lockout_label_t",
+        "lockout_lead_up_t", "lockout_lead_down_t",
+        "relay_box_t", "tie_ct_secondary_t",
+        "tie_fuse_left_t", "tie_fuse_left_lead_t",
+        "tie_fuse_right_t", "tie_fuse_right_lead_t"
+      ],
+      "bus_gaps": {
+        "main": [[-0.311, 1.707]],
+        "control_power": [[-1.056, 1.562]],
+        "_note": "The main bus stops either side of the tie's connectors and the control bus stops either side of its fuses; the roles above draw everything between."
+      },
+      "text_overrides": {
+        "spec_block": {"dx": 0.497, "y": 12.984, "suffix": "N.C.",
+                       "_note": "Five lines, not four -- the reference states the tie's normal position in the same block."},
+        "relay_label": {"dx": 0.316, "y": 11.516},
+        "destination": {"hide": true},
+        "arrester_label": {"hide": true}
+      },
+      "control_wiring": {
+        "joins": ["control_power"],
+        "_joins_note": "The tie reaches the control bus through two horizontal fuses drawn as roles, so there is no riser to infer participation from -- it names the bus outright, the same mechanism the 8508 PT riser uses."
+      }
+    }
+  }
+}

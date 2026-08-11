@@ -105,13 +105,18 @@ def check_dead_columns(cfg, rows, columns):
     if not dead:
         report(OK, "columns", "every column reaches the drawing")
         return
+    hints = {
+        "arrester": "the rating is baked into the ARRESTER block artwork; "
+                    "editing the CSV changes nothing",
+    }
     for col in dead:
         vals = {(r.get(col) or "").strip() for r in rows} - {""}
         detail = (f"{len(vals)} distinct value(s) entered" if vals else "empty in every row")
         level = WARN if len(vals) > 1 else NOTE
         report(level, "columns",
                f"column '{col}' does not reach the drawing -- {detail}",
-               "the value is baked into the block artwork; editing the CSV changes nothing")
+               hints.get(col, f"no role's 'attribs' map or 'text' field points at '{col}', "
+                              f"and build_sld.py does not read it"))
 
 
 def check_required_fields(cfg, rows):
