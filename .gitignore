@@ -10,3 +10,33 @@ ErrorReports/
 
 __pycache__/
 *.pyc
+
+# Generated drawings. build_sld.py and generate_sld.py rebuild these from the
+# CSVs in excel/ and the configs in python_scripts/, so tracking them stores a
+# fresh copy of a multi-megabyte binary on every run. The inputs stay tracked:
+# the reference drawings from real projects (the +A01- numbers), the symbol and
+# feeder-cell libraries, and FEEDER_CELL.dwg.
+#
+# Patterns follow the output naming the README teaches, so a new job's sheets
+# (8712_bus_a.dxf, 8712_full.dxf, ...) are covered without editing this file.
+cad_files/*_sld.dxf
+cad_files/*_bus_a.dxf
+cad_files/*_bus_a.dwg
+cad_files/*_bus_b.dxf
+cad_files/*_bus_b.dwg
+cad_files/*_busA.dxf
+cad_files/*_busB.dxf
+cad_files/*_full.dxf
+cad_files/*_full.dwg
+cad_files/*_decks_check.dxf
+cad_files/sample_3unit_one_line.dxf
+cad_files/output.dxf
+cad_files/output.dwg
+
+# Preview renders from preview.py. Everything in images/ is generated except
+# the scanned/screenshot references the archetypes were measured against.
+images/*.png
+!images/8298_ga.png
+!images/8372_ref_001.png
+!images/8372_ref_002.png
+!images/8513_reference.png
