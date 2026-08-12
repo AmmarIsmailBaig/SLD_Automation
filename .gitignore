@@ -10,6 +10,7 @@ ErrorReports/
 
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Generated drawings. build_sld.py and generate_sld.py rebuild these from the
 # CSVs in excel/ and the configs in python_scripts/, so tracking them stores a

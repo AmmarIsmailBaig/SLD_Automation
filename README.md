@@ -28,6 +28,21 @@ python preview.py sld_bus_a.dxf preview.png           # PNG check, no AutoCAD
 | `extract_symbols.py` | One-time tool that builds `symbol_library.dxf` from a project drawing. |
 | `preview.py` | Renders a DXF to PNG for quick checking. |
 | `measure.py` | Dumps a reference drawing's entities in an x/y window — how new archetypes get measured. |
+| `tests/` | Golden-file regression tests — see [tests/README.md](tests/README.md). |
+
+## Regression tests
+
+Before refactoring the generator, record where the geometry stands; afterwards,
+check nothing moved:
+
+```bash
+pip install pytest
+python -m pytest tests/ -q
+```
+
+Failures name which entities moved and by how much, so an unintended change
+points at the config entry that caused it. Intended changes are re-recorded
+with `python tests/regen_golden.py`.
 
 ## Starting a new switchgear drawing
 
