@@ -1,0 +1,214 @@
+{
+  "_comment": "Schema-type catalogue for TPPES / IOM switchgear drawings. A schema type is what a cubicle IS -- the device stack, the required inputs, and (once built) the SLD / three-line / DC cells that render it. 'source' records where the definition came from: 'TPPES' means the engineer specified it, 'drawing' means it was reverse-engineered from an issued sheet and needs confirming. 'requires' are the intake fields that must be filled for that type; 'optional' may be blank. Field names match the columns of the Units tab.",
+  "_revision": "Rev B -- incorporates TPPES answers to the five open questions.",
+
+  "_status_legend": {
+    "defined": "device stack exists in sld_config.json -- build_sld.py can draw it today",
+    "specified": "TPPES has specified the type; the device stack still has to be built",
+    "proposed": "reverse-engineered from an issued drawing; needs TPPES confirmation"
+  },
+
+  "field_glossary": {
+    "tag":                    "Device tag, e.g. 52-GEN1A. Unique within the lineup.",
+    "schema_type":            "Which entry in this catalogue the cubicle is.",
+    "status":                 "Blank for a normal in-service feeder, or SPARE / FUTURE. The two words mean the same thing; the drawing prints whichever is entered.",
+    "voltage":                "Breaker rated maximum voltage, e.g. 4.76KV.",
+    "amp_rating":             "Breaker continuous current rating.",
+    "ka_rating":              "Breaker interrupting rating.",
+    "relay":                  "Primary protection relay model.",
+    "relay_2":                "Second relay, where the cubicle carries one. On an incomer this is the bus differential, e.g. SEL-787.",
+    "relay_functions":        "ANSI device numbers shown in the relay box, e.g. 25, 50P, 51P, 50G, 51G.",
+    "ct_protection":          "Protection CT ratio and quantity, e.g. 400:5A (3).",
+    "ct_metering":            "Metering CT ratio and quantity. Present only where a metering relay is specified.",
+    "ct_ground":              "Separate ground-fault / core-balance CT ratio. Motor feeders only.",
+    "pt":                     "Voltage transformer set, e.g. (3) 4160/230V.",
+    "pt_connection":          "PT connection -- open delta (usual) or wye-wye.",
+    "pt_primary_fuse":        "PT primary fuse, e.g. CLF 0.5E.",
+    "pt_secondary_fuse":      "PT secondary fuse, e.g. FU1/6A.",
+    "pt_reference":           "What the PT secondary feeds, e.g. LINE PT REFERENCE TO INTELIMAINS RELAY IN MCP.",
+    "cable":                  "Incoming / outgoing cable size and quantity, e.g. 750kcmil (1)/PH.",
+    "destination":            "Source or load text printed at the cubicle entry / exit.",
+    "arrester":               "Surge arrester rating. Blank where the lineup has none.",
+    "diff_note":              "Bus-differential cross-reference note.",
+    "deck":                   "single / upper / lower, for two-high cubicles."
+  },
+
+  "enums": {
+    "status": ["", "SPARE", "FUTURE"],
+    "pt_connection": ["open delta", "wye-wye"],
+    "deck": ["single", "upper", "lower"]
+  },
+
+  "project_fields": {
+    "_comment": "Supplied once per job, not per unit. available_sc_current is called out by the Incoming Power spec but is a property of the installation, not of any one cubicle.",
+    "required": [
+      "job", "customer", "title", "location_code", "sheet_standard",
+      "system_voltage", "bus_rating", "bus_ka_rating", "phases", "wires",
+      "frequency", "available_sc_current"
+    ],
+    "optional": ["bil", "grounding", "drawing_no", "rev", "date", "engineer", "drawn", "checked", "approved"]
+  },
+
+  "common_required": ["unit", "bus", "tag", "schema_type"],
+
+  "schema_types": {
+
+    "motor_feeder": {
+      "title": "Feeder 2 - Motor Feeder",
+      "status": "specified",
+      "source": "TPPES",
+      "description": "Supplies a motor. Feeder breaker with motor protection relay, phase CTs and a separate ground-fault CT.",
+      "cubicle": ["feeder breaker", "phase CTs", "ground-fault CT", "motor protection relay"],
+      "default_relay": "SEL-710",
+      "requires": ["voltage", "amp_rating", "ka_rating", "relay", "ct_protection", "ct_ground", "destination"],
+      "optional": ["ct_metering", "relay_functions", "arrester", "cable", "status"],
+      "notes": "Only type in the catalogue with a separate ground-fault CT -- ct_ground exists for this. ct_metering is filled only when the customer specifies a metering relay (TPPES, confirmed). SEL-710 is new to the relay vocabulary."
+    },
+
+    "utility_incoming": {
+      "title": "Incoming Power",
+      "status": "specified",
+      "source": "TPPES",
+      "description": "Utility supply into the switchgear. Main breaker with phase CTs for protection and metering, three VTs with secondary protection, and the incoming cable connection. Fit relay_2 where a bus differential is required.",
+      "cubicle": ["incoming cable termination", "main breaker", "protection CTs", "(3) VTs", "PT secondary protection", "protection relay", "differential relay (optional)"],
+      "default_relay": "SEL-751",
+      "requires": ["voltage", "amp_rating", "ka_rating", "relay", "ct_protection",
+                   "pt", "pt_connection", "pt_secondary_fuse", "cable", "destination"],
+      "optional": ["relay_2", "ct_metering", "pt_primary_fuse", "pt_reference", "relay_functions", "arrester"],
+      "project_requires": ["available_sc_current"],
+      "notes": "Absorbs what was proposed as a separate 'utility_main_787' type. A bus differential is an option on this type, not a type of its own: enter the differential relay in relay_2 and its CT in ct_metering. 8372 unit 12 is this type with relay_2 = SEL-787. Available short-circuit current is a project-level input, held in the header rather than on the row."
+    },
+
+    "gen_feeder": {
+      "title": "Generator incoming feeder",
+      "status": "defined",
+      "source": "sld_config.json (8508)",
+      "description": "Drawout breaker, dual CT, arrester.",
+      "cubicle": ["drawout breaker", "protection CT", "metering CT", "arrester", "86 lockout", "relay"],
+      "requires": ["voltage", "amp_rating", "ka_rating", "relay", "ct_protection", "destination"],
+      "optional": ["ct_metering", "arrester", "relay_functions", "status"]
+    },
+
+    "customer_feeder": {
+      "title": "Feeder 1 - Customer / load feeder",
+      "status": "defined",
+      "source": "sld_config.json (8508), confirmed by TPPES as Feeder 1",
+      "description": "Generator feeder plus a control transformer. This is the type TPPES numbers 'Feeder 1'.",
+      "cubicle": ["drawout breaker", "protection CT", "metering CT", "arrester", "86 lockout", "relay", "control transformer"],
+      "requires": ["voltage", "amp_rating", "ka_rating", "relay", "ct_protection", "destination"],
+      "optional": ["ct_metering", "arrester", "relay_functions", "status"]
+    },
+
+    "bess_feeder": {
+      "title": "BESS feeder",
+      "status": "defined",
+      "source": "sld_config.json (8508)",
+      "description": "Generator feeder plus a second fuse.",
+      "cubicle": ["drawout breaker", "protection CT", "metering CT", "arrester", "86 lockout", "relay", "second fuse"],
+      "requires": ["voltage", "amp_rating", "ka_rating", "relay", "ct_protection", "destination"],
+      "optional": ["ct_metering", "arrester", "relay_functions", "status"]
+    },
+
+    "xfmr_feeder": {
+      "title": "Transformer feeder",
+      "status": "defined",
+      "source": "sld_config.json (8508)",
+      "description": "Fused disconnect with Kirk key, one CT, and the load-side transformer / panel cascade.",
+      "cubicle": ["fused MV disconnect", "Kirk key", "CT", "feeder transformer", "PP-1 panel", "lighting transformer", "LP-1 panel"],
+      "requires": ["ct_metering", "destination"],
+      "optional": ["voltage", "cable", "status"]
+    },
+
+    "xfmr_riser": {
+      "title": "Transformer feeder continuation",
+      "status": "defined",
+      "source": "sld_config.json (8508)",
+      "description": "Same disconnect, Kirk key and CT, terminating rather than cascading.",
+      "cubicle": ["fused MV disconnect", "Kirk key", "CT"],
+      "requires": ["ct_metering", "destination"],
+      "optional": ["voltage", "status"]
+    },
+
+    "pt_riser_tie": {
+      "title": "Bus PT / riser adjacent to a tie",
+      "status": "defined",
+      "source": "sld_config.json (8508)",
+      "description": "Its relay takes the differential CT from the tie unit.",
+      "cubicle": ["bus PT", "PT fuse", "relay"],
+      "requires": ["relay"],
+      "optional": ["pt", "pt_primary_fuse", "pt_secondary_fuse", "pt_connection"]
+    },
+
+    "pt_riser": {
+      "title": "Bus PT / riser referencing the other bus",
+      "status": "defined",
+      "source": "sld_config.json (8508)",
+      "description": "Differential CT comes from the other bus, on another sheet.",
+      "cubicle": ["bus PT", "PT fuse", "relay", "differential lead", "cross-reference note"],
+      "requires": ["relay", "diff_note"],
+      "optional": ["pt", "pt_primary_fuse", "pt_secondary_fuse", "pt_connection"]
+    },
+
+    "main_tie": {
+      "title": "Main / tie breaker",
+      "status": "defined",
+      "source": "sld_config.json (8508)",
+      "description": "Three CTs, two CPT fuses, breaker stack lowered to clear the tie run.",
+      "cubicle": ["drawout breaker", "three CTs", "two CPT fuses", "relay with sync", "86 lockout"],
+      "requires": ["voltage", "amp_rating", "ka_rating", "relay", "ct_protection"],
+      "optional": ["ct_metering", "destination", "relay_functions"]
+    },
+
+    "main_with_bus_pt": {
+      "title": "Main breaker with bus PT in the same cubicle",
+      "status": "proposed",
+      "source": "drawing 8372 unit 6",
+      "description": "Main breaker with a bus PT tapped off the same riser above the bus, through a current-limiting fuse.",
+      "cubicle": ["bus PT", "PT primary fuse", "main breaker", "CT", "relay"],
+      "requires": ["voltage", "amp_rating", "ka_rating", "relay", "ct_protection", "pt", "pt_primary_fuse", "destination"],
+      "optional": ["ct_metering", "pt_connection", "pt_secondary_fuse", "pt_reference", "cable", "status"],
+      "notes": "On 8372 the PT secondary feeds TO ENGINATORS FOR SYNC REFERENCE."
+    },
+
+    "gen_with_line_pt": {
+      "title": "Generator feeder with line PT in the same cubicle",
+      "status": "proposed",
+      "source": "drawing 8372 unit 11",
+      "description": "Generator breaker plus a line PT on a separate fused riser. The PT is housed here but belongs electrically to the incomer in the adjacent cubicle.",
+      "cubicle": ["line PT", "PT fuse", "gen breaker", "CT", "relay"],
+      "requires": ["voltage", "amp_rating", "ka_rating", "relay", "ct_protection", "pt", "destination"],
+      "optional": ["ct_metering", "pt_primary_fuse", "pt_secondary_fuse", "pt_connection", "pt_reference", "arrester", "status"],
+      "notes": "Needs a cross-reference to the cubicle the PT actually serves."
+    }
+  },
+
+  "cubicle_arrangements": {
+    "_comment": "Not schema types. A schema type says what a cubicle contains; an arrangement says how cubicles are subdivided. Any schema type can sit in any arrangement.",
+    "single_high": {
+      "description": "One unit per cubicle. Every issued drawing reviewed so far uses this for generator and main cubicles.",
+      "deck_values": ["single"],
+      "status": "supported"
+    },
+    "two_high": {
+      "description": "Two breakers stacked in one cubicle, each taking its own schema type. One row per deck, both rows carrying the same unit number.",
+      "deck_values": ["upper", "lower"],
+      "status": "blocked",
+      "seen_on": ["8513 units 12-14 equivalent", "8372 units 12, 13, 14"],
+      "blocked_by": "Role positions in sld_config.json are absolute sheet elevations, so a deck offset cannot be expressed. Needs the slot refactor."
+    }
+  },
+
+  "resolved": [
+    "Feeder 1 is customer_feeder. Confirmed by TPPES.",
+    "FUTURE and SPARE mean the same thing. 'future_feeder' has been removed as a schema type -- it is now the status field on any feeder type, and the sheet prints whichever word is entered.",
+    "The utility main with an 87 differential is not its own type. 'utility_main_787' has been folded into utility_incoming, with the differential relay entered in relay_2.",
+    "Motor feeders carry metering CTs only when the customer specifies a metering relay, so ct_metering is optional on that type.",
+    "PT connection is usually open delta, sometimes wye-wye. Both are offered; open delta is the default."
+  ],
+
+  "open_questions": [
+    "Motor feeder: is the ground-fault CT a core-balance (zero-sequence) CT, or residual from the phase CTs? Changes the symbol and the three-line.",
+    "Does SEL-710 need its own relay-box block, or does the existing relay box take any model as text?",
+    "Two-high: does the upper deck always sit on the line side and the lower on the load side, or does it vary by job?"
+  ]
+}
