@@ -977,7 +977,12 @@ def main():
     ap.add_argument("--library", default=LIBRARY_PATH)
     args = ap.parse_args()
 
-    cfg = load_config(args.config)
+    # --library has to reach load_config too: expanding a device stack measures
+    # the real blocks, so a stacking config read without it falls back to the
+    # bare relative default and only resolves when the process happens to be run
+    # from the directory holding the library. 8478 is the only stacking config,
+    # so it was the only lineup that would not build from the repo root.
+    cfg = load_config(args.config, args.library)
     units = load_units(args.units_csv, args.bus, cfg)
     if not units:
         print("No units matched -- nothing to draw.")

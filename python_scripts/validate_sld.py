@@ -219,6 +219,7 @@ def check_containment(msp, cfg):
     sheet = cfg["sheet"]
     x0 = sheet["first_cubicle_x"]
     pitch = sheet["pitch"]
+    run_ys = {sheet["bus_y"]} | {b["y"] for b in cfg.get("control", {}).get("buses", [])}
     findings = []
     for e in msp:
         if e.dxf.layer in STRUCTURAL_LAYERS or e.dxftype() == "MTEXT":
@@ -230,9 +231,16 @@ def check_containment(msp, cfg):
         # then it is checked against that cubicle's own sides. Checking against
         # the whole lineup instead would pass a device drawn squarely in its
         # neighbour's box, which is the failure this exists to catch.
-        # The lineup bus is one line across every cubicle by definition, so it
-        # is the one thing that is supposed to span them.
-        if b[2] - b[0] > pitch and abs(b[3] - sheet["bus_y"]) < 1e-6:
+        # Some horizontals are supposed to span cubicles: the lineup bus, and
+        # every control run the config declares -- the PT voltage reference
+        # exists precisely to reach every unit. Their elevations are reserved
+        # for that, so a horizontal sitting on one is doing its job.
+        #
+        # Width is not the test. These runs hop over each conductor they cross,
+        # which breaks them into segments *narrower* than the pitch (3.56
+        # against 3.610 on the reference run), so a width rule misses exactly
+        # the entities it was meant to admit and reports them every build.
+        if abs(b[3] - b[1]) < 1e-6 and any(abs(b[3] - y) < 1e-4 for y in run_ys):
             continue
         centre = (b[0] + b[2]) / 2.0
         index = int((centre - x0) // pitch)

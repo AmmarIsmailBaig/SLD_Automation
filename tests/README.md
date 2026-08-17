@@ -17,11 +17,21 @@ python -m pytest tests/ -q
 | `units_bus_b` | `excel/units.csv` | B | 8508 types, dual CT set |
 | `sample_3unit` | `excel/sample_3unit_units.csv` | all | 8508 types, minimal lineup |
 | `assignment` | `assignment_units.csv` | all | spec-authored types, **single CT set** |
+| `stacked_38kv` | `excel/8478_units.csv` | all | **`stacker.py`** -- the only stack-declaring config |
+| `intake_single` | `intake_assignment.xlsx` | all | **the intake path**, plus old-template compatibility |
+| `intake_twohigh` | `excel/intake_twohigh.xlsx` | all | **two-high reflection**, PT-only deck, mirrored run |
 
-The `assignment` case is the one that pins the single-CT path:
-`ct_compartment_protection`, `ct_ground`, and the four archetypes authored from
-the assignment specification. The 8508 fixtures all carry two CT sets per
-feeder, so nothing else in the suite exercises those roles.
+The `assignment` case pins the single-CT path: `ct_compartment_protection`,
+`ct_ground`, and the four archetypes authored from the assignment
+specification. The 8508 fixtures all carry two CT sets per feeder.
+
+The two `Intake*` cases are the only cover for `read_intake.py`,
+`standard.json` and the stacking in `build_intake.py`. Everything else drives
+`build_sld.py` against a hand-measured config, so without them a change to the
+device order, a gap, or the reflection moves geometry on every unit and nothing
+notices. `intake_single` deliberately reads a workbook written against the
+older 25-column template, so trimming the template cannot quietly stop an
+already-filled sheet from building.
 
 Add one by appending a `Case(...)` to `CASES` in `cases.py` and running
 `python tests/regen_golden.py <name>`.
