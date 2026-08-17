@@ -103,8 +103,15 @@ def stack_unit(std, row, key):
         if not present(entry["when"], row):
             continue
         spec = json.loads(json.dumps(entry["role"]))
-        spec["y"] = entry["y"]
-        terminals(spec, entry["y"])
+        # Normally pinned to the cubicle floor so cable exits line up across the
+        # lineup. A unit carrying enough CTs to stack past that point pushes the
+        # exit down instead, rather than ending up above its own last device.
+        pin = entry["y"]
+        if "push_gap" in entry:
+            pin = min(pin, round(y - entry["push_gap"], 4))
+        spec["y"] = pin
+        terminals(spec, pin)
+        anchors["outgoing"] = pin
         emit(entry["name"], spec)
 
     # --- devices placed relative to something else ----------------------
@@ -120,6 +127,7 @@ def stack_unit(std, row, key):
             spec["y_top"] = round(breaker_top + entry["dy"], 4)
             spec["y_bottom"] = round(spec["y_top"] - spec.pop("height"), 4)
             anchors["relay_bottom"] = spec["y_bottom"]
+            anchors["relay_top"] = spec["y_top"]
         elif entry["anchor"] == "cts":
             if not ct_ys:
                 continue
@@ -131,6 +139,7 @@ def stack_unit(std, row, key):
 
     # --- the bus PT branch, above the bus -------------------------------
     branch = std["branch"]
+    branch_roles = set()
     if present(branch["when"], row):
         y = std["sheet"]["bus_y"]
         prev_top = y  # the tap point on the bus itself
@@ -141,31 +150,88 @@ def stack_unit(std, row, key):
             down = spec.pop("gap_down")
             spec["y"] = y
             # A riser from whatever is below up to this device's lower terminal.
-            emit(entry["name"] + "_riser", {
+            branch_roles.add(emit(entry["name"] + "_riser", {
                 "kind": "lead",
                 "points": [[0.0, prev_top], [0.0, round(y - down, 4)]],
                 "layer": std["conductor"]["layer"],
-            })
-            emit(entry["name"], spec)
+            }))
+            branch_roles.add(emit(entry["name"], spec))
             prev_top = round(y + up, 4)
 
-    return roles, order, anchors
+    if breaker_top is not None:
+        anchors["breaker_top"] = breaker_top
+
+    return roles, order, anchors, branch_roles
 
 
-def control_wiring(std, row, anchors):
+def reflect(roles, anchors, bus_y, skip=()):
+    """Mirror a laid-out deck about the bus, in place.
+
+    The upper deck of a two-high cubicle is the lower deck upside down: it taps
+    the same bus from underneath and runs its cable out through the roof. So it
+    is built by the ordinary downward pass and then reflected, which means the
+    two decks cannot drift apart -- there is only one set of gaps.
+
+    'skip' names roles that are already on the upper side and must be left
+    alone. The bus PT branch is the case: it stacks upward off the bus by
+    definition, so reflecting it would drive it back down between the bus and
+    the breaker -- precisely the arrangement the branch exists to avoid.
+    """
+    def flip(y):
+        return round(2 * bus_y - y, 4)
+
+    for name, spec in roles.items():
+        if name in skip:
+            continue
+        if "y" in spec:
+            spec["y"] = flip(spec["y"])
+        # A span's top and bottom trade places, or the box inverts.
+        if "y_top" in spec:
+            spec["y_top"], spec["y_bottom"] = flip(spec["y_bottom"]), flip(spec["y_top"])
+        if "gap" in spec and isinstance(spec["gap"], list):
+            spec["gap"] = [flip(spec["gap"][1]), flip(spec["gap"][0])]
+        if "points" in spec:
+            spec["points"] = [[px, flip(py)] for px, py in spec["points"]]
+        # Turning a symbol over turns its attribute text over with it, which
+        # renders the CT ratio and PT ratio upside down. Only symbols that
+        # actually point somewhere -- the drawout contacts -- are rotated; the
+        # ones carrying text read the same either way up.
+        if "rotation" in spec and not spec.get("attribs"):
+            spec["rotation"] = (spec["rotation"] + 180) % 360
+        # The polarity mark sits on the winding it belongs to, so it turns over
+        # with the CT rather than staying above it.
+        if "polarity_dot" in spec:
+            spec["polarity_dot"]["dy"] = -spec["polarity_dot"]["dy"]
+
+    return {k: flip(v) for k, v in anchors.items()}
+
+
+def bus_name_for(bus, mirrored):
+    return bus["name"] + ("_upper" if mirrored else "")
+
+
+def control_wiring(std, row, anchors, mirrored, bus_y):
     """How this unit meets the lineup-wide control runs.
 
     Participation is declared per unit rather than per type, so the PT
     reference run reaches whichever cubicles carry a relay -- and originates
     wherever the PT happens to be -- instead of being fixed by an archetype.
+
+    Each deck gets its own run at its own elevation. An upper-deck relay cannot
+    be fed from the lower deck's run without crossing the main bus to get
+    there, which is a short, not a drawing.
     """
     wiring = {}
     for bus in std.get("control", {}).get("buses", []):
+        y = round(2 * bus_y - bus["y"], 4) if mirrored else bus["y"]
+        name = bus_name_for(bus, mirrored)
         if present(bus["source"], row):
-            wiring.setdefault("joins", []).append(bus["name"])
+            wiring.setdefault("joins", []).append(name)
+        # After reflection the stored relay_bottom is the edge facing this
+        # deck's run, so the same anchor is correct either way up.
         if present(bus["reaches"], row) and "relay_bottom" in anchors:
             wiring.setdefault("risers", []).append({
-                "y_from": bus["y"],
+                "y_from": y,
                 "y_to": anchors["relay_bottom"],
                 "dx": bus["riser_dx"],
             })
@@ -193,28 +259,71 @@ def build_config(std, job, rows):
                     if not k.startswith("_")},
     }
 
+    bus_y = std["sheet"]["bus_y"]
+    decks = std.get("decks", {})
+
     for row in rows:
-        deck = row.get("deck", "").strip().lower()
-        if deck in ("upper", "lower"):
-            raise SystemExit(
-                f"unit {row['unit']}: deck {deck!r} is not supported yet.\n"
-                "  Stacking makes two-high possible, but the drop from the bus to the\n"
-                "  lower deck's own origin is a measured number this standard does not\n"
-                "  have. One two-high reference drawing supplies it."
-            )
-        key = f"u{row['unit']}"
-        roles, order, anchors = stack_unit(std, row, key)
-        cfg["roles"].update(roles)
-        cfg["archetypes"][key] = {
+        deck = (row.get("deck") or "single").strip().lower()
+        if deck not in decks:
+            raise SystemExit(f"unit {row['unit']}: unknown deck {deck!r} "
+                             f"(expected one of {', '.join(sorted(decks))})")
+
+        # Two rows of a two-high cubicle share a unit number, so the deck has to
+        # be part of the key or the upper deck would overwrite the lower.
+        key = f"u{row['unit']}" + (f"_{deck}" if deck != "single" else "")
+        roles, order, anchors, branch_roles = stack_unit(std, row, key)
+
+        arch = {
             "description": row.get("description", ""),
-            "_from": f"intake row {row['unit']}"
+            "_from": f"intake row {row['unit']}, deck {deck}"
                      + (f", schema_type {row['schema_type']}" if row.get("schema_type") else ""),
             "roles": order,
         }
-        wiring = control_wiring(std, row, anchors)
+
+        if decks[deck].get("mirror"):
+            anchors = reflect(roles, anchors, bus_y, skip=branch_roles)
+            overrides = {
+                name: {"y": round(2 * bus_y - std["text"][name]["y"] + dy, 4)}
+                for name, dy in decks[deck].get("text_shift", {}).items()
+                if name in std["text"]
+            }
+            # The cubicle header belongs to the cubicle, not to a deck. Both
+            # rows would otherwise print it at the same elevation and the two
+            # tags would land on top of each other; the upper deck's own tag
+            # and ratings are in its spec block, beside its breaker.
+            for name in decks[deck].get("hide_text", []):
+                overrides[name] = {"hide": True}
+            arch["text_overrides"] = overrides
+            arch["_mirrored"] = "Upper deck: the lower deck reflected about the bus."
+
+            # draw_conductor always walks downward, so an upper deck is drawn by
+            # handing it the far end: the run comes DOWN from the cable entry to
+            # the bus. Without this the deck defaults to the below-bus case and
+            # every symbol on it is left floating.
+            tops = [s["gap"][0] for n, s in roles.items()
+                    if s.get("series") and "gap" in s and n not in branch_roles]
+            if tops:
+                arch["conductor_top"] = max(tops)
+
+        cfg["roles"].update(roles)
+        cfg["archetypes"][key] = arch
+
+        mirrored = bool(decks[deck].get("mirror"))
+        wiring = control_wiring(std, row, anchors, mirrored, bus_y)
         if wiring:
             cfg["archetypes"][key]["control_wiring"] = wiring
         row["archetype"] = key
+
+    # A mirrored deck needs its run declared at the mirrored elevation. Only
+    # added when a unit actually sits up there, so a single-high lineup keeps
+    # exactly the buses it had before.
+    if any((r.get("deck") or "single").strip().lower() in
+           {d for d, v in decks.items() if v.get("mirror")} for r in rows):
+        for bus in list(cfg["control"].get("buses", [])):
+            upper = dict(bus)
+            upper["name"] = bus["name"] + "_upper"
+            upper["y"] = round(2 * bus_y - bus["y"], 4)
+            cfg["control"]["buses"].append(upper)
 
     return cfg
 
