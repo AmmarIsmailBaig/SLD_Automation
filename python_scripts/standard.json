@@ -1,0 +1,197 @@
+{
+  "_comment": "House drafting standard. One file, reused for every job -- the job itself is an intake workbook, not a config.\n\nThe difference from sld_config*.json: those name an absolute sheet elevation for every device, so a cubicle that lacks a device needs a whole new archetype at new elevations. That is why 'two CTs' ended up baked into type NAMES, and why two-high decks are blocked. Here a device declares only its gap from the device above it, and the builder stacks whatever the intake row actually calls for.\n\nA device is drawn if and only if its 'when' column has a value in the unit row. No archetype inherits a device from a drawing it was copied from.",
+
+  "sheet": {
+    "pitch": 3.61,
+    "_pitch_note": "All units drawn to the widest, per IOM practice. Overridden by --pitch.",
+    "centreline_from_left": 1.297,
+    "cubicle_top": 24.253,
+    "cubicle_bottom": 9.435,
+    "bus_y": 18.583,
+    "bus_extension": 0.3,
+    "first_cubicle_x": 0.133,
+    "bus_label": "{system_voltage}, {bus_rating}\\P3PH, {bus_ka_rating}\\PBUS {bus}",
+    "_bus_label_note": "Filled from the Project tab rather than fixed in the config, so the bus label can never disagree with the job it was drawn for."
+  },
+
+  "text": {
+    "unit_number": {"y": 24.688, "height": 0.3, "align": "centre"},
+    "unit_tag": {"y": 23.824, "height": 0.3, "align": "centre", "wrap": 10},
+    "bus_label": {"y": 18.433, "height": 0.1, "align": "left", "dx": 0.035},
+    "spec_block": {"y": 15.408, "height": 0.093, "align": "left", "dx": -0.376},
+    "relay_label": {"y": 14.677, "height": 0.093, "align": "centre", "dx": 1.336, "wrap": 13},
+    "destination": {"y": 8.87, "height": 0.093, "align": "centre", "wrap": 16}
+  },
+
+  "_stack_note": "Ordered top to bottom. 'gap' is the drop from the previous PRESENT device's anchor to this one's, so a skipped device closes the stack up rather than leaving a hole. Gaps measured off sld_config_assignment.json, which reproduces them exactly when every device is present.",
+
+  "stack": [
+    {
+      "name": "drawout_upper",
+      "when": "always",
+      "gap": 2.439,
+      "_gap_note": "From bus_y down to the upper primary disconnect.",
+      "role": {
+        "kind": "block", "block": "VCN1PJ", "dx": 0.0, "rotation": 0,
+        "series": true, "gap_up": 0.063, "gap_down": 0.093
+      }
+    },
+    {
+      "name": "breaker",
+      "when": "always",
+      "gap": 0.522,
+      "height": 0.921,
+      "role": {
+        "kind": "breaker", "dx": -0.415, "width": 0.777, "series": true
+      }
+    },
+    {
+      "name": "drawout_lower",
+      "when": "always",
+      "gap": 0.449,
+      "role": {
+        "kind": "block", "block": "VCN1PJ", "dx": 0.0, "rotation": 0,
+        "series": true, "gap_up": 0.094, "gap_down": 0.063
+      }
+    },
+    {
+      "name": "ct_protection",
+      "when": "ct_protection",
+      "gap": 2.245,
+      "phase_note": true,
+      "role": {
+        "kind": "block", "block": "VXF1CT", "dx": 0.19, "rotation": 0,
+        "series": false,
+        "attribs": {"DESC1": "ct_protection", "DESC2": "@CT 5P20"},
+        "polarity_dot": {"dx": 0.05, "dy": 0.318}
+      }
+    },
+    {
+      "name": "ct_metering",
+      "when": "ct_metering",
+      "gap": 1.699,
+      "phase_note": true,
+      "role": {
+        "kind": "block", "block": "VXF1CT", "dx": 0.19, "rotation": 0,
+        "series": false,
+        "attribs": {"DESC1": "ct_metering", "DESC2": "@CT 0.3B1.8"},
+        "polarity_dot": {"dx": 0.05, "dy": 0.318}
+      },
+      "_note": "The device that used to arrive uninvited. It appears only when the intake row states a metering ratio."
+    },
+    {
+      "name": "ct_ground",
+      "when": "ct_ground",
+      "gap": 1.699,
+      "role": {
+        "kind": "block", "block": "VXF1CT", "dx": 0.19, "rotation": 0,
+        "series": false,
+        "attribs": {"DESC1": "ct_ground", "DESC2": "@GND CT"},
+        "polarity_dot": {"dx": 0.05, "dy": 0.318}
+      }
+    }
+  ],
+
+  "_branch_note": "The bus PT hangs on a shunt tap ABOVE the bus, so neither it nor its primary fuse ever lands in the main conductor path between the bus and the breaker. Stacks upward from bus_y; risers are generated between consecutive devices.",
+
+  "branch": {
+    "when": "pt",
+    "devices": [
+      {
+        "name": "pt_disconnect",
+        "gap": 0.879,
+        "role": {
+          "kind": "block", "block": "VCN1PJ", "dx": 0.0, "rotation": 180,
+          "series": false, "gap_up": 0.094, "gap_down": 0.063
+        }
+      },
+      {
+        "name": "pt_fuse_pri",
+        "gap": 0.703,
+        "role": {
+          "kind": "block", "block": "VFU1_1-", "dx": 0.0, "rotation": 0,
+          "series": false, "gap_up": 0.156, "gap_down": 0.156,
+          "attribs": {"RATING1": "pt_primary_fuse"}
+        }
+      },
+      {
+        "name": "bus_pt",
+        "gap": 0.703,
+        "role": {
+          "kind": "block", "block": "VXF1T1_1-", "dx": 0.0, "rotation": 0,
+          "series": false, "scale": 1.4,
+          "gap_up": 0.219, "gap_down": 0.219,
+          "attribs": {"DESC1": "@PT (3)", "DESC2": "pt"}
+        }
+      }
+    ]
+  },
+
+  "pinned": [
+    {
+      "name": "outgoing",
+      "when": "always",
+      "y": 9.034,
+      "_y_note": "The cable exit sits at the cubicle floor, so it is pinned rather than stacked -- a unit with fewer CTs must not raise its own cable termination.",
+      "role": {
+        "kind": "block", "block": "VCN1PJ", "dx": 0.0, "rotation": 0,
+        "series": true, "gap_up": 0.063, "gap_down": 0.134, "terminal": true
+      }
+    }
+  ],
+
+  "beside": {
+    "relay_box": {
+      "when": "relay",
+      "anchor": "breaker",
+      "dy": -0.907,
+      "role": {
+        "kind": "box", "dx": 0.747, "width": 1.178, "height": 0.672,
+        "series": false, "layer": "SLD_SYMS"
+      },
+      "_note": "Outline around the relay label, which annotate_unit prints from the 'relay' column."
+    },
+    "ct_compartment": {
+      "when": "any_ct",
+      "anchor": "cts",
+      "above": 0.371,
+      "below": 0.401,
+      "role": {
+        "kind": "box", "dx": -1.081, "width": 1.371,
+        "series": false, "layer": "SLD_CUBICLE", "linetype": "DASHED"
+      },
+      "_note": "Sized from the CTs actually present instead of from a remembered span. On a unit with a protection and a ground CT this yields 12.378..9.907, against the 12.465..9.912 drawn by hand on 8508 -- so the rule reproduces the reference without copying its number."
+    }
+  },
+
+  "phase_note": {
+    "kind": "note", "dx": -0.777, "dy": -0.233, "height": 0.1,
+    "align": "centre", "text": "@1%%C",
+    "_note": "Single-phase mark beside a CT. %%C is AutoCAD's phase symbol."
+  },
+
+  "conductor": {
+    "layer": "SLD_WIRE",
+    "_note": "The vertical run down the cubicle centreline. build_sld draws it between the series roles' gaps."
+  },
+
+  "_control_note": "Lineup-wide horizontal runs. The bus PT's voltage reference is one of these, not a per-unit device: it originates at whichever unit states a 'pt' and drops into every unit that states a 'relay'. So it re-routes itself when the PT moves to a different cubicle, and it reaches exactly the units that have something to reference it.",
+
+  "control": {
+    "hop_radius": 0.05,
+    "buses": [
+      {
+        "name": "pt_reference",
+        "y": 13.21,
+        "start_dx": 0.0,
+        "end_dx": 1.336,
+        "_end_dx_note": "Must reach the LAST riser, not the last centreline. The risers drop at +1.336 (the relay box centre), so an end_dx of 0 leaves the final unit's drop hanging in mid-air just short of the run. start_dx stays 0 because the run originates under the PT cubicle's own centreline.",
+        "source": "pt",
+        "reaches": "relay",
+        "riser_dx": 1.336,
+        "_y_note": "Below the relay boxes (bottom 14.043) and above the CT compartment (top 12.378), so it crosses neither. The riser at dx 1.336 is the relay box centreline, clear of the compartment's -1.081..0.290 span.",
+        "_note": "A run needs two participants to be drawn, so a single-unit lineup, or one where only the PT cubicle carries a relay, correctly produces no run at all."
+      }
+    ]
+  }
+}
