@@ -1,0 +1,5 @@
+unit,bus,deck,tag,archetype,status,description,voltage,amp_rating,ka_rating,relay,relay_2,relay_functions,ct_protection,ct_metering,ct_ground,pt,pt_connection,pt_primary_fuse,pt_secondary_fuse,pt_reference,cable,destination,arrester,diff_note
+1,A,single,52-M,utility_incoming,,MAIN BREAKER,15kV,1200A,25kA,SEL-751,,,1200:5A (3),,,"14,400:120V",grounded-wye to grounded-wye,,,,,"UTILITY SUPPLY 13.8kV, 3PH, 60HZ",,
+2,A,single,52-F1,feeder_breaker,,TRANSFORMER FEEDER,15kV,600A,25kA,SEL-751,,,200:5A (3),,,,,,,VOLTAGE REFERENCE FROM BUS PT,,TO 2500kVA XFMR 13.8kV-480Y/277V Z=5.75%,,
+3,A,single,52-F2,motor_feeder,,MOTOR FEEDER,15kV,600A,25kA,SEL-710,,,100:5A (3),,50:5A,,,,,VOLTAGE REFERENCE FROM BUS PT,,TO 1500HP 13.8kV MOTOR,,
+4,A,single,52-F3,feeder_breaker,FUTURE,FUTURE FEEDER,15kV,600A,25kA,SEL-751,,,400:5A (3),,,,,,,VOLTAGE REFERENCE FROM BUS PT,,RESERVED FOR FUTURE LOAD,,

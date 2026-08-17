@@ -257,6 +257,13 @@ def main():
         reader = csv.DictReader(fh)
         columns = list(reader.fieldnames or [])
         rows = [r for r in reader if any((v or "").strip() for v in r.values())]
+
+    # The intake workbook calls the column 'schema_type' -- the engineers' word --
+    # while sld_config.json and build_sld.py call it 'archetype'. Accept either.
+    if "schema_type" in columns and "archetype" not in columns:
+        for r in rows:
+            r["archetype"] = r.get("schema_type", "")
+        columns = [("archetype" if c == "schema_type" else c) for c in columns]
     if args.bus:
         rows = [r for r in rows if (r.get("bus") or "").strip() == args.bus]
 

@@ -1,0 +1,71 @@
+{
+  "_source": "Single Line Diagram Assignment 6_16.docx",
+  "_note": "Every value below is quoted from the assignment. Fields the assignment does not state are left blank and shaded pink, so preflight reports them rather than someone inventing a number.",
+
+  "project": {
+    "job": "ASSIGNMENT-6-16",
+    "title": "Develop a Single-Line Diagram from Project Requirements",
+    "location_code": "+A01",
+    "sheet_standard": "8508",
+    "system_voltage": "13.8kV",
+    "bus_rating": "1200A",
+    "bus_ka_rating": "25kA",
+    "phases": "3",
+    "frequency": "60HZ",
+    "available_sc_current": "25kA"
+  },
+  "project_missing": ["customer", "wires", "bil", "grounding"],
+
+  "units": [
+    {
+      "unit": 1, "bus": "A", "deck": "single", "tag": "52-M",
+      "schema_type": "utility_incoming", "status": "",
+      "description": "MAIN BREAKER",
+      "voltage": "15kV", "amp_rating": "1200A", "ka_rating": "25kA",
+      "relay": "SEL-751",
+      "ct_protection": "1200:5A (3)",
+      "pt": "14,400:120V",
+      "pt_connection": "grounded-wye to grounded-wye",
+      "destination": "UTILITY SUPPLY 13.8kV, 3PH, 60HZ",
+      "_missing": ["pt_secondary_fuse", "cable"],
+      "_note": "One CT set of 1200:5A serves protection AND metering, so ct_metering is left blank rather than duplicated. The assignment calls for PT secondary protection but gives no fuse rating, and calls for an incoming cable connection but gives no size. The bus PT set lives in this cubicle (utility_incoming carries a bus PT shunt-tapped off the bus) -- there is one PT for the lineup, not a separate fifth cubicle; feeders 1-3 reference it via pt_reference."
+    },
+    {
+      "unit": 2, "bus": "A", "deck": "single", "tag": "52-F1",
+      "schema_type": "feeder_breaker", "status": "",
+      "description": "TRANSFORMER FEEDER",
+      "voltage": "15kV", "amp_rating": "600A", "ka_rating": "25kA",
+      "relay": "SEL-751",
+      "ct_protection": "200:5A (3)",
+      "destination": "TO 2500kVA XFMR 13.8kV-480Y/277V Z=5.75%",
+      "pt_reference": "VOLTAGE REFERENCE FROM BUS PT",
+      "_missing": [],
+      "_note": "Assignment calls this a transformer feeder, but it is a breaker feeder -- NOT the existing xfmr_feeder type, which is a fused disconnect with a Kirk key. customer_feeder is the structural match."
+    },
+    {
+      "unit": 3, "bus": "A", "deck": "single", "tag": "52-F2",
+      "schema_type": "motor_feeder", "status": "",
+      "description": "MOTOR FEEDER",
+      "voltage": "15kV", "amp_rating": "600A", "ka_rating": "25kA",
+      "relay": "SEL-710",
+      "ct_protection": "100:5A (3)",
+      "ct_ground": "50:5A",
+      "destination": "TO 1500HP 13.8kV MOTOR",
+      "pt_reference": "VOLTAGE REFERENCE FROM BUS PT",
+      "_missing": [],
+      "_note": "A separate 50:5A ground-fault CT, distinct from the 100:5A phase CTs -- confirms the ct_ground field. Whether it is core-balance or residual is still unanswered."
+    },
+    {
+      "unit": 4, "bus": "A", "deck": "single", "tag": "52-F3",
+      "schema_type": "feeder_breaker", "status": "FUTURE",
+      "description": "FUTURE FEEDER",
+      "voltage": "15kV", "amp_rating": "600A", "ka_rating": "25kA",
+      "relay": "SEL-751",
+      "ct_protection": "400:5A (3)",
+      "destination": "RESERVED FOR FUTURE LOAD",
+      "pt_reference": "VOLTAGE REFERENCE FROM BUS PT",
+      "_missing": [],
+      "_note": "Uses status = FUTURE on a normal feeder type, per the ruling that FUTURE and SPARE are the same thing."
+    }
+  ]
+}

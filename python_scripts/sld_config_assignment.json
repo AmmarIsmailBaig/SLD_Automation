@@ -4,29 +4,30 @@
     "pitch": 3.61,
     "_pitch_note": "Widest cubicle observed in the reference set (unit 8, XFMR feeder). Per IOM practice all units are drawn to the widest unit's width. Reference sheets vary 2.427-3.610 due to hand placement; this generator makes them uniform.",
     "centreline_from_left": 1.297,
-    "cubicle_top": 20.602,
+    "cubicle_top": 24.253,
     "cubicle_bottom": 9.435,
     "bus_y": 18.583,
     "bus_extension": 0.3,
     "first_cubicle_x": 0.133,
     "bus_label": "17.5KV, 3150A\\P3PH, 40KAIC, BIL 95kV\\PBUS {bus}",
-    "_bus_label_note": "Reference sheet 054 omits 'BIL 95kV' and labels its bus 'BUS A' while carrying B-designated units. Generating from one template removes that inconsistency."
+    "_bus_label_note": "Reference sheet 054 omits 'BIL 95kV' and labels its bus 'BUS A' while carrying B-designated units. Generating from one template removes that inconsistency. Moved to 18.433 (was 19.088) in this fork: the bus PT branch now occupies the space directly above bus_y, and at the original position the bus rating text ran straight through the fuse and PT. It is anchored at its top and 1.3 tall, so the band above the branch cannot hold it; placed just below the bus instead, which is clear all the way down to the breaker drawout.",
+    "_cubicle_top_note": "Raised from 20.602 so bus_y has 5.67 of headroom -- the same the bus-PT-above-breaker branch gets in 8372 unit 6 -- instead of 8508's 2.019, which fits the branch but leaves no room for the unit header. cubicle_bottom and everything below bus_y (breaker, CTs, relay, outgoing) are untouched. Forked from sld_config.json, which keeps its own 20.602 for the 8508 fixtures."
   },
   "_text_comment": "Placements measured from the reference sheets. 'align' is centre (on the unit centreline) or left (offset by dx). The reference uses MTEXT with no wrap width, so lines break only on explicit \\P.",
   "text": {
     "unit_number": {
-      "y": 21.037,
+      "y": 24.688,
       "height": 0.3,
       "align": "centre"
     },
     "unit_tag": {
-      "y": 20.173,
+      "y": 23.824,
       "height": 0.3,
       "align": "centre",
       "wrap": 10
     },
     "bus_label": {
-      "y": 19.088,
+      "y": 18.433,
       "height": 0.1,
       "align": "left",
       "dx": 0.035
@@ -749,6 +750,86 @@
         "RATING1": "pt_secondary_fuse"
       },
       "_note": "Same geometry as pt_fuse, but the rating comes from the pt_secondary_fuse column rather than being fixed at 8508's 6A."
+    },
+    "pt_riser_lo": {
+      "kind": "lead",
+      "points": [
+        [
+          0.0,
+          18.583
+        ],
+        [
+          0.0,
+          19.399
+        ]
+      ],
+      "layer": "SLD_WIRE",
+      "_note": "Bus up to the PT disconnect -- the tap point off the main bus."
+    },
+    "pt_disconnect": {
+      "kind": "block",
+      "block": "VCN1PJ",
+      "dx": 0.0,
+      "y": 19.462,
+      "rotation": 180,
+      "series": false,
+      "_note": "Drawout disconnect at the base of the PT branch, so the PT can be isolated from the live bus for fuse replacement. The reference uses WD1005 here (8372 sheet 001 y=15.489), but that block is a single polyline that renders as a small marker; VCN1PJ is the drawout symbol this sheet already uses for the breaker contacts, and disc_half_hi/lo above are measured from it via drawout_lower."
+    },
+    "pt_riser_mid": {
+      "kind": "lead",
+      "points": [
+        [
+          0.0,
+          19.556
+        ],
+        [
+          0.0,
+          20.009
+        ]
+      ],
+      "layer": "SLD_WIRE",
+      "_note": "Disconnect up to the primary fuse."
+    },
+    "pt_fuse_pri": {
+      "kind": "block",
+      "block": "VFU1_1-",
+      "dx": 0.0,
+      "y": 20.165,
+      "rotation": 0,
+      "series": false,
+      "attribs": {
+        "RATING1": "pt_primary_fuse"
+      },
+      "_note": "PT PRIMARY fuse, between the bus and the PT. A primary fault has to open here rather than propagate to the bus, so it cannot sit beyond the PT. Reference: 8372 sheet 001 y=17.566, 'CLF 0.5E'."
+    },
+    "pt_riser_hi": {
+      "kind": "lead",
+      "points": [
+        [
+          0.0,
+          20.321
+        ],
+        [
+          0.0,
+          20.6489
+        ]
+      ],
+      "layer": "SLD_WIRE",
+      "_note": "Primary fuse up to the PT itself -- the fused side of the tap."
+    },
+    "bus_pt_above": {
+      "kind": "block",
+      "block": "VXF1T1_1-",
+      "dx": 0.0,
+      "y": 20.868,
+      "rotation": 0,
+      "series": false,
+      "scale": 1.4,
+      "attribs": {
+        "DESC1": "@PT (3)",
+        "DESC2": "pt"
+      },
+      "_note": "Bus PT on a shunt tap above the bus, fed through the disconnect and primary fuse below it, not in series with the breaker (see 8513 main_pt / 8372 main_with_bus_pt). Scaled 1.4x for legibility."
     }
   },
   "archetypes": {
@@ -1183,6 +1264,51 @@
         ]
       }
     },
+    "utility_incoming": {
+      "description": "Utility incomer: cable termination, main breaker, one CT set for protection and metering, three VTs with secondary protection, and the protection relay.",
+      "_spec": {
+        "source": "Single Line Diagram Assignment 6_16.docx, 'Incoming Power'",
+        "drawout_upper / breaker / drawout_lower": "'Main breaker: 15 kV class, 1200 A, 25 kA'",
+        "ct_protection + ct_protection_phase + ct_compartment_protection": "'Provide three phase current transformers for protection and metering' -- ONE set, so there is no ct_metering role",
+        "relay_box": "'Main breaker protection relay: SEL-751'",
+        "outgoing": "'Incoming cable connection from the utility'",
+        "deliberately absent": "arrester, lockout_86 and cpt_fuse -- these are 8508 house standard and the specification does not ask for them",
+        "pt_riser_lo + pt_disconnect + pt_riser_mid + pt_fuse_pri + pt_riser_hi + bus_pt_above": "'Provide three voltage transformers' and 'Show PT secondary protection'. Drawn as a shunt tap off the bus (series:False + explicit risers), not as part of the breaker's series conductor -- see 8513 main_pt / 8372 main_with_bus_pt for the same pattern in reference-verified drawings. Ordered disconnect -> primary fuse -> PT going up from the bus, measured off issued sheet 8372+A01-050-001.dxf, so the fuse can actually clear a PT primary fault instead of sitting downstream of it."
+      },
+      "roles": [
+        "pt_riser_lo",
+        "pt_disconnect",
+        "pt_riser_mid",
+        "pt_fuse_pri",
+        "pt_riser_hi",
+        "bus_pt_above",
+        "drawout_upper",
+        "breaker",
+        "drawout_lower",
+        "relay_box",
+        "ct_protection",
+        "ct_protection_phase",
+        "ct_compartment_protection",
+        "outgoing"
+      ],
+      "control_wiring": {
+        "risers": [
+          {
+            "dx": 0.966,
+            "y_from": 12.255,
+            "y_to": 14.043
+          }
+        ],
+        "spurs": [
+          {
+            "y": 12.255,
+            "dx_from": 0.224,
+            "dx_to": 0.966
+          }
+        ]
+      },
+      "_open": "PT placement follows 8372 sheet 001: tapped off the bus, above it, on the breaker's own centreline, through a disconnect and primary fuse. The specification asks for 'PT secondary protection' but names no primary fuse rating, and the reference's own CLF 0.5E is a 4160V part -- so pt_primary_fuse is currently blank in the CSV and the fuse renders unlabelled. A rating needs picking for 15kV before this sheet is issued. The spec also still does not say whether the incomer's VTs sit in this cubicle or an adjacent one; on 8372 the line PT was housed next door."
+    },
     "motor_feeder": {
       "description": "Motor feeder: feeder breaker, phase CTs, a separate ground-fault CT, and a motor protection relay.",
       "_spec": {
@@ -1231,7 +1357,13 @@
             "dx_to": 1.337
           }
         ]
-      }
+      },
+      "role_overrides": {
+        "outgoing": {
+          "rotation": 180
+        }
+      },
+      "_open": "outgoing.rotation overridden to 180 (matching drawout_lower) so the exit terminal points down toward the destination label rather than sharing drawout_upper's up-pointing rotation; the shared outgoing role used by 8508 archetypes is unaffected."
     },
     "feeder_breaker": {
       "description": "Plain feeder: breaker, one CT set, protection relay. No arrester, no lockout, no metering CT.",
@@ -1269,7 +1401,13 @@
             "dx_to": 0.966
           }
         ]
-      }
+      },
+      "role_overrides": {
+        "outgoing": {
+          "rotation": 180
+        }
+      },
+      "_open": "outgoing.rotation overridden to 180 (matching drawout_lower) so the exit terminal points down toward the destination label rather than sharing drawout_upper's up-pointing rotation; the shared outgoing role used by 8508 archetypes is unaffected."
     },
     "bus_pt_only": {
       "description": "Bus PT cubicle: three bus-connected VTs with secondary protection, supplying the common voltage reference. No breaker.",

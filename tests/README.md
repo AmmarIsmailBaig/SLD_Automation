@@ -11,11 +11,17 @@ python -m pytest tests/ -q
 
 ## Cases
 
-| Case | Input | Bus |
-|---|---|---|
-| `units_bus_a` | `excel/units.csv` | A |
-| `units_bus_b` | `excel/units.csv` | B |
-| `sample_3unit` | `excel/sample_3unit_units.csv` | all |
+| Case | Input | Bus | Covers |
+|---|---|---|---|
+| `units_bus_a` | `excel/units.csv` | A | 8508 types, dual CT set |
+| `units_bus_b` | `excel/units.csv` | B | 8508 types, dual CT set |
+| `sample_3unit` | `excel/sample_3unit_units.csv` | all | 8508 types, minimal lineup |
+| `assignment` | `assignment_units.csv` | all | spec-authored types, **single CT set** |
+
+The `assignment` case is the one that pins the single-CT path:
+`ct_compartment_protection`, `ct_ground`, and the four archetypes authored from
+the assignment specification. The 8508 fixtures all carry two CT sets per
+feeder, so nothing else in the suite exercises those roles.
 
 Add one by appending a `Case(...)` to `CASES` in `cases.py` and running
 `python tests/regen_golden.py <name>`.

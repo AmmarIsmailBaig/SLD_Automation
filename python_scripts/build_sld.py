@@ -158,14 +158,26 @@ def centreline_x(cfg, index):
 
 
 def resolve_roles(cfg, archetype):
-    """Expand an archetype into its ordered list of (name, role-spec) pairs."""
+    """
+    Expand an archetype into its ordered list of (name, role-spec) pairs.
+
+    An archetype may carry a "role_overrides" map -- {role_name: {field: value}}
+    -- to tweak a shared role (e.g. flip an "outgoing" terminal's rotation)
+    without cloning it. The base role in cfg["roles"] is never mutated, so
+    every other archetype using that role is unaffected; omitting
+    role_overrides entirely reproduces the old behaviour exactly.
+    """
     if archetype not in cfg["archetypes"]:
         raise KeyError(f"unknown archetype {archetype!r}")
+    overrides = cfg["archetypes"][archetype].get("role_overrides", {})
     out = []
     for name in cfg["archetypes"][archetype]["roles"]:
         if name not in cfg["roles"]:
             raise KeyError(f"archetype {archetype!r} references unknown role {name!r}")
-        out.append((name, cfg["roles"][name]))
+        spec = cfg["roles"][name]
+        if name in overrides:
+            spec = {**spec, **overrides[name]}
+        out.append((name, spec))
     return out
 
 
@@ -265,9 +277,16 @@ def stamp_attribs(ref, values, positions=None):
 
 
 def place_block(msp, spec, x, unit):
+    attribs = {"layer": "SLD_SYMS", "rotation": spec.get("rotation", 0)}
+    # Optional uniform scale (e.g. to make the bus PT read more clearly at a
+    # glance). Omitted for every role that doesn't set it, so this reproduces
+    # the old 1:1 insert exactly when unused.
+    scale = spec.get("scale")
+    if scale:
+        attribs["xscale"] = attribs["yscale"] = attribs["zscale"] = scale
     ref = msp.add_blockref(
         spec["block"], (x + spec.get("dx", 0.0), spec["y"]),
-        dxfattribs={"layer": "SLD_SYMS", "rotation": spec.get("rotation", 0)},
+        dxfattribs=attribs,
     )
     stamp_attribs(ref, resolve_attribs(spec, unit), spec.get("attrib_pos"))
     # CT polarity mark: a dot on the primary conductor showing winding sense.
