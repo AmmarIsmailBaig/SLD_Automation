@@ -157,6 +157,19 @@ def stack_unit(std, row, key):
             }))
             branch_roles.add(emit(entry["name"], spec))
             prev_top = round(y + up, 4)
+            anchors["pt"] = y
+
+        # Secondary lead out to the reference drop's offset, so the drop meets
+        # the transformer instead of starting in clear space beside it.
+        for bus in std.get("control", {}).get("buses", []):
+            if present(bus["source"], row):
+                branch_roles.add(emit("pt_secondary", {
+                    "kind": "lead",
+                    "points": [[0.0, anchors["pt"]],
+                               [bus.get("source_dx", bus["riser_dx"]), anchors["pt"]]],
+                    "layer": "SLD_CONTROL",
+                }))
+                break
 
     if breaker_top is not None:
         anchors["breaker_top"] = breaker_top
@@ -227,6 +240,19 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
         name = bus_name_for(bus, mirrored)
         if present(bus["source"], row):
             wiring.setdefault("joins", []).append(name)
+            # The run has to come FROM somewhere. Without this the PT is drawn
+            # on the bus, the reference run is drawn under the relays, and
+            # nothing joins the two -- the source cubicle reaches its own run
+            # through its relay riser like any feeder, so the run has no source
+            # at all. The secondary drops from the PT to the run, broken where
+            # it passes the main bus so the crossing does not read as a tap.
+            if "pt" in anchors:
+                wiring.setdefault("risers", []).append({
+                    "y_from": y,
+                    "y_to": anchors["pt"],
+                    "dx": bus.get("source_dx", bus["riser_dx"]),
+                    "gaps": [[round(bus_y - 0.05, 4), round(bus_y + 0.05, 4)]],
+                })
         # After reflection the stored relay_bottom is the edge facing this
         # deck's run, so the same anchor is correct either way up.
         if present(bus["reaches"], row) and "relay_bottom" in anchors:

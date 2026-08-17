@@ -314,7 +314,9 @@
         "reaches": "relay",
         "riser_dx": 1.336,
         "_y_note": "Below the relay boxes (bottom 14.043) and above the CT compartment (top 12.378), so it crosses neither. The riser at dx 1.336 is the relay box centreline, clear of the compartment's -1.081..0.290 span.",
-        "_note": "A run needs two participants to be drawn, so a single-unit lineup, or one where only the PT cubicle carries a relay, correctly produces no run at all."
+        "_note": "A run needs two participants to be drawn, so a single-unit lineup, or one where only the PT cubicle carries a relay, correctly produces no run at all.",
+        "source_dx": 2.1,
+        "_source_dx_note": "The PT secondary drops on its own offset, not the relay risers' 1.336 -- that line runs from the PT all the way down to the run and would pass straight through the source cubicle's own relay box. 2.1 clears the box's right edge at 1.925 and stays inside the cubicle, whose right edge is 2.313."
       }
     ]
   }
