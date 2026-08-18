@@ -90,23 +90,29 @@ Copy `excel/intake_template.xlsx`. Two tabs to fill:
 **Project** — job number, title, voltage, bus rating. The bus label is built
 from these, so it cannot disagree with the job.
 
-**Units** — one row per cubicle, sixteen columns:
+**Units** — one row per cubicle, seventeen columns:
 
 | | |
 |---|---|
 | structure | `unit` `bus` `deck` |
 | identity | `tag` `description` `destination` |
 | breaker | `voltage` `amp_rating` `ka_rating` |
-| protection | `relay` `ct_protection` `ct_metering` `ct_ground` `ct_class` |
+| protection | `relay` `ct_protection` `ct_differential` `ct_metering` `ct_ground` `ct_class` |
 | PT | `pt` `pt_primary_fuse` |
 
 `amp_rating` does double duty: **blank means no breaker.** That is how a deck
 holds only a bus PT — nothing to rack out, no cable to terminate.
 
+Four CT rows, one per job the CT does. A dual-core CT — `1200/5/5A
+5P20/5P20`, one piece of iron in the panel schedule — is **two symbols** on
+the single line, because its two cores feed different circuits: the feeder
+relay and the bus differential. That is why `ct_differential` is its own row
+rather than a wider label on `ct_protection`.
+
 `ct_class` is the one optional column. Each CT's ratio comes from its own cell;
 its accuracy class comes from `ct_class` when the job states one and from the
-house default for that CT's job when it does not — 5P20 protection, 0.3B1.8
-metering, GND CT. One column rather than three because a cubicle's CTs almost
+house default for that CT's job when it does not — 5P20 for protection and
+differential, 0.3B1.8 for metering, GND CT. One column rather than three because a cubicle's CTs almost
 always share a class; a lineup that genuinely mixes them leaves it blank and
 takes the defaults. Anywhere in `standard.json` a `column|@literal` chain does
 the same thing: the job's value if there is one, the house value otherwise.
@@ -126,7 +132,7 @@ stack closes up.
  15.622  BREAKER            ── 0.522     RELAY  14.715  ◄ beside, not in series
  14.252  drawout (lower)    ── 0.463
  12.007  CT (protection)
- 10.308  CT (ground)                     ← only if ct_ground is filled
+ 10.308  CT (differential)               ← only if ct_differential is filled
   9.034  cable exit
 ```
 

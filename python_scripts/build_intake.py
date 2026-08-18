@@ -38,12 +38,16 @@ LIBRARY = HERE.parent / "cad_files" / "symbol_library.dxf"
 LABEL_FIELDS = ("system_voltage", "bus_rating", "bus_ka_rating", "bil")
 
 
-def present(when, row):
+def present(when, row, std):
     """Is the device named by this 'when' rule called for by the unit row?"""
     if when == "always":
         return True
     if when == "any_ct":
-        return any(row.get(c, "").strip() for c in ("ct_protection", "ct_metering", "ct_ground"))
+        # Read off the stack rather than listed here, so adding a CT to the
+        # standard puts it inside the compartment box instead of leaving it
+        # hanging outside one sized from a list nobody remembered to update.
+        return any(row.get(e["when"], "").strip() for e in std["stack"]
+                   if e["name"].startswith("ct_"))
     return bool(row.get(when, "").strip())
 
 
@@ -74,7 +78,7 @@ def stack_unit(std, row, key):
     ct_ys, breaker_top = [], None
 
     for entry in std["stack"]:
-        if not present(entry["when"], row):
+        if not present(entry["when"], row, std):
             continue
         y = round(y - entry["gap"], 4)
         spec = json.loads(json.dumps(entry["role"]))  # deep copy, config is data
@@ -100,7 +104,7 @@ def stack_unit(std, row, key):
 
     # --- pinned devices, at a fixed elevation ---------------------------
     for entry in std["pinned"]:
-        if not present(entry["when"], row):
+        if not present(entry["when"], row, std):
             continue
         spec = json.loads(json.dumps(entry["role"]))
         # Normally pinned to the cubicle floor so cable exits line up across the
@@ -116,7 +120,7 @@ def stack_unit(std, row, key):
 
     # --- devices placed relative to something else ----------------------
     for name, entry in std["beside"].items():
-        if not present(entry["when"], row):
+        if not present(entry["when"], row, std):
             continue
         spec = json.loads(json.dumps(entry["role"]))
         spec.pop("_note", None)
@@ -140,7 +144,7 @@ def stack_unit(std, row, key):
     # --- the bus PT branch, above the bus -------------------------------
     branch = std["branch"]
     branch_roles = set()
-    if present(branch["when"], row):
+    if present(branch["when"], row, std):
         y = std["sheet"]["bus_y"]
         prev_top = y  # the tap point on the bus itself
         for entry in branch["devices"]:
@@ -162,7 +166,7 @@ def stack_unit(std, row, key):
         # Secondary lead out to the reference drop's offset, so the drop meets
         # the transformer instead of starting in clear space beside it.
         for bus in std.get("control", {}).get("buses", []):
-            if present(bus["source"], row):
+            if present(bus["source"], row, std):
                 branch_roles.add(emit("pt_secondary", {
                     "kind": "lead",
                     "points": [[0.0, anchors["pt"]],
@@ -238,7 +242,7 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
     for bus in std.get("control", {}).get("buses", []):
         y = round(2 * bus_y - bus["y"], 4) if mirrored else bus["y"]
         name = bus_name_for(bus, mirrored)
-        if present(bus["source"], row):
+        if present(bus["source"], row, std):
             wiring.setdefault("joins", []).append(name)
             # The run has to come FROM somewhere. Without this the PT is drawn
             # on the bus, the reference run is drawn under the relays, and
@@ -255,7 +259,7 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
                 })
         # After reflection the stored relay_bottom is the edge facing this
         # deck's run, so the same anchor is correct either way up.
-        if present(bus["reaches"], row) and "relay_bottom" in anchors:
+        if present(bus["reaches"], row, std) and "relay_bottom" in anchors:
             wiring.setdefault("risers", []).append({
                 "y_from": y,
                 "y_to": anchors["relay_bottom"],

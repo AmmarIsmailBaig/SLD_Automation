@@ -119,6 +119,28 @@
       }
     },
     {
+      "name": "ct_differential",
+      "when": "ct_differential",
+      "gap": 1.699,
+      "phase_note": true,
+      "role": {
+        "kind": "block",
+        "block": "VXF1CT",
+        "dx": 0.19,
+        "rotation": 0,
+        "series": false,
+        "attribs": {
+          "DESC1": "ct_differential",
+          "DESC2": "ct_class|@CT 5P20"
+        },
+        "polarity_dot": {
+          "dx": 0.05,
+          "dy": 0.318
+        }
+      },
+      "_note": "The second core of the feeder CT, brought out as its own symbol because it feeds a different circuit -- bus differential on a feeder, the far bus's differential on a tie. A dual-core CT (1200/5/5A 5P20/5P20) is one piece of iron in the panel schedule and two symbols on the single line, which is why this is a separate row here rather than a wider label on ct_protection."
+    },
+    {
       "name": "ct_metering",
       "when": "ct_metering",
       "gap": 1.699,
