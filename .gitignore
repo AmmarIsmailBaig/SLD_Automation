@@ -41,3 +41,9 @@ images/*.png
 !images/8372_ref_001.png
 !images/8372_ref_002.png
 !images/8513_reference.png
+
+# Side files build_intake.py writes beside each drawing: the generated
+# build_sld config and the units CSV it drives. Both are rebuilt from the
+# intake workbook and standard.json, so they are output, not input.
+cad_files/*_full_config.json
+cad_files/*_full_units.csv

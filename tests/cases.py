@@ -112,6 +112,15 @@ CASES = [
     # Every upper-deck rule -- the unreflected PT branch, unrotated attribute
     # text, the hidden duplicate header, conductor_top -- fails visibly here.
     IntakeCase("intake_twohigh", "excel/intake_twohigh.xlsx"),
+
+    # A 13-cubicle double-bus lineup taken off a customer single-line: two
+    # incomers, two bus PTs, a tie and eight feeders, with Siemens relays.
+    # It is the only fixture covering the incomer deck -- a single-high
+    # cubicle drawn upside down, whose relay reaches DOWN across the bus to
+    # the one reference run that has a source -- and the only one where a CT's
+    # accuracy class comes from the job (ct_class) rather than the house
+    # default, so both stay pinned.
+    IntakeCase("intake_substation_c", "excel/intake_substation_c.xlsx"),
 ]
 
 BY_NAME = {c.name: c for c in CASES}

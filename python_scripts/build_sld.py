@@ -228,10 +228,20 @@ def resolve_attribs(spec, unit):
     value starts with '@'. Roles without an 'attribs' map get nothing -- the
     reference drawings give connectors and fuses their own ACADE designations,
     so stamping the breaker tag onto them would be wrong.
+
+    A source may list alternatives separated by '|', taking the first that
+    resolves to something: "ct_class|@CT 5P20" prints the job's own accuracy
+    class where the sheet states one and the house default where it does not.
+    That is what keeps a per-job value out of the drafting standard without
+    forcing every job to restate it.
     """
     out = {}
     for tag, source in (spec.get("attribs") or {}).items():
-        value = source[1:] if source.startswith("@") else unit.get(source, "")
+        value = ""
+        for part in source.split("|"):
+            value = part[1:] if part.startswith("@") else unit.get(part, "")
+            if value:
+                break
         if value:
             out[tag] = value
     return out
