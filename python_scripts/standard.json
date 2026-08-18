@@ -298,16 +298,6 @@
         "unit_tag"
       ],
       "_hide_text_note": "The unit number and tag describe the cubicle, and both decks share one. Printing them from each row stacks two headers at the same elevation. The upper deck's own tag and ratings still appear in its spec block beside its breaker."
-    },
-    "incomer": {
-      "mirror": true,
-      "mirror_control": false,
-      "text_shift": {
-        "spec_block": 0.45,
-        "relay_label": 0.12,
-        "destination": 0.4
-      },
-      "_note": "A single-high incomer: the supply arrives from above, so the cubicle is the feeder deck reflected about the bus -- breaker over the bus, cable out through the roof. Two things separate it from a two-high upper deck. It is the only row in its cubicle, so its header is NOT hidden. And it shares a lineup whose PTs sit below the bus, so mirror_control is false: its relay reaches down to the one reference run that has a source, instead of stranding a second run above the lineup with nothing feeding it."
     }
   },
   "_control_note": "Lineup-wide horizontal runs. The bus PT's voltage reference is one of these, not a per-unit device: it originates at whichever unit states a 'pt' and drops into every unit that states a 'relay'. So it re-routes itself when the PT moves to a different cubicle, and it reaches exactly the units that have something to reference it.",

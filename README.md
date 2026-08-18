@@ -141,9 +141,7 @@ reference without inheriting its number.
 lineup — but a unit carrying all three CTs stacks past that point, and the pin
 gives way rather than leaving a CT below its own termination.
 
-## Decks: two-high cubicles, and incomers
-
-`deck` says which way up a cubicle is drawn. Three values matter.
+## Two-high cubicles
 
 Set `deck` to `upper` / `lower` on two rows sharing a unit number.
 
@@ -163,17 +161,6 @@ Four things do not reflect, each for its own reason:
   twice at the same elevation. The upper deck's tag is in its spec block
 - **the conductor direction** — an upper deck sets `conductor_top`, because
   `draw_conductor` always walks downward and is handed the far end
-
-`incomer` is the same reflection applied to a **single-high** cubicle, for a
-unit whose supply arrives from above: breaker over the bus, cable out through
-the roof. Two things separate it from an upper deck. Its header is *not*
-hidden, because it is the only row in its cubicle. And it sets
-`mirror_control: false` — a two-high upper deck has its own relays and its own
-PT-bearing decks up there, but a lineup of ordinary feeders keeps its PTs below
-the bus, so an incomer's relay reaches **down** to the one reference run that
-has a source instead of stranding an empty second run above the lineup. That
-drop does cross the bus, and is broken where it does so the crossing reads as a
-jump rather than a tap.
 
 ## The bus PT
 

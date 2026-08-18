@@ -223,28 +223,21 @@ def bus_name_for(bus, mirrored):
     return bus["name"] + ("_upper" if mirrored else "")
 
 
-def control_wiring(std, row, anchors, mirrored, bus_y, mirror_control=None):
+def control_wiring(std, row, anchors, mirrored, bus_y):
     """How this unit meets the lineup-wide control runs.
 
     Participation is declared per unit rather than per type, so the PT
     reference run reaches whichever cubicles carry a relay -- and originates
     wherever the PT happens to be -- instead of being fixed by an archetype.
 
-    Each deck normally gets its own run at its own elevation: the upper deck of
-    a two-high cubicle has its own relays and its own PT-bearing decks, so
-    feeding it from the lower run would mean crossing the main bus for no
-    reason. A deck that sets mirror_control false opts out -- a single-high
-    incomer is drawn upside down but shares a lineup whose only PTs sit below
-    the bus, so its relay reaches down to the one run that has a source. That
-    drop does cross the bus, and is broken where it does so the crossing reads
-    as a jump rather than a tap.
+    Each deck gets its own run at its own elevation. An upper-deck relay cannot
+    be fed from the lower deck's run without crossing the main bus to get
+    there, which is a short, not a drawing.
     """
     wiring = {}
-    if mirror_control is None:
-        mirror_control = mirrored
     for bus in std.get("control", {}).get("buses", []):
-        y = round(2 * bus_y - bus["y"], 4) if mirror_control else bus["y"]
-        name = bus_name_for(bus, mirror_control)
+        y = round(2 * bus_y - bus["y"], 4) if mirrored else bus["y"]
+        name = bus_name_for(bus, mirrored)
         if present(bus["source"], row):
             wiring.setdefault("joins", []).append(name)
             # The run has to come FROM somewhere. Without this the PT is drawn
@@ -263,14 +256,11 @@ def control_wiring(std, row, anchors, mirrored, bus_y, mirror_control=None):
         # After reflection the stored relay_bottom is the edge facing this
         # deck's run, so the same anchor is correct either way up.
         if present(bus["reaches"], row) and "relay_bottom" in anchors:
-            riser = {
+            wiring.setdefault("risers", []).append({
                 "y_from": y,
                 "y_to": anchors["relay_bottom"],
                 "dx": bus["riser_dx"],
-            }
-            if min(y, riser["y_to"]) < bus_y < max(y, riser["y_to"]):
-                riser["gaps"] = [[round(bus_y - 0.05, 4), round(bus_y + 0.05, 4)]]
-            wiring.setdefault("risers", []).append(riser)
+            })
     return wiring
 
 
@@ -345,8 +335,7 @@ def build_config(std, job, rows):
         cfg["archetypes"][key] = arch
 
         mirrored = bool(decks[deck].get("mirror"))
-        mirror_control = bool(decks[deck].get("mirror_control", mirrored))
-        wiring = control_wiring(std, row, anchors, mirrored, bus_y, mirror_control)
+        wiring = control_wiring(std, row, anchors, mirrored, bus_y)
         if wiring:
             cfg["archetypes"][key]["control_wiring"] = wiring
         row["archetype"] = key
@@ -354,12 +343,8 @@ def build_config(std, job, rows):
     # A mirrored deck needs its run declared at the mirrored elevation. Only
     # added when a unit actually sits up there, so a single-high lineup keeps
     # exactly the buses it had before.
-    # Keyed on mirror_control, not mirror: a deck drawn upside down that still
-    # feeds off the lower run needs no run of its own up there, and adding one
-    # would strand an empty line above the lineup.
     if any((r.get("deck") or "single").strip().lower() in
-           {d for d, v in decks.items()
-            if v.get("mirror_control", v.get("mirror"))} for r in rows):
+           {d for d, v in decks.items() if v.get("mirror")} for r in rows):
         for bus in list(cfg["control"].get("buses", [])):
             upper = dict(bus)
             upper["name"] = bus["name"] + "_upper"
