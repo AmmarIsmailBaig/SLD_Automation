@@ -359,6 +359,20 @@
         "source_anchor": "pt",
         "reaches": "relay",
         "reach_anchor": "relay_bottom",
+        "reach_fuse": {
+          "block": "VFU1",
+          "half_height": 0.1875,
+          "attribs": {
+            "RATING1": "relay_fuse|@6A"
+          },
+          "attrib_pos": {
+            "RATING1": [
+              0.1323,
+              -0.0332
+            ]
+          }
+        },
+        "_reach_fuse_note": "Every relay's supply is fused where it leaves the run -- 8513 draws one on each, and ours dropped unfused. half_height 0.1875 is the VFU1 body, so the break in the riser is the block's own size rather than a number to keep in step with it. 6A is 8513's rating, carried as the house default behind the 'relay_fuse' column.",
         "riser_dx": 1.336,
         "_y_note": "Below the relay boxes (bottom 14.043) and above the CT compartment (top 12.378), so it crosses neither. The riser at dx 1.336 is the relay box centreline, clear of the compartment's -1.081..0.290 span.",
         "_note": "A run needs two participants to be drawn, so a single-unit lineup, or one where only the PT cubicle carries a relay, correctly produces no run at all.",

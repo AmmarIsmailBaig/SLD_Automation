@@ -90,14 +90,14 @@ Copy `excel/intake_template.xlsx`. Two tabs to fill:
 **Project** — job number, title, voltage, bus rating. The bus label is built
 from these, so it cannot disagree with the job.
 
-**Units** — one row per cubicle, eighteen columns:
+**Units** — one row per cubicle, nineteen columns:
 
 | | |
 |---|---|
 | structure | `unit` `bus` `deck` |
 | identity | `tag` `description` `destination` |
 | breaker | `voltage` `amp_rating` `ka_rating` |
-| protection | `relay` `bus_differential` `ct_protection` `ct_differential` `ct_metering` `ct_ground` `ct_class` |
+| protection | `relay` `relay_fuse` `bus_differential` `ct_protection` `ct_differential` `ct_metering` `ct_ground` `ct_class` |
 | PT | `pt` `pt_primary_fuse` |
 
 `amp_rating` does double duty: **blank means no breaker.** That is how a deck
@@ -183,6 +183,12 @@ Its secondary feeds a reference run spanning the lineup, dropping into every
 unit that has a relay. Both ends are derived from the sheet — the source is
 wherever `pt` is filled, the destinations are wherever `relay` is filled — so
 moving the PT to another cubicle re-routes it.
+
+Each relay's supply is **fused where it leaves the run** — the riser breaks
+for the fuse body and the block fills the gap, at the midpoint of the drop,
+which is the one elevation that stays sensible when either the run or the relay
+box moves. The break is the VFU1 body's own height rather than a number kept in
+step with it. `relay_fuse` sets the rating per cubicle; blank takes 8513's 6A.
 
 Two offsets are not interchangeable, and both were wrong once:
 

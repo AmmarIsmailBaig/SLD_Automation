@@ -1937,6 +1937,226 @@
       "type": "INSERT"
     },
     {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        13.596,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        17.206,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        2.766,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        20.816,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        24.426,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        31.646,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        35.256,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        38.866,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        42.476,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        49.696,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        9.986,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
       "attribs": [],
       "block": "VCN1PJ",
       "geom": [
@@ -4452,6 +4672,16 @@
         13.596,
         13.21,
         13.596,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        13.596,
+        13.814,
+        13.596,
         14.043
       ],
       "layer": "SLD_CONTROL",
@@ -4581,6 +4811,16 @@
       "geom": [
         17.206,
         13.21,
+        17.206,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        17.206,
+        13.814,
         17.206,
         14.043
       ],
@@ -4702,6 +4942,16 @@
         2.766,
         13.21,
         2.766,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        2.766,
+        13.814,
+        2.766,
         14.043
       ],
       "layer": "SLD_CONTROL",
@@ -4741,6 +4991,16 @@
       "geom": [
         20.816,
         13.21,
+        20.816,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        20.816,
+        13.814,
         20.816,
         14.043
       ],
@@ -4871,6 +5131,16 @@
       "geom": [
         24.426,
         13.21,
+        24.426,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        24.426,
+        13.814,
         24.426,
         14.043
       ],
@@ -5042,6 +5312,16 @@
         31.646,
         13.21,
         31.646,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        31.646,
+        13.814,
+        31.646,
         14.043
       ],
       "layer": "SLD_CONTROL",
@@ -5171,6 +5451,16 @@
       "geom": [
         35.256,
         13.21,
+        35.256,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        35.256,
+        13.814,
         35.256,
         14.043
       ],
@@ -5301,6 +5591,16 @@
       "geom": [
         38.866,
         13.21,
+        38.866,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        38.866,
+        13.814,
         38.866,
         14.043
       ],
@@ -5431,6 +5731,16 @@
       "geom": [
         42.476,
         13.21,
+        42.476,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        42.476,
+        13.814,
         42.476,
         14.043
       ],
@@ -5632,6 +5942,16 @@
         49.696,
         13.21,
         49.696,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        49.696,
+        13.814,
+        49.696,
         14.043
       ],
       "layer": "SLD_CONTROL",
@@ -5832,17 +6152,27 @@
         9.986,
         13.21,
         9.986,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        9.986,
+        13.814,
+        9.986,
         14.043
       ],
       "layer": "SLD_CONTROL",
       "type": "LINE"
     }
   ],
-  "entity_count": 438,
+  "entity_count": 460,
   "entity_counts": {
     "ARC": 44,
-    "INSERT": 118,
-    "LINE": 159,
+    "INSERT": 129,
+    "LINE": 170,
     "LWPOLYLINE": 49,
     "MTEXT": 68
   },

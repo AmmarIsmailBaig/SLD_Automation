@@ -261,7 +261,7 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
     differential cores, which all end up at whichever cubicle holds the
     differential relay.
     """
-    wiring = {}
+    wiring, extra = {}, {}
     bus_ys = {}
     for bus in std.get("control", {}).get("buses", []):
         y = round(2 * bus_y - bus["y"], 4) if mirrored else bus["y"]
@@ -297,11 +297,25 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
         # deck's run, so the same anchor is correct either way up.
         reach = anchors.get(bus.get("reach_anchor", "relay_bottom"))
         if bus.get("reaches") and present(bus["reaches"], row, std)                 and reach is not None:
-            wiring.setdefault("risers", []).append({
-                "y_from": y,
-                "y_to": reach,
-                "dx": bus["riser_dx"],
-            })
+            riser = {"y_from": y, "y_to": reach, "dx": bus["riser_dx"]}
+            # A relay's supply is fused where it leaves the run, so the fuse
+            # sits ON this riser rather than beside it: the riser breaks for
+            # the body and the block fills the gap. Placed at the midpoint,
+            # which is the only elevation that stays sensible when the run or
+            # the relay box moves.
+            fuse = bus.get("reach_fuse")
+            if fuse:
+                mid = round((y + reach) / 2, 4)
+                half = fuse.get("half_height", 0.1875)
+                riser["gaps"] = [[round(mid - half, 4), round(mid + half, 4)]]
+                spec = {"kind": "block", "block": fuse["block"],
+                        "dx": bus["riser_dx"], "y": mid,
+                        "rotation": 0, "series": False,
+                        "attribs": dict(fuse.get("attribs") or {})}
+                if fuse.get("attrib_pos"):
+                    spec["attrib_pos"] = fuse["attrib_pos"]
+                extra[name + "_fuse"] = spec
+            wiring.setdefault("risers", []).append(riser)
 
     # CT secondaries. A CT is drawn with its ratio and its class, and then the
     # sheet says nothing about where its output goes -- which is the one thing
@@ -336,7 +350,7 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
         wiring.setdefault("risers", []).append(
             {"y_from": y, "y_to": target, "dx": sec["dx"]})
 
-    return wiring
+    return wiring, extra
 
 
 def build_config(std, job, rows):
@@ -410,9 +424,17 @@ def build_config(std, job, rows):
         cfg["archetypes"][key] = arch
 
         mirrored = bool(decks[deck].get("mirror"))
-        wiring = control_wiring(std, row, anchors, mirrored, bus_y)
+        wiring, extra = control_wiring(std, row, anchors, mirrored, bus_y)
         if wiring:
             cfg["archetypes"][key]["control_wiring"] = wiring
+        # Devices that belong to the control wiring rather than to the stack.
+        # They are built after reflect() has run and from already-mirrored
+        # elevations, so they must not be reflected again -- which is also why
+        # they carry no rotation to flip.
+        for rname, spec in extra.items():
+            full = f"{key}_{rname}"
+            cfg["roles"][full] = spec
+            arch["roles"].append(full)
         row["archetype"] = key
 
     # A mirrored deck needs its run declared at the mirrored elevation. Only

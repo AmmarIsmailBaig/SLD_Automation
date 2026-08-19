@@ -485,6 +485,86 @@
       "attribs": [
         [
           "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        2.766,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        6.376,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        6.376,
+        23.54
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
+          "6A"
+        ]
+      ],
+      "block": "VFU1",
+      "geom": [
+        9.986,
+        13.627
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "RATING1",
           "CLF 0.5E"
         ]
       ],
@@ -1355,6 +1435,16 @@
         2.766,
         13.21,
         2.766,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        2.766,
+        13.814,
+        2.766,
         14.043
       ],
       "layer": "SLD_CONTROL",
@@ -1595,6 +1685,16 @@
         6.376,
         13.21,
         6.376,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        6.376,
+        13.814,
+        6.376,
         14.043
       ],
       "layer": "SLD_CONTROL",
@@ -1604,6 +1704,16 @@
       "geom": [
         6.376,
         23.123,
+        6.376,
+        23.352
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        6.376,
+        23.727,
         6.376,
         23.956
       ],
@@ -1695,17 +1805,27 @@
         9.986,
         13.21,
         9.986,
+        13.439
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        9.986,
+        13.814,
+        9.986,
         14.043
       ],
       "layer": "SLD_CONTROL",
       "type": "LINE"
     }
   ],
-  "entity_count": 127,
+  "entity_count": 135,
   "entity_counts": {
     "ARC": 8,
-    "INSERT": 35,
-    "LINE": 49,
+    "INSERT": 39,
+    "LINE": 53,
     "LWPOLYLINE": 16,
     "MTEXT": 19
   },

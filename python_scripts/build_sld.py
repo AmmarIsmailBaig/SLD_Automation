@@ -276,6 +276,11 @@ def stamp_attribs(ref, values, positions=None):
             attrib.dxf.text = ""
             attrib.dxf.flags |= ATTRIB_INVISIBLE
             continue
+        # Not one visible attribute in either reference set is plotted
+        # rotated -- the 90 degrees on VFU1's RATING1 is an ACADE default that
+        # the drafter levels off every time. Taking the default prints the
+        # fuse rating reading up the side of the fuse.
+        attrib.dxf.rotation = 0
         rel = (positions or {}).get(attrib.dxf.tag)
         if rel:
             point = (ref.dxf.insert[0] + rel[0], ref.dxf.insert[1] + rel[1])
