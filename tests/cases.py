@@ -128,8 +128,10 @@ CASES = [
     # where a CT's accuracy class comes from the job (ct_class) rather than
     # the house default -- these CTs are dual-core 5P20/5P20, so the metering
     # role's own 0.3B1.8 would be wrong on every feeder. It is also the only
-    # lineup that states a bus_differential cubicle, so the differential run
-    # and its source riser exist nowhere else.
+    # lineup with a tie, and so the only one that exercises a breaker lying in
+    # the bus, a bus broken into two, and a second bus label; and the only one
+    # that states a bus_differential cubicle, so the differential run and its
+    # source riser exist nowhere else.
     IntakeCase("intake_substation_c", "excel/intake_substation_c.xlsx"),
 ]
 

@@ -197,6 +197,44 @@ def stack_unit(std, row, key):
     return roles, order, anchors, branch_roles
 
 
+def tie_unit(std, row, key, bus_y):
+    """A bus tie: the breaker lies IN the bus rather than hanging off it.
+
+    Everything else in the lineup is a stack -- devices dropping one below
+    another off the bus. The tie is the one cubicle that is not, so it is
+    described in its own section rather than bent into stack entries whose
+    gaps would all be zero. Elevations are 'dy' about the bus for the same
+    reason the stack uses gaps: no absolute number here can fall out of step
+    with the sheet.
+
+    Splitting the lineup into two buses needs no separate mechanism. The tie
+    declares the span the bus must break for, and what is left is two runs.
+    """
+    tie = std["tie"]
+    roles, order, anchors = {}, [], {}
+
+    for entry in tie["devices"]:
+        if not present(entry.get("when", "always"), row, std):
+            continue
+        spec = json.loads(json.dumps(entry["role"]))
+        spec.pop("_note", None)
+        if "dy" in spec:
+            spec["y"] = round(bus_y + spec.pop("dy"), 4)
+        if "dy_top" in spec:
+            spec["y_top"] = round(bus_y + spec.pop("dy_top"), 4)
+            spec["y_bottom"] = round(bus_y + spec.pop("dy_bottom"), 4)
+        if spec["kind"] == "lead":
+            spec["points"] = [[px, round(bus_y + py, 4)] for px, py in spec["points"]]
+
+        full = f"{key}_{entry['name']}"
+        roles[full] = spec
+        order.append(full)
+        if entry.get("anchor"):
+            anchors[entry["anchor"]] = spec.get("y", spec.get("y_bottom"))
+
+    return roles, order, anchors, set()
+
+
 def reflect(roles, anchors, bus_y, skip=()):
     """Mirror a laid-out deck about the bus, in place.
 
@@ -386,14 +424,34 @@ def build_config(std, job, rows):
         # Two rows of a two-high cubicle share a unit number, so the deck has to
         # be part of the key or the upper deck would overwrite the lower.
         key = f"u{row['unit']}" + (f"_{deck}" if deck != "single" else "")
-        roles, order, anchors, branch_roles = stack_unit(std, row, key)
+        is_tie = "tie" in std and present(std["tie"]["when"], row, std)
+        if is_tie:
+            roles, order, anchors, branch_roles = tie_unit(std, row, key, bus_y)
+        else:
+            roles, order, anchors, branch_roles = stack_unit(std, row, key)
 
         arch = {
             "description": row.get("description", ""),
             "_from": f"intake row {row['unit']}, deck {deck}"
                      + (f", schema_type {row['schema_type']}" if row.get("schema_type") else ""),
             "roles": order,
+            # Columns that shaped this archetype without being printed by any
+            # role. They reach the drawing as much as a ratio does -- 'deck'
+            # decides which way up it is built, 'tie' decides whether it is a
+            # stack at all -- but nothing downstream could tell, so preflight
+            # reported them as columns you can type into all day.
+            "_columns": ["deck"] + (["tie"] if is_tie else []),
         }
+
+        if is_tie:
+            arch["bus_gaps"] = std["tie"]["bus_gaps"]
+            arch["text_overrides"] = json.loads(
+                json.dumps(std["tie"].get("text_overrides", {})))
+            # The tie's normal position is the one rating a tie has that no
+            # other cubicle does, and the reference prints it as the spec
+            # block's last line rather than as a note of its own.
+            arch["text_overrides"].setdefault("spec_block", {})["suffix"] =                 row[std["tie"]["when"]].strip()
+            arch["_tie"] = "Bus tie: the breaker sits in the bus, which is why "                            "the bus breaks here and the lineup has two of them."
 
         if decks[deck].get("mirror"):
             anchors = reflect(roles, anchors, bus_y, skip=branch_roles)

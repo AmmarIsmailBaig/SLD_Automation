@@ -912,9 +912,17 @@ def build(units, cfg, doc):
                         collect_bus_gaps(cfg, units, "main"),
                         cfg["control"]["hop_radius"], "SLD_BUS")
 
-    bus_name = (units[0].get("bus") or "").strip() or "A"
-    add_mtext(msp, sheet["bus_label"].replace("{bus}", bus_name),
-              centreline_x(cfg, units[0]["_cubicle"]), cfg["text"]["bus_label"])
+    # One label per bus, at the first cubicle sitting on it. A lineup with a
+    # tie in it is two buses -- the tie breaks the run -- and labelling only
+    # the first leaves the second half of the sheet unnamed.
+    labelled = set()
+    for unit in units:
+        bus_name = (unit.get("bus") or "").strip() or "A"
+        if bus_name in labelled:
+            continue
+        labelled.add(bus_name)
+        add_mtext(msp, sheet["bus_label"].replace("{bus}", bus_name),
+                  centreline_x(cfg, unit["_cubicle"]), cfg["text"]["bus_label"])
 
     # --- cubicles -------------------------------------------------------
     warnings = []

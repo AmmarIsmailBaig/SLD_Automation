@@ -273,6 +273,144 @@
       }
     }
   ],
+  "_tie_note": "A bus tie is the one cubicle whose breaker does NOT hang off the bus -- it lies in the bus, in series, so the bus stops either side of it and the roles here draw what fills the space. That is also what splits the lineup into two buses: bus 1 ends at the tie's left connector and bus 2 starts at its right one, which falls out of the gap rather than needing to be stated. Off 8513's tie_horizontal, kept to its relative spacings; the dx values are shifted for our narrower left-hand margin and the breaker box is our own 0.777 rather than 8513's 0.9206, so the tie reads as the same breaker as every other cubicle's.\n\nElevations are 'dy' from the bus, the way the stack's are gaps from the device above -- there are no absolute numbers here to fall out of step with the sheet.",
+  "tie": {
+    "when": "tie",
+    "bus_gaps": {
+      "main": [
+        [
+          -0.274,
+          1.6
+        ]
+      ]
+    },
+    "_bus_gaps_note": "0.062 outside each drawout connector, which is 8513's clearance. The bus is drawn as one run and broken here, so a lineup with no tie is one bus and a lineup with a tie is two, with no second code path.",
+    "text_overrides": {
+      "spec_block": {
+        "dx": 0.277,
+        "y": 18.8295
+      },
+      "destination": {
+        "hide": true
+      }
+    },
+    "_text_note": "The spec block sits inside the tie's own box, 0.214 below its top and 0.039 inside its left edge -- the same insets it has in an upright breaker box. A tie has no cable leaving the cubicle, so it has no destination to print.",
+    "devices": [
+      {
+        "name": "tie_conn_left",
+        "role": {
+          "kind": "block",
+          "block": "VCN1PJ",
+          "dx": -0.212,
+          "dy": 0.0,
+          "rotation": 90,
+          "series": false
+        }
+      },
+      {
+        "name": "tie_lead_left",
+        "role": {
+          "kind": "lead",
+          "layer": "SLD_WIRE",
+          "points": [
+            [-0.118, 0.0],
+            [0.238, 0.0]
+          ]
+        }
+      },
+      {
+        "name": "tie_breaker",
+        "role": {
+          "kind": "box",
+          "dx": 0.238,
+          "width": 0.777,
+          "dy_top": 0.4605,
+          "dy_bottom": -0.4605,
+          "series": false,
+          "layer": "SLD_SYMS"
+        },
+        "_note": "A plain box, not kind 'breaker'. That kind exists to interrupt the vertical conductor; this one interrupts the horizontal bus, and the interruption is declared in bus_gaps."
+      },
+      {
+        "name": "tie_lead_right",
+        "role": {
+          "kind": "lead",
+          "layer": "SLD_WIRE",
+          "points": [
+            [1.015, 0.0],
+            [1.444, 0.0]
+          ]
+        }
+      },
+      {
+        "name": "tie_conn_right",
+        "role": {
+          "kind": "block",
+          "block": "VCN1PJ",
+          "dx": 1.538,
+          "dy": 0.0,
+          "rotation": 270,
+          "series": false
+        }
+      },
+      {
+        "name": "tie_ct",
+        "when": "ct_protection",
+        "role": {
+          "kind": "block",
+          "block": "HXF1CT",
+          "dx": -0.814,
+          "dy": -0.199,
+          "rotation": 0,
+          "series": false,
+          "attribs": {
+            "DESC1": "ct_protection",
+            "DESC2": "ct_class|@CT 5P20"
+          },
+          "attrib_pos": {
+            "DESC1": [0.75, -0.35],
+            "DESC2": [0.75, -0.5]
+          },
+          "polarity_dot": {
+            "dx": -0.518,
+            "dy": 0.149
+          }
+        },
+        "_attrib_note": "HXF1CT prints its ratio right-aligned off its left edge, which on a cubicle this wide runs the label out into the neighbour. Moved into the clear space under the tie breaker instead. polarity_dot.dx is measured from the CUBICLE centreline, not from the symbol -- -0.518 is the CT's own polarity terminal. dy puts the mark on the bus at the same 0.05 stand-off the upright CTs use on their conductor; 8513 leaves it down at the secondary terminal, which reads as a junction dot floating clear of everything.",
+        "_note": "The tie's CT sits on the bus itself, on the bus-1 side of the break. HXF1CT is the same CT lying down: coil above the bus, both secondary terminals below it."
+      },
+      {
+        "name": "relay_box",
+        "when": "relay",
+        "anchor": "relay_bottom",
+        "role": {
+          "kind": "box",
+          "dx": 0.747,
+          "width": 1.178,
+          "dy_top": -3.868,
+          "dy_bottom": -4.54,
+          "series": false,
+          "layer": "SLD_SYMS"
+        },
+        "_note": "At the lineup's relay elevation, not tucked under the tie breaker as 8513 does it. 8513's sheet is compressed around a mid-height bus; ours has room, and a row of relay boxes all on one line reads better than one of them floating up at the bus."
+      },
+      {
+        "name": "tie_ct_secondary",
+        "when": "ct_protection",
+        "role": {
+          "kind": "lead",
+          "layer": "SLD_CONTROL",
+          "points": [
+            [-1.063, -0.2312],
+            [-1.063, -3.583],
+            [1.17, -3.583],
+            [1.17, -3.868]
+          ]
+        },
+        "_note": "Down the left of the cubicle from the CT's left terminal, across, and into the top of the relay box. Drawn as one path rather than a spur and a riser because it starts on a CT lying on its side, where neither of those offsets means anything."
+      }
+    ]
+  },
   "beside": {
     "relay_box": {
       "when": "relay",

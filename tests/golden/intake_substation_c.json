@@ -84,32 +84,6 @@
         180.0
       ],
       "geom": [
-        23.09,
-        12.7
-      ],
-      "layer": "SLD_CONTROL",
-      "radius": 0.05,
-      "type": "ARC"
-    },
-    {
-      "angles": [
-        0.0,
-        180.0
-      ],
-      "geom": [
-        23.09,
-        13.21
-      ],
-      "layer": "SLD_CONTROL",
-      "radius": 0.05,
-      "type": "ARC"
-    },
-    {
-      "angles": [
-        0.0,
-        180.0
-      ],
-      "geom": [
         30.31,
         12.7
       ],
@@ -383,32 +357,6 @@
         90.0
       ],
       "geom": [
-        24.056,
-        12.7
-      ],
-      "layer": "SLD_CONTROL",
-      "radius": 0.05,
-      "type": "ARC"
-    },
-    {
-      "angles": [
-        270.0,
-        90.0
-      ],
-      "geom": [
-        24.056,
-        13.21
-      ],
-      "layer": "SLD_CONTROL",
-      "radius": 0.05,
-      "type": "ARC"
-    },
-    {
-      "angles": [
-        270.0,
-        90.0
-      ],
-      "geom": [
         24.879,
         13.21
       ],
@@ -630,12 +578,23 @@
     {
       "attach": 1,
       "geom": [
-        22.714,
-        15.408
+        23.367,
+        18.829
       ],
       "height": 0.093,
       "layer": "SLD_TEXT",
-      "text": "B130\\P40.5KV\\P2500A\\P31.5KA",
+      "text": "B130\\P40.5KV\\P2500A\\P31.5KA\\PN.C.",
+      "type": "MTEXT"
+    },
+    {
+      "attach": 1,
+      "geom": [
+        26.735,
+        18.433
+      ],
+      "height": 0.1,
+      "layer": "SLD_TEXT",
+      "text": "34.5KV, 2500A\\P3PH, 31.5KA\\PBUS 2",
       "type": "MTEXT"
     },
     {
@@ -922,17 +881,6 @@
       "height": 0.3,
       "layer": "SLD_TEXT",
       "text": "UNIT 7",
-      "type": "MTEXT"
-    },
-    {
-      "attach": 2,
-      "geom": [
-        23.09,
-        8.87
-      ],
-      "height": 0.093,
-      "layer": "SLD_TEXT",
-      "text": "BUS 2",
       "type": "MTEXT"
     },
     {
@@ -1619,6 +1567,30 @@
           "5P20/5P20"
         ]
       ],
+      "block": "HXF1CT",
+      "geom": [
+        22.276,
+        18.384
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "DESC1",
+          "2500:5/5A (3)"
+        ],
+        [
+          "DESC2",
+          "5P20/5P20"
+        ]
+      ],
       "block": "VXF1CT",
       "geom": [
         1.62,
@@ -1646,54 +1618,6 @@
       "block": "VXF1CT",
       "geom": [
         1.62,
-        12.007
-      ],
-      "layer": "SLD_SYMS",
-      "rotation": 0.0,
-      "scale": [
-        1.0,
-        1.0
-      ],
-      "type": "INSERT"
-    },
-    {
-      "attribs": [
-        [
-          "DESC1",
-          "2500:5/5A (3)"
-        ],
-        [
-          "DESC2",
-          "5P20/5P20"
-        ]
-      ],
-      "block": "VXF1CT",
-      "geom": [
-        23.28,
-        10.308
-      ],
-      "layer": "SLD_SYMS",
-      "rotation": 0.0,
-      "scale": [
-        1.0,
-        1.0
-      ],
-      "type": "INSERT"
-    },
-    {
-      "attribs": [
-        [
-          "DESC1",
-          "2500:5/5A (3)"
-        ],
-        [
-          "DESC2",
-          "5P20/5P20"
-        ]
-      ],
-      "block": "VXF1CT",
-      "geom": [
-        23.28,
         12.007
       ],
       "layer": "SLD_SYMS",
@@ -2340,11 +2264,11 @@
       "attribs": [],
       "block": "VCN1PJ",
       "geom": [
-        23.09,
-        14.252
+        22.878,
+        18.583
       ],
       "layer": "SLD_SYMS",
-      "rotation": 0.0,
+      "rotation": 90.0,
       "scale": [
         1.0,
         1.0
@@ -2355,26 +2279,11 @@
       "attribs": [],
       "block": "VCN1PJ",
       "geom": [
-        23.09,
-        16.144
+        24.628,
+        18.583
       ],
       "layer": "SLD_SYMS",
-      "rotation": 0.0,
-      "scale": [
-        1.0,
-        1.0
-      ],
-      "type": "INSERT"
-    },
-    {
-      "attribs": [],
-      "block": "VCN1PJ",
-      "geom": [
-        23.09,
-        9.034
-      ],
-      "layer": "SLD_SYMS",
-      "rotation": 0.0,
+      "rotation": 270.0,
       "scale": [
         1.0,
         1.0
@@ -2985,38 +2894,8 @@
       "attribs": [],
       "block": "WDDOT",
       "geom": [
-        23.09,
-        18.583
-      ],
-      "layer": "SLD_SYMS",
-      "rotation": 0.0,
-      "scale": [
-        1.0,
-        1.0
-      ],
-      "type": "INSERT"
-    },
-    {
-      "attribs": [],
-      "block": "WDDOT",
-      "geom": [
-        23.14,
-        10.626
-      ],
-      "layer": "SLD_SYMS",
-      "rotation": 0.0,
-      "scale": [
-        1.0,
-        1.0
-      ],
-      "type": "INSERT"
-    },
-    {
-      "attribs": [],
-      "block": "WDDOT",
-      "geom": [
-        23.14,
-        12.325
+        22.572,
+        18.533
       ],
       "layer": "SLD_SYMS",
       "rotation": 0.0,
@@ -3862,36 +3741,17 @@
     {
       "closed": true,
       "geom": [
-        22.009,
-        12.378,
+        23.328,
+        19.044,
         0.0,
-        23.38,
-        12.378,
+        24.105,
+        19.044,
         0.0,
-        23.38,
-        9.907,
+        24.105,
+        18.122,
         0.0,
-        22.009,
-        9.907,
-        0.0
-      ],
-      "layer": "SLD_CUBICLE",
-      "type": "LWPOLYLINE"
-    },
-    {
-      "closed": true,
-      "geom": [
-        22.675,
-        15.622,
-        0.0,
-        23.452,
-        15.622,
-        0.0,
-        23.452,
-        14.701,
-        0.0,
-        22.675,
-        14.701,
+        23.328,
+        18.122,
         0.0
       ],
       "layer": "SLD_SYMS",
@@ -4881,7 +4741,7 @@
       "geom": [
         19.53,
         12.7,
-        23.04,
+        30.26,
         12.7
       ],
       "layer": "SLD_CONTROL",
@@ -4891,7 +4751,7 @@
       "geom": [
         19.53,
         13.21,
-        23.04,
+        30.26,
         13.21
       ],
       "layer": "SLD_CONTROL",
@@ -5019,110 +4879,50 @@
     },
     {
       "geom": [
-        23.09,
-        14.189,
-        23.09,
-        9.097
+        22.027,
+        15.0,
+        24.26,
+        15.0
       ],
-      "layer": "SLD_WIRE",
+      "layer": "SLD_CONTROL",
       "type": "LINE"
     },
     {
       "geom": [
-        23.09,
-        14.701,
-        23.09,
-        14.346
+        22.027,
+        18.352,
+        22.027,
+        15.0
       ],
-      "layer": "SLD_WIRE",
+      "layer": "SLD_CONTROL",
       "type": "LINE"
     },
     {
       "geom": [
-        23.09,
-        16.051,
-        23.09,
-        15.622
-      ],
-      "layer": "SLD_WIRE",
-      "type": "LINE"
-    },
-    {
-      "geom": [
-        23.09,
+        22.972,
         18.583,
-        23.09,
-        16.207
+        23.328,
+        18.583
       ],
       "layer": "SLD_WIRE",
       "type": "LINE"
     },
     {
       "geom": [
-        23.14,
-        12.7,
-        30.26,
-        12.7
+        24.105,
+        18.583,
+        24.534,
+        18.583
       ],
-      "layer": "SLD_CONTROL",
+      "layer": "SLD_WIRE",
       "type": "LINE"
     },
     {
       "geom": [
-        23.14,
-        13.21,
-        30.26,
-        13.21
-      ],
-      "layer": "SLD_CONTROL",
-      "type": "LINE"
-    },
-    {
-      "geom": [
-        23.314,
-        10.059,
-        24.879,
-        10.059
-      ],
-      "layer": "SLD_CONTROL",
-      "type": "LINE"
-    },
-    {
-      "geom": [
-        23.314,
-        12.256,
-        24.056,
-        12.256
-      ],
-      "layer": "SLD_CONTROL",
-      "type": "LINE"
-    },
-    {
-      "geom": [
-        24.056,
-        12.256,
-        24.056,
-        12.65
-      ],
-      "layer": "SLD_CONTROL",
-      "type": "LINE"
-    },
-    {
-      "geom": [
-        24.056,
-        12.75,
-        24.056,
-        13.16
-      ],
-      "layer": "SLD_CONTROL",
-      "type": "LINE"
-    },
-    {
-      "geom": [
-        24.056,
-        13.26,
-        24.056,
-        14.043
+        24.26,
+        15.0,
+        24.26,
+        14.715
       ],
       "layer": "SLD_CONTROL",
       "type": "LINE"
@@ -5149,12 +4949,12 @@
     },
     {
       "geom": [
-        24.879,
-        10.059,
-        24.879,
-        12.7
+        24.69,
+        18.583,
+        46.8,
+        18.583
       ],
-      "layer": "SLD_CONTROL",
+      "layer": "SLD_BUS",
       "type": "LINE"
     },
     {
@@ -6031,7 +5831,7 @@
       "geom": [
         7.19,
         18.583,
-        46.8,
+        22.816,
         18.583
       ],
       "layer": "SLD_BUS",
@@ -6168,12 +5968,12 @@
       "type": "LINE"
     }
   ],
-  "entity_count": 460,
+  "entity_count": 445,
   "entity_counts": {
-    "ARC": 44,
-    "INSERT": 129,
-    "LINE": 170,
-    "LWPOLYLINE": 49,
+    "ARC": 40,
+    "INSERT": 125,
+    "LINE": 164,
+    "LWPOLYLINE": 48,
     "MTEXT": 68
   },
   "fingerprint_version": 1,

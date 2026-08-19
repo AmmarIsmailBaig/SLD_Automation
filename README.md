@@ -90,12 +90,13 @@ Copy `excel/intake_template.xlsx`. Two tabs to fill:
 **Project** — job number, title, voltage, bus rating. The bus label is built
 from these, so it cannot disagree with the job.
 
-**Units** — one row per cubicle, nineteen columns:
+**Units** — one row per cubicle, twenty columns:
 
 | | |
 |---|---|
 | structure | `unit` `bus` `deck` |
 | identity | `tag` `description` `destination` |
+| tie | `tie` |
 | breaker | `voltage` `amp_rating` `ka_rating` |
 | protection | `relay` `relay_fuse` `bus_differential` `ct_protection` `ct_differential` `ct_metering` `ct_ground` `ct_class` |
 | PT | `pt` `pt_primary_fuse` |
@@ -237,6 +238,38 @@ would be drawn straight through every compartment box on the way.
 One run means one differential zone. A real two-zone scheme — 87B1 and 87B2
 either side of the tie — is two entries in `control.buses` with two columns
 behind them, not a change to the mechanism.
+
+## The bus tie
+
+Every other cubicle hangs its breaker off the bus. The tie's breaker lies **in**
+the bus, in series, so it is the one arrangement that is not a stack — and it
+gets its own section in `standard.json` rather than being bent into stack
+entries whose gaps would all be zero. Elevations there are `dy` about the bus,
+for the same reason the stack uses gaps: no absolute number to fall out of step
+with the sheet.
+
+Fill `tie` with the normal position (`N.C.`) and the cubicle is drawn that way.
+The value prints as the spec block's last line — the one rating a tie has that
+no other cubicle does.
+
+**Splitting the lineup into two buses needs no separate mechanism.** The tie
+declares the span the bus must break for; what is left is two runs. Bus 1 ends
+at the tie's left drawout contact and bus 2 starts at its right one, and each
+gets its own label at the first cubicle sitting on it.
+
+Two places this deviates from 8513, both deliberate:
+
+- **the relay box stays at the lineup's relay elevation** rather than tucking
+  under the tie breaker. 8513's sheet is compressed around a mid-height bus;
+  ours has room, and a row of relay boxes all on one line reads better than one
+  of them floating up at the bus
+- **the breaker box is our own 0.777 wide**, not 8513's 0.9206, so the tie
+  reads as the same breaker as every other cubicle. Everything around it keeps
+  8513's relative spacing
+
+The tie's CT lies on the bus (`HXF1CT` — the same CT on its side, coil above
+the bus, both secondary terminals below it), on the bus-1 side of the break,
+and its secondary runs down the left of the cubicle and into the relay box.
 
 ## Checking a sheet before you build
 

@@ -71,6 +71,12 @@ def column_wiring(cfg, columns):
     # in it, not through any role: 'pt' says where the reference run starts,
     # 'bus_differential' says where the differential run ends. Without this
     # they read as columns you can type into all day.
+    # Columns an archetype was BUILT from rather than prints -- 'deck', 'tie'.
+    for aname, arch in cfg.get("archetypes", {}).items():
+        for col in arch.get("_columns") or []:
+            if col in columns:
+                via.setdefault(col, f"archetype '{aname}' is built from it")
+
     for bus in cfg.get("control", {}).get("buses", []):
         for key in ("source", "reaches"):
             col = bus.get(key)
@@ -136,8 +142,6 @@ def check_dead_columns(cfg, rows, columns):
     hints = {
         "arrester": "the rating is baked into the ARRESTER block artwork; "
                     "editing the CSV changes nothing",
-        "deck": "read by build_intake.py when it stacks the cubicle, which is "
-                "before this config existed -- it has already done its work",
     }
     for col in dead:
         vals = {(r.get(col) or "").strip() for r in rows} - {""}
