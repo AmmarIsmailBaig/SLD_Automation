@@ -90,7 +90,7 @@ Copy `excel/intake_template.xlsx`. Two tabs to fill:
 **Project** — job number, title, voltage, bus rating. The bus label is built
 from these, so it cannot disagree with the job.
 
-**Units** — one row per cubicle, twenty columns:
+**Units** — one row per cubicle, twenty-one columns:
 
 | | |
 |---|---|
@@ -98,7 +98,7 @@ from these, so it cannot disagree with the job.
 | identity | `tag` `description` `destination` |
 | tie | `tie` |
 | breaker | `voltage` `amp_rating` `ka_rating` |
-| protection | `relay` `relay_fuse` `bus_differential` `ct_protection` `ct_differential` `ct_metering` `ct_ground` `ct_class` |
+| protection | `relay` `relay_fuse` `merging_unit` `bus_differential` `ct_protection` `ct_differential` `ct_metering` `ct_ground` `ct_class` |
 | PT | `pt` `pt_primary_fuse` |
 
 `amp_rating` does double duty: **blank means no breaker.** That is how a deck
@@ -180,10 +180,17 @@ Whichever row states a `pt` gets the branch. It **taps upward off the bus**, so
 neither the PT nor its primary fuse sits in the path between the bus and the
 breaker. (The secondary fuse belongs on the three-line diagram, not here.)
 
-Its secondary feeds a reference run spanning the lineup, dropping into every
-unit that has a relay. Both ends are derived from the sheet — the source is
-wherever `pt` is filled, the destinations are wherever `relay` is filled — so
-moving the PT to another cubicle re-routes it.
+Its secondary feeds a reference run dropping into every unit that has a relay.
+Both ends are derived from the sheet — the source is wherever `pt` is filled,
+the destinations are wherever `relay` is filled — so moving the PT to another
+cubicle re-routes it.
+
+**Like the differential run, the reference is per bus.** PTB1 and PTB2 are two
+references, not one: drawn as a single run they met in the middle and read as
+one line straight through the tie, which says every relay in the lineup sees
+the same voltage. Each now stops at the tie, and the tie relay takes both —
+one landing at 0.9 and the other at 1.75, so the 0.85 between them is what
+stops the two runs reading as one line passing through.
 
 Each relay's supply is **fused where it leaves the run** — the riser breaks
 for the fuse body and the block fills the gap, at the midpoint of the drop,
@@ -278,9 +285,16 @@ Two places this deviates from 8513, both deliberate:
   reads as the same breaker as every other cubicle. Everything around it keeps
   8513's relative spacing
 
-The tie's CT lies on the bus (`HXF1CT` — the same CT on its side, coil above
-the bus, both secondary terminals below it), on the bus-1 side of the break,
-and its secondary runs down the left of the cubicle and into the relay box.
+The tie carries **two** CTs (`HXF1CT` — the same CT on its side, coil above the
+bus, both secondary terminals below it), one each side of the break, and two
+boxes below them: the tie relay and the merging unit. Each CT drops straight
+down into the box beneath it, which is what keeps the two secondaries from
+crossing on the way across the cubicle.
+
+The **merging unit** digitises its CT and publishes it to both differential
+relays over the process bus — which is why no copper differential run reaches
+the tie at all. It takes voltage from one bus only, the tie's own, where the
+relay beside it takes both.
 
 ## Checking a sheet before you build
 

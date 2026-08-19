@@ -865,9 +865,14 @@ def annotate_unit(msp, cfg, unit, x):
 
     add_mtext(msp, unit.get("relay"), x, t["relay_label"])
     add_mtext(msp, unit.get("destination"), x, t["destination"])
-    # No arrester label here: the ARRESTER block carries its own L.A./MCOV text.
-    if "arrester_label" in t:
-        add_mtext(msp, unit.get("arrester"), x, t["arrester_label"])
+    # Labels for boxes that are not the relay. Each is printed only where the
+    # sheet declares the style, so a standard without a merging unit in it
+    # draws nothing rather than an empty box.
+    # No arrester label of our own: the ARRESTER block carries its L.A./MCOV text.
+    for style, column in (("arrester_label", "arrester"),
+                          ("merging_unit_label", "merging_unit")):
+        if style in t:
+            add_mtext(msp, unit.get(column), x, t[style])
 
 
 # --------------------------------------------------------------------------

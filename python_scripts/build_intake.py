@@ -318,7 +318,7 @@ def bus_name_for(bus, mirrored):
     return bus["name"] + ("_upper" if mirrored else "")
 
 
-def control_wiring(std, row, anchors, mirrored, bus_y, buses):
+def control_wiring(std, row, anchors, mirrored, bus_y, buses, is_tie=False):
     """How this unit meets the lineup-wide control runs.
 
     Participation is declared per unit rather than per type, so the PT
@@ -342,7 +342,11 @@ def control_wiring(std, row, anchors, mirrored, bus_y, buses):
         # A per-bus run belongs to one bus, so a cubicle on another bus neither
         # feeds it nor ends it -- and a CT naming the run by its base name gets
         # the one for its own bus, because that is the only one still here.
-        if bus.get("_bus") and bus["_bus"] != (row.get("bus") or "").strip():
+        own_bus = (row.get("bus") or "").strip()
+        # A tie is the cubicle BETWEEN two buses, so it is on both: its relay
+        # takes each bus's voltage reference, which is what a sync check needs.
+        # Every other cubicle is on one.
+        if bus.get("_bus") and bus["_bus"] != own_bus and not is_tie:
             continue
         y = round(2 * bus_y - bus["y"], 4) if mirrored else bus["y"]
         name = bus_name_for(bus, mirrored)
@@ -380,8 +384,15 @@ def control_wiring(std, row, anchors, mirrored, bus_y, buses):
         # deck's run, so the same anchor is correct either way up.
         reach = anchors.get(bus.get("reach_anchor", "relay_bottom"))
         if bus.get("reaches") and present(bus["reaches"], row, std)                 and reach is not None:
-            riser = {"y_from": y, "y_to": reach, "dx": bus["riser_dx"],
-                     "bus": name}
+            dx = bus["riser_dx"]
+            if is_tie and bus.get("_bus"):
+                # Near for the run behind the tie, far for the one ahead of it,
+                # so the two stop short of each other under the relay box
+                # instead of meeting and reading as one line.
+                ref = std["tie"]["reference_dx"]
+                dx = ref["near"] if bus["_bus"] == own_bus else ref["far"]
+                wiring.setdefault("bus_dx", {})[name] = dx
+            riser = {"y_from": y, "y_to": reach, "dx": dx, "bus": name}
             # A relay's supply is fused where it leaves the run, so the fuse
             # sits ON this riser rather than beside it: the riser breaks for
             # the body and the block fills the gap. Placed at the midpoint,
@@ -392,13 +403,14 @@ def control_wiring(std, row, anchors, mirrored, bus_y, buses):
                 mid = round((y + reach) / 2, 4)
                 half = fuse.get("half_height", 0.1875)
                 riser["gaps"] = [[round(mid - half, 4), round(mid + half, 4)]]
+                fuse_key = name + "_fuse"
                 spec = {"kind": "block", "block": fuse["block"],
-                        "dx": bus["riser_dx"], "y": mid,
+                        "dx": dx, "y": mid,
                         "rotation": 0, "series": False,
                         "attribs": dict(fuse.get("attribs") or {})}
                 if fuse.get("attrib_pos"):
                     spec["attrib_pos"] = fuse["attrib_pos"]
-                extra[name + "_fuse"] = spec
+                extra[fuse_key] = spec
             wiring.setdefault("risers", []).append(riser)
 
     # CT secondaries. A CT is drawn with its ratio and its class, and then the
@@ -435,6 +447,20 @@ def control_wiring(std, row, anchors, mirrored, bus_y, buses):
         if spur.get("bus"):
             riser["bus"] = spur["bus"]
         wiring.setdefault("risers", []).append(riser)
+
+    # The tie's merging unit takes voltage from one bus only -- the tie's own --
+    # on its own riser, because the relay beside it is already using both of
+    # the reference offsets.
+    mu = (std.get("tie") or {}).get("merging_unit_riser")
+    if is_tie and mu and anchors.get(mu["anchor"]) is not None:
+        for bus in buses:
+            if bus.get("_base") != mu["bus"] or bus.get("_bus") != own_bus:
+                continue
+            y = round(2 * bus_y - bus["y"], 4) if mirrored else bus["y"]
+            wiring.setdefault("risers", []).append({
+                "y_from": y, "y_to": anchors[mu["anchor"]], "dx": mu["dx"],
+                "bus": bus_name_for(bus, mirrored),
+            })
 
     return wiring, extra
 
@@ -532,7 +558,7 @@ def build_config(std, job, rows):
 
         mirrored = bool(decks[deck].get("mirror"))
         wiring, extra = control_wiring(std, row, anchors, mirrored, bus_y,
-                                       cfg["control"]["buses"])
+                                       cfg["control"]["buses"], is_tie)
         if wiring:
             cfg["archetypes"][key]["control_wiring"] = wiring
         # Devices that belong to the control wiring rather than to the stack.

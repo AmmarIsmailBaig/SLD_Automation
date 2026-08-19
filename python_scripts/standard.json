@@ -49,6 +49,13 @@
       "height": 0.093,
       "align": "centre",
       "wrap": 16
+    },
+    "merging_unit_label": {
+      "y": 14.677,
+      "height": 0.093,
+      "align": "centre",
+      "dx": -0.461,
+      "wrap": 13
     }
   },
   "_stack_note": "Ordered top to bottom. 'gap' is the drop from the previous PRESENT device's anchor to this one's, so a skipped device closes the stack up rather than leaving a hole. Gaps measured off sld_config_assignment.json, which reproduces them exactly when every device is present.",
@@ -288,13 +295,13 @@
     "text_overrides": {
       "spec_block": {
         "dx": 0.277,
-        "y": 18.8295
+        "y": 18.93
       },
       "destination": {
         "hide": true
       }
     },
-    "_text_note": "The spec block sits inside the tie's own box, 0.214 below its top and 0.039 inside its left edge -- the same insets it has in an upright breaker box. A tie has no cable leaving the cubicle, so it has no destination to print.",
+    "_text_note": "The spec block sits inside the tie's own box. It carries five lines where an upright breaker carries four -- the tie states its normal position too -- so it starts higher than the 0.214 inset an upright box uses, or the last line lands on the box's bottom edge. A tie has no cable leaving the cubicle, so it has no destination to print.",
     "devices": [
       {
         "name": "tie_conn_left",
@@ -313,8 +320,14 @@
           "kind": "lead",
           "layer": "SLD_WIRE",
           "points": [
-            [-0.118, 0.0],
-            [0.238, 0.0]
+            [
+              -0.118,
+              0.0
+            ],
+            [
+              0.238,
+              0.0
+            ]
           ]
         }
       },
@@ -337,8 +350,14 @@
           "kind": "lead",
           "layer": "SLD_WIRE",
           "points": [
-            [1.015, 0.0],
-            [1.444, 0.0]
+            [
+              1.015,
+              0.0
+            ],
+            [
+              1.444,
+              0.0
+            ]
           ]
         }
       },
@@ -354,8 +373,8 @@
         }
       },
       {
-        "name": "tie_ct",
-        "when": "ct_protection",
+        "name": "tie_ct_mu",
+        "when": "ct_differential",
         "role": {
           "kind": "block",
           "block": "HXF1CT",
@@ -364,12 +383,18 @@
           "rotation": 0,
           "series": false,
           "attribs": {
-            "DESC1": "ct_protection",
+            "DESC1": "ct_differential",
             "DESC2": "ct_class|@CT 5P20"
           },
           "attrib_pos": {
-            "DESC1": [0.75, -0.35],
-            "DESC2": [0.75, -0.5]
+            "DESC1": [
+              0.75,
+              -0.35
+            ],
+            "DESC2": [
+              0.75,
+              -0.5
+            ]
           },
           "polarity_dot": {
             "dx": -0.518,
@@ -377,7 +402,54 @@
           }
         },
         "_attrib_note": "HXF1CT prints its ratio right-aligned off its left edge, which on a cubicle this wide runs the label out into the neighbour. Moved into the clear space under the tie breaker instead. polarity_dot.dx is measured from the CUBICLE centreline, not from the symbol -- -0.518 is the CT's own polarity terminal. dy puts the mark on the bus at the same 0.05 stand-off the upright CTs use on their conductor; 8513 leaves it down at the secondary terminal, which reads as a junction dot floating clear of everything.",
-        "_note": "The tie's CT sits on the bus itself, on the bus-1 side of the break. HXF1CT is the same CT lying down: coil above the bus, both secondary terminals below it."
+        "_note": "The merging unit's own CT, on the bus-1 side of the break. Its core is the differential one: it reaches the 87B relays through the process bus rather than through a run on this sheet."
+      },
+      {
+        "name": "tie_ct",
+        "when": "ct_protection",
+        "role": {
+          "kind": "block",
+          "block": "HXF1CT",
+          "dx": 1.95,
+          "dy": -0.199,
+          "rotation": 0,
+          "series": false,
+          "attribs": {
+            "DESC1": "ct_protection",
+            "DESC2": "ct_class|@CT 5P20"
+          },
+          "attrib_pos": {
+            "DESC1": [
+              0.28,
+              -0.35
+            ],
+            "DESC2": [
+              0.28,
+              -0.5
+            ]
+          },
+          "polarity_dot": {
+            "dx": 2.246,
+            "dy": 0.149
+          }
+        },
+        "_attrib_note": "Right-aligned on the CT's own right edge, so the label runs out into the clear space at the end of the cubicle rather than back under the tie breaker box. The left CT's runs the other way for the same reason.",
+        "_note": "The tie relay's CT, on the bus-2 side of the break. Tie current is the same through both, so which side each sits is a matter of what fits."
+      },
+      {
+        "name": "merging_unit",
+        "when": "merging_unit",
+        "anchor": "mu_bottom",
+        "role": {
+          "kind": "box",
+          "dx": -1.05,
+          "width": 1.178,
+          "dy_top": -3.868,
+          "dy_bottom": -4.54,
+          "series": false,
+          "layer": "SLD_SYMS"
+        },
+        "_note": "Beside the tie relay, on the same row as every relay box in the lineup."
       },
       {
         "name": "relay_box",
@@ -395,21 +467,55 @@
         "_note": "At the lineup's relay elevation, not tucked under the tie breaker as 8513 does it. 8513's sheet is compressed around a mid-height bus; ours has room, and a row of relay boxes all on one line reads better than one of them floating up at the bus."
       },
       {
+        "name": "tie_ct_mu_secondary",
+        "when": "ct_differential",
+        "role": {
+          "kind": "lead",
+          "layer": "SLD_CONTROL",
+          "points": [
+            [
+              -0.565,
+              -0.2312
+            ],
+            [
+              -0.565,
+              -3.868
+            ]
+          ]
+        },
+        "_note": "Straight down from the CT's right terminal into the merging unit below it."
+      },
+      {
         "name": "tie_ct_secondary",
         "when": "ct_protection",
         "role": {
           "kind": "lead",
           "layer": "SLD_CONTROL",
           "points": [
-            [-1.063, -0.2312],
-            [-1.063, -3.583],
-            [1.17, -3.583],
-            [1.17, -3.868]
+            [
+              1.701,
+              -0.2312
+            ],
+            [
+              1.701,
+              -3.868
+            ]
           ]
         },
-        "_note": "Down the left of the cubicle from the CT's left terminal, across, and into the top of the relay box. Drawn as one path rather than a spur and a riser because it starts on a CT lying on its side, where neither of those offsets means anything."
+        "_note": "Straight down from the CT's left terminal into the tie relay below it. Two straight drops rather than two elbows is what keeps the tie's secondaries from crossing each other on the way across the cubicle."
       }
-    ]
+    ],
+    "reference_dx": {
+      "near": 0.9,
+      "far": 1.75
+    },
+    "_reference_dx_note": "Where each voltage reference lands on the tie relay. The run for the tie's OWN bus arrives from behind it and stops at 0.9; the other arrives from ahead and starts at 1.75. Both rise into the same relay box, and the 0.85 between them is what stops the two runs reading as one line passing through.",
+    "merging_unit_riser": {
+      "bus": "pt_reference",
+      "dx": -0.461,
+      "anchor": "mu_bottom"
+    },
+    "_merging_unit_note": "The merging unit digitises the tie's CT and publishes it to both differential relays over the process bus, which is why no copper differential run reaches the tie. It takes voltage from one bus only -- the tie's own -- where the relay beside it takes both."
   },
   "beside": {
     "relay_box": {
@@ -515,7 +621,9 @@
         "_y_note": "Below the relay boxes (bottom 14.043) and above the CT compartment (top 12.378), so it crosses neither. The riser at dx 1.336 is the relay box centreline, clear of the compartment's -1.081..0.290 span.",
         "_note": "A run needs two participants to be drawn, so a single-unit lineup, or one where only the PT cubicle carries a relay, correctly produces no run at all.",
         "source_dx": 2.1,
-        "_source_dx_note": "The PT secondary drops on its own offset, not the relay risers' 1.336 -- that line runs from the PT all the way down to the run and would pass straight through the source cubicle's own relay box. 2.1 clears the box's right edge at 1.925 and stays inside the cubicle, whose right edge is 2.313."
+        "_source_dx_note": "The PT secondary drops on its own offset, not the relay risers' 1.336 -- that line runs from the PT all the way down to the run and would pass straight through the source cubicle's own relay box. 2.1 clears the box's right edge at 1.925 and stays inside the cubicle, whose right edge is 2.313.",
+        "per_bus": true,
+        "_per_bus_note": "PTB1 and PTB2 are two references, not one. Drawn as a single run they met in the middle and read as one line straight through the tie -- which says every relay in the lineup sees the same voltage, and they do not. Each now stops at the tie, where the tie relay takes both."
       },
       {
         "name": "bus_differential",
