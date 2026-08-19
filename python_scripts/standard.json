@@ -286,15 +286,15 @@
     "bus_gaps": {
       "main": [
         [
-          -0.274,
-          1.6
+          -1.174,
+          0.7
         ]
       ]
     },
-    "_bus_gaps_note": "0.062 outside each drawout connector, which is 8513's clearance. The bus is drawn as one run and broken here, so a lineup with no tie is one bus and a lineup with a tie is two, with no second code path.",
+    "_bus_gaps_note": "0.062 outside each drawout connector, 8513's clearance. The whole tie sits 0.9 left of centre so that the 1.613 between its right connector and the end of the cubicle holds both CTs -- they are downstream of the breaker on the customer sheet, not one either side of it.",
     "text_overrides": {
       "spec_block": {
-        "dx": 0.277,
+        "dx": -0.623,
         "y": 18.93
       },
       "destination": {
@@ -308,7 +308,7 @@
         "role": {
           "kind": "block",
           "block": "VCN1PJ",
-          "dx": -0.212,
+          "dx": -1.112,
           "dy": 0.0,
           "rotation": 90,
           "series": false
@@ -321,11 +321,11 @@
           "layer": "SLD_WIRE",
           "points": [
             [
-              -0.118,
+              -1.018,
               0.0
             ],
             [
-              0.238,
+              -0.662,
               0.0
             ]
           ]
@@ -335,7 +335,7 @@
         "name": "tie_breaker",
         "role": {
           "kind": "box",
-          "dx": 0.238,
+          "dx": -0.662,
           "width": 0.777,
           "dy_top": 0.4605,
           "dy_bottom": -0.4605,
@@ -351,11 +351,11 @@
           "layer": "SLD_WIRE",
           "points": [
             [
-              1.015,
+              0.115,
               0.0
             ],
             [
-              1.444,
+              0.544,
               0.0
             ]
           ]
@@ -366,7 +366,7 @@
         "role": {
           "kind": "block",
           "block": "VCN1PJ",
-          "dx": 1.538,
+          "dx": 0.638,
           "dy": 0.0,
           "rotation": 270,
           "series": false
@@ -378,7 +378,7 @@
         "role": {
           "kind": "block",
           "block": "HXF1CT",
-          "dx": -0.814,
+          "dx": 1.15,
           "dy": -0.199,
           "rotation": 0,
           "series": false,
@@ -388,21 +388,21 @@
           },
           "attrib_pos": {
             "DESC1": [
-              0.75,
+              0.28,
               -0.35
             ],
             "DESC2": [
-              0.75,
+              0.28,
               -0.5
             ]
           },
           "polarity_dot": {
-            "dx": -0.518,
+            "dx": 1.446,
             "dy": 0.149
           }
         },
         "_attrib_note": "HXF1CT prints its ratio right-aligned off its left edge, which on a cubicle this wide runs the label out into the neighbour. Moved into the clear space under the tie breaker instead. polarity_dot.dx is measured from the CUBICLE centreline, not from the symbol -- -0.518 is the CT's own polarity terminal. dy puts the mark on the bus at the same 0.05 stand-off the upright CTs use on their conductor; 8513 leaves it down at the secondary terminal, which reads as a junction dot floating clear of everything.",
-        "_note": "The merging unit's own CT, on the bus-1 side of the break. Its core is the differential one: it reaches the 87B relays through the process bus rather than through a run on this sheet."
+        "_note": "The merging unit's own CT, nearer the breaker of the two on the bus-2 side. Its core is the differential one: it reaches the 87B relays through the process bus rather than through a run on this sheet."
       },
       {
         "name": "tie_ct",
@@ -410,7 +410,7 @@
         "role": {
           "kind": "block",
           "block": "HXF1CT",
-          "dx": 1.95,
+          "dx": 1.9,
           "dy": -0.199,
           "rotation": 0,
           "series": false,
@@ -421,20 +421,20 @@
           "attrib_pos": {
             "DESC1": [
               0.28,
-              -0.35
+              -0.75
             ],
             "DESC2": [
               0.28,
-              -0.5
+              -0.9
             ]
           },
           "polarity_dot": {
-            "dx": 2.246,
+            "dx": 2.196,
             "dy": 0.149
           }
         },
-        "_attrib_note": "Right-aligned on the CT's own right edge, so the label runs out into the clear space at the end of the cubicle rather than back under the tie breaker box. The left CT's runs the other way for the same reason.",
-        "_note": "The tie relay's CT, on the bus-2 side of the break. Tie current is the same through both, so which side each sits is a matter of what fits."
+        "_attrib_note": "Both CT labels are right-aligned on their own CT's right edge and sit on different rows. Side by side they would have run into each other; there is no room to stagger them left and right on this side of the cubicle.",
+        "_note": "The tie relay's CT, the outer of the two. Tie current is the same through both, so which of the pair feeds which box is a matter of what routes without crossing."
       },
       {
         "name": "merging_unit",
@@ -474,16 +474,24 @@
           "layer": "SLD_CONTROL",
           "points": [
             [
-              -0.565,
+              0.901,
               -0.2312
             ],
             [
-              -0.565,
+              0.901,
+              -3.383
+            ],
+            [
+              -0.461,
+              -3.383
+            ],
+            [
+              -0.461,
               -3.868
             ]
           ]
         },
-        "_note": "Straight down from the CT's right terminal into the merging unit below it."
+        "_note": "Down, back along at 15.2 and into the merging unit at the far end of the cubicle. The along-leg passes 0.485 above the relay box rather than through it, and stops short of the other CT's drop, so the two secondaries never meet."
       },
       {
         "name": "tie_ct_secondary",
@@ -493,16 +501,16 @@
           "layer": "SLD_CONTROL",
           "points": [
             [
-              1.701,
+              1.651,
               -0.2312
             ],
             [
-              1.701,
+              1.651,
               -3.868
             ]
           ]
         },
-        "_note": "Straight down from the CT's left terminal into the tie relay below it. Two straight drops rather than two elbows is what keeps the tie's secondaries from crossing each other on the way across the cubicle."
+        "_note": "Straight down from the CT's left terminal into the tie relay below it."
       }
     ],
     "reference_dx": {

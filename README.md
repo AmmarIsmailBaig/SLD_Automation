@@ -286,10 +286,16 @@ Two places this deviates from 8513, both deliberate:
   8513's relative spacing
 
 The tie carries **two** CTs (`HXF1CT` — the same CT on its side, coil above the
-bus, both secondary terminals below it), one each side of the break, and two
-boxes below them: the tie relay and the merging unit. Each CT drops straight
-down into the box beneath it, which is what keeps the two secondaries from
-crossing on the way across the cubicle.
+bus, both secondary terminals below it), both **downstream of the breaker** on
+the bus-2 side, the way the customer sheet draws them. The whole tie therefore
+sits 0.9 left of centre, so the space between its right drawout contact and the
+end of the cubicle is wide enough to hold the pair.
+
+Below them are two boxes: the tie relay and the merging unit. The outer CT sits
+over the relay and drops straight into it; the inner one steps down, back along
+0.485 above the relay box, and into the merging unit at the far end. The
+along-leg stops short of the other CT's drop, so the two secondaries never
+meet.
 
 The **merging unit** digitises its CT and publishes it to both differential
 relays over the process bus — which is why no copper differential run reaches
