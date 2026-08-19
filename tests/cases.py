@@ -107,8 +107,12 @@ CASES = [
 
     # Two-high, and the one fixture holding the reflection together. Between
     # them its rows cover: a PT-only upper deck (no amp_rating, so no breaker,
-    # no drawouts and no cable exit), a breaker upper deck carrying a second CT,
-    # the mirrored control run, and a plain single-high unit in the same lineup.
+    # no drawouts and no cable exit), a breaker upper deck carrying a metering
+    # CT and its test switch, the mirrored control run, and a plain single-high
+    # unit in the same lineup. Two CTs is the most a deck of a two-high cubicle
+    # holds -- a third stacks past the roof and drives the cable exit into the
+    # header text, which is why the metering CT replaced the ground CT here
+    # rather than joining it (intake_single still covers ct_ground).
     # Every upper-deck rule -- the unreflected PT branch, unrotated attribute
     # text, the hidden duplicate header, conductor_top -- fails visibly here.
     # Unit 3 also carries a differential CT while no cubicle in the lineup is

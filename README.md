@@ -202,6 +202,12 @@ CT names its destination in `standard.json`, and the secondary is drawn to it:
 |---|---|---|
 | `ct_protection` | upper terminal, +0.249 | its own cubicle's relay box |
 | `ct_differential` | lower terminal, −0.249 | the lineup-wide `bus_differential` run |
+| `ct_metering` | lower terminal, −0.249 | a test switch, beside the CT at the same elevation |
+
+The test switch — a small crossed square, 8513's symbol — is where a technician
+shorts the CT and injects current. The lead runs into it and stops, which is
+why that destination takes no riser; the switch hangs off the CT's own terminal
+rather than a sheet elevation, so it follows the CT down as the stack grows.
 
 Taking opposite terminals is what keeps the two leads from running one on top
 of the other. Both offsets are the block's own — the VXF1CT secondary terminals

@@ -156,6 +156,13 @@
       "name": "ct_metering",
       "when": "ct_metering",
       "gap": 1.699,
+      "secondary": {
+        "dy": -0.249,
+        "dx_from": 0.224,
+        "dx": 1.136,
+        "to": "test_switch"
+      },
+      "_secondary_note": "A metering CT's secondary does not go to a relay -- it goes to a test switch, so a technician can short the CT and inject current without pulling the panel apart. 8513 draws one on every metering core and the lead simply ends there, which is why this destination takes no riser.",
       "role": {
         "kind": "block",
         "block": "VXF1CT",
@@ -295,6 +302,20 @@
         "linetype": "DASHED"
       },
       "_note": "Sized from the CTs actually present instead of from a remembered span. On a unit with a protection and a ground CT this yields 12.378..9.907, against the 12.465..9.912 drawn by hand on 8508 -- so the rule reproduces the reference without copying its number."
+    },
+    "test_switch": {
+      "when": "always",
+      "anchor": "ct_metering",
+      "role": {
+        "kind": "test_switch",
+        "dx": 1.136,
+        "width": 0.1317,
+        "height": 0.1227,
+        "series": false,
+        "layer": "SLD_SYMS"
+      },
+      "_note": "Where the metering CT's secondary ends. Anchored to the CT's secondary terminal rather than to a sheet elevation, so it follows the CT down when the stack above it grows. Size and offset are 8513's.",
+      "_when_note": "'always' rather than 'ct_metering': what decides whether the switch is drawn is whether the anchor exists, and the anchor exists only because the metering CT declared a secondary that ends here. Naming the column again would be a second copy of that condition to keep in step."
     }
   },
   "conductor": {

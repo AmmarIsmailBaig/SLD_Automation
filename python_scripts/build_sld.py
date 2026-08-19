@@ -344,6 +344,28 @@ def place_box(msp, spec, x):
     )
 
 
+def place_test_switch(msp, spec, x):
+    """CT secondary test switch -- a square with a cross and a doubled lid.
+
+    Four lines that only mean anything together, which is why this is one kind
+    rather than the four roles 8513 spells it out as. The secondary runs into
+    the left edge at mid height, so the switch is placed by that point: 'y' is
+    where the wire arrives, not where the box starts.
+    """
+    w = spec.get("width", 0.1317)
+    h = spec.get("height", 0.1227)
+    x0 = x + spec["dx"]
+    x1, top, bot = x0 + w, spec["y"] + h / 2, spec["y"] - h / 2
+    attribs = {"layer": spec.get("layer", "SLD_SYMS")}
+    msp.add_lwpolyline([(x0, top), (x1, top), (x1, bot), (x0, bot)],
+                       close=True, dxfattribs=attribs)
+    # The lid is the top edge drawn a second time -- that is how the reference
+    # distinguishes a test switch from a plain terminal block.
+    msp.add_line((x1, top), (x0, top), dxfattribs=attribs)
+    msp.add_line((x0, bot), (x1, top), dxfattribs=attribs)
+    msp.add_line((x0, top), (x1, bot), dxfattribs=attribs)
+
+
 def place_breaker(msp, spec, x):
     """
     Drawout breaker body. In the reference drawings this is a plain rectangle
@@ -964,6 +986,8 @@ def build(units, cfg, doc):
                 place_lead(msp, spec, x)
             elif kind == "circle":
                 place_circle(msp, spec, x)
+            elif kind == "test_switch":
+                place_test_switch(msp, spec, x)
             elif kind == "arc":
                 # Transformer windings are drawn as facing half-arcs rather
                 # than as a block on the 8372 sheets, so the primitive is

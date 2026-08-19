@@ -147,6 +147,14 @@ def stack_unit(std, row, key):
             # CT set gets a box around one CT set.
             spec["y_top"] = round(max(ct_ys) + entry["above"], 4)
             spec["y_bottom"] = round(min(ct_ys) - entry["below"], 4)
+        elif entry["anchor"] in anchors:
+            # Hung off a device that recorded where it landed -- the test
+            # switch off the metering CT's secondary terminal. Anything the
+            # stack skipped is simply not in anchors, so the device that hangs
+            # off it is skipped too rather than drawn at nothing.
+            spec["y"] = round(anchors[entry["anchor"]] + entry.get("dy", 0.0), 4)
+        else:
+            continue
         emit(name, spec)
 
     # --- the bus PT branch, above the bus -------------------------------
@@ -309,6 +317,13 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
                 "_note": f"{entry['name']} secondary"}
         if sec["to"] == "relay":
             target = anchors.get("relay_bottom")
+        elif sec["to"] in std.get("beside", {}):
+            # A device sitting at the secondary's own elevation -- the test
+            # switch. The lead runs into it and stops; there is nothing to
+            # climb to, so no riser.
+            if present(std["beside"][sec["to"]]["when"], row, std):
+                wiring.setdefault("spurs", []).append(spur)
+            continue
         else:
             bus_name, target = bus_ys.get(sec["to"], (None, None))
             # Tagged with the run it serves so that a lineup which drops that

@@ -365,6 +365,30 @@
       "attribs": [
         [
           "DESC1",
+          "2000:5A (3)"
+        ],
+        [
+          "DESC2",
+          "CT 0.3B1.8"
+        ]
+      ],
+      "block": "VXF1CT",
+      "geom": [
+        5.23,
+        26.858
+      ],
+      "layer": "SLD_SYMS",
+      "rotation": 0.0,
+      "scale": [
+        1.0,
+        1.0
+      ],
+      "type": "INSERT"
+    },
+    {
+      "attribs": [
+        [
+          "DESC1",
           "200:5A (3)"
         ],
         [
@@ -424,30 +448,6 @@
       "geom": [
         8.84,
         12.007
-      ],
-      "layer": "SLD_SYMS",
-      "rotation": 0.0,
-      "scale": [
-        1.0,
-        1.0
-      ],
-      "type": "INSERT"
-    },
-    {
-      "attribs": [
-        [
-          "DESC1",
-          "50:5A"
-        ],
-        [
-          "DESC2",
-          "GND CT"
-        ]
-      ],
-      "block": "VXF1CT",
-      "geom": [
-        5.23,
-        26.858
       ],
       "layer": "SLD_SYMS",
       "rotation": 0.0,
@@ -1118,6 +1118,25 @@
     {
       "closed": true,
       "geom": [
+        6.176,
+        27.168,
+        0.0,
+        6.308,
+        27.168,
+        0.0,
+        6.308,
+        27.046,
+        0.0,
+        6.176,
+        27.046,
+        0.0
+      ],
+      "layer": "SLD_SYMS",
+      "type": "LWPOLYLINE"
+    },
+    {
+      "closed": true,
+      "geom": [
         7.353,
         27.731,
         0.0,
@@ -1493,6 +1512,16 @@
     },
     {
       "geom": [
+        5.264,
+        27.107,
+        6.176,
+        27.107
+      ],
+      "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
         6.006,
         12.256,
         6.006,
@@ -1529,6 +1558,36 @@
         24.91
       ],
       "layer": "SLD_CONTROL",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        6.176,
+        27.046,
+        6.308,
+        27.168
+      ],
+      "layer": "SLD_SYMS",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        6.176,
+        27.168,
+        6.308,
+        27.046
+      ],
+      "layer": "SLD_SYMS",
+      "type": "LINE"
+    },
+    {
+      "geom": [
+        6.308,
+        27.168,
+        6.176,
+        27.168
+      ],
+      "layer": "SLD_SYMS",
       "type": "LINE"
     },
     {
@@ -1642,12 +1701,12 @@
       "type": "LINE"
     }
   ],
-  "entity_count": 122,
+  "entity_count": 127,
   "entity_counts": {
     "ARC": 8,
     "INSERT": 35,
-    "LINE": 45,
-    "LWPOLYLINE": 15,
+    "LINE": 49,
+    "LWPOLYLINE": 16,
     "MTEXT": 19
   },
   "fingerprint_version": 1,
