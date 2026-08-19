@@ -94,11 +94,19 @@ def stack_unit(std, row, key):
 
         emit(entry["name"], spec)
 
-        if entry.get("phase_note"):
-            note = dict(std["phase_note"])
-            note["y"] = round(y + note.pop("dy"), 4)
-            note.pop("_note", None)
-            emit(entry["name"] + "_phase", note)
+        # A device whose secondary has to be wired somewhere records where it
+        # ended up, so control_wiring can run to it without re-deriving the
+        # stack. Going through anchors also means reflect() turns the wiring
+        # over with the deck for free.
+        if entry.get("secondary"):
+            # Recorded at the terminal the wire actually leaves, not at the
+            # symbol's insertion point -- a CT's two secondary terminals sit
+            # 0.249 either side of it, and a lead drawn from the middle lands
+            # on the iron between them. Applying the offset here rather than in
+            # control_wiring means reflect() picks the mirror-image terminal on
+            # an upper deck, which is the one facing that deck's relay.
+            anchors[entry["name"]] = round(
+                y + entry["secondary"].get("dy", 0.0), 4)
         if entry["name"].startswith("ct_"):
             ct_ys.append(y)
 
@@ -237,34 +245,82 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
     Each deck gets its own run at its own elevation. An upper-deck relay cannot
     be fed from the lower deck's run without crossing the main bus to get
     there, which is a short, not a drawing.
+
+    CT secondaries are the same idea one level down. A CT drawn with a ratio
+    and no output says nothing about what it protects, so each one names its
+    destination on its stack entry: "relay" for its own cubicle's relay, or the
+    name of a lineup-wide run for a core that leaves the cubicle -- the
+    differential cores, which all end up at whichever cubicle holds the
+    differential relay.
     """
     wiring = {}
+    bus_ys = {}
     for bus in std.get("control", {}).get("buses", []):
         y = round(2 * bus_y - bus["y"], 4) if mirrored else bus["y"]
         name = bus_name_for(bus, mirrored)
-        if present(bus["source"], row, std):
+        bus_ys[bus["name"]] = (name, y)
+
+        if bus.get("source") and present(bus["source"], row, std):
             wiring.setdefault("joins", []).append(name)
             # The run has to come FROM somewhere. Without this the PT is drawn
             # on the bus, the reference run is drawn under the relays, and
             # nothing joins the two -- the source cubicle reaches its own run
             # through its relay riser like any feeder, so the run has no source
-            # at all. The secondary drops from the PT to the run, broken where
-            # it passes the main bus so the crossing does not read as a tap.
-            if "pt" in anchors:
-                wiring.setdefault("risers", []).append({
+            # at all. Which anchor the source riser lands on is the bus's own
+            # business: the reference run climbs to the PT, the differential
+            # run climbs to the relay that owns it.
+            anchor = anchors.get(bus.get("source_anchor", "pt"))
+            if anchor is not None:
+                riser = {
                     "y_from": y,
-                    "y_to": anchors["pt"],
+                    "y_to": anchor,
                     "dx": bus.get("source_dx", bus["riser_dx"]),
-                    "gaps": [[round(bus_y - 0.05, 4), round(bus_y + 0.05, 4)]],
-                })
+                }
+                # Broken where it passes the main bus so the crossing does not
+                # read as a tap -- but only when it actually passes it. A riser
+                # that stays below the bus gets no phantom break.
+                lo, hi = sorted((y, anchor))
+                if lo < bus_y < hi:
+                    riser["gaps"] = [[round(bus_y - 0.05, 4),
+                                      round(bus_y + 0.05, 4)]]
+                wiring.setdefault("risers", []).append(riser)
+
         # After reflection the stored relay_bottom is the edge facing this
         # deck's run, so the same anchor is correct either way up.
-        if present(bus["reaches"], row, std) and "relay_bottom" in anchors:
+        reach = anchors.get(bus.get("reach_anchor", "relay_bottom"))
+        if bus.get("reaches") and present(bus["reaches"], row, std)                 and reach is not None:
             wiring.setdefault("risers", []).append({
                 "y_from": y,
-                "y_to": anchors["relay_bottom"],
+                "y_to": reach,
                 "dx": bus["riser_dx"],
             })
+
+    # CT secondaries. A CT is drawn with its ratio and its class, and then the
+    # sheet says nothing about where its output goes -- which is the one thing
+    # a protection engineer reads the drawing for. Each CT that has a secondary
+    # declares its destination on the stack entry: its own relay, or the name
+    # of a lineup-wide run.
+    for entry in std["stack"]:
+        sec = entry.get("secondary")
+        if not sec or entry["name"] not in anchors:
+            continue
+        y = anchors[entry["name"]]
+        spur = {"y": y, "dx_from": sec["dx_from"], "dx_to": sec["dx"],
+                "_note": f"{entry['name']} secondary"}
+        if sec["to"] == "relay":
+            target = anchors.get("relay_bottom")
+        else:
+            bus_name, target = bus_ys.get(sec["to"], (None, None))
+            # Tagged with the run it serves so that a lineup which drops that
+            # run -- differential CTs but no differential relay to end at --
+            # drops the spur with it instead of leaving a stub in mid-air.
+            spur["bus"] = bus_name
+        if target is None:
+            continue
+        wiring.setdefault("spurs", []).append(spur)
+        wiring.setdefault("risers", []).append(
+            {"y_from": y, "y_to": target, "dx": sec["dx"]})
+
     return wiring
 
 

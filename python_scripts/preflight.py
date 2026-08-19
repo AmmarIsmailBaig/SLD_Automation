@@ -25,12 +25,27 @@ def report(level, check, message, fix=None):
 
 
 # ---------------------------------------------------------------- inspection
+def sources(src):
+    """Column names an attribute source can draw from.
+
+    Most name one column. A fallback chain -- "ct_class|@CT 5P20" -- names the
+    columns it tries in order, with a leading '@' marking a literal rather than
+    a column. Reading the whole chain as one name is how 'ct_class' came to be
+    reported both as a column that reaches nothing and as a blank field on
+    every unit that had in fact filled it in.
+    """
+    if not isinstance(src, str):
+        return set()
+    return {part for part in src.split("|") if part and not part.startswith("@")}
+
+
 def column_wiring(cfg, columns):
     """Work out how each CSV column reaches the drawing, if it does at all.
 
-    A column is live if build_sld.py reads it by name, or if some role's
-    'attribs' map or 'text' field in the config points at it. Anything else is
-    a column you can type into all day with no effect on the output.
+    A column is live if build_sld.py reads it by name, if some role's 'attribs'
+    map or 'text' field in the config points at it, or if a lineup-wide control
+    run names it as its source or its destination. Anything else is a column
+    you can type into all day with no effect on the output.
     """
     # Read directly by annotate_unit() / the layout pass.
     direct = {"unit", "bus", "tag", "description", "archetype",
@@ -39,8 +54,9 @@ def column_wiring(cfg, columns):
 
     for rname, role in cfg.get("roles", {}).items():
         for tag, src in (role.get("attribs") or {}).items():
-            if isinstance(src, str) and not src.startswith("@") and src in columns:
-                via.setdefault(src, f"role '{rname}' attribute {tag}")
+            for col in sources(src):
+                if col in columns:
+                    via.setdefault(col, f"role '{rname}' attribute {tag}")
         txt = role.get("text")
         if isinstance(txt, str) and not txt.startswith("@") and txt in columns:
             via.setdefault(txt, f"role '{rname}' note text")
@@ -50,6 +66,16 @@ def column_wiring(cfg, columns):
     # its rating lives in the ARRESTER block as static MTEXT.
     if "arrester" in via and "arrester_label" not in cfg.get("text", {}):
         via.pop("arrester")
+
+    # A control run reaches the drawing through the cubicles that participate
+    # in it, not through any role: 'pt' says where the reference run starts,
+    # 'bus_differential' says where the differential run ends. Without this
+    # they read as columns you can type into all day.
+    for bus in cfg.get("control", {}).get("buses", []):
+        for key in ("source", "reaches"):
+            col = bus.get(key)
+            if isinstance(col, str) and col in columns:
+                via.setdefault(col, f"control run '{bus.get('name')}' {key}")
     return via
 
 
@@ -78,8 +104,10 @@ def required_columns(cfg, archetype):
     for rname in cfg["archetypes"].get(archetype, {}).get("roles", []):
         role = cfg.get("roles", {}).get(rname, {})
         for src in (role.get("attribs") or {}).values():
-            if isinstance(src, str) and not src.startswith("@"):
-                need.add(src)
+            # A chain ending in a literal has a house default behind it, so a
+            # blank cell is a choice to take that default, not a hole.
+            if isinstance(src, str) and "@" not in src:
+                need |= sources(src)
         txt = role.get("text")
         if isinstance(txt, str) and not txt.startswith("@"):
             need.add(txt)
@@ -108,6 +136,8 @@ def check_dead_columns(cfg, rows, columns):
     hints = {
         "arrester": "the rating is baked into the ARRESTER block artwork; "
                     "editing the CSV changes nothing",
+        "deck": "read by build_intake.py when it stacks the cubicle, which is "
+                "before this config existed -- it has already done its work",
     }
     for col in dead:
         vals = {(r.get(col) or "").strip() for r in rows} - {""}

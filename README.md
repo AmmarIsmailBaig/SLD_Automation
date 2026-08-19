@@ -90,14 +90,14 @@ Copy `excel/intake_template.xlsx`. Two tabs to fill:
 **Project** — job number, title, voltage, bus rating. The bus label is built
 from these, so it cannot disagree with the job.
 
-**Units** — one row per cubicle, seventeen columns:
+**Units** — one row per cubicle, eighteen columns:
 
 | | |
 |---|---|
 | structure | `unit` `bus` `deck` |
 | identity | `tag` `description` `destination` |
 | breaker | `voltage` `amp_rating` `ka_rating` |
-| protection | `relay` `ct_protection` `ct_differential` `ct_metering` `ct_ground` `ct_class` |
+| protection | `relay` `bus_differential` `ct_protection` `ct_differential` `ct_metering` `ct_ground` `ct_class` |
 | PT | `pt` `pt_primary_fuse` |
 
 `amp_rating` does double duty: **blank means no breaker.** That is how a deck
@@ -108,6 +108,11 @@ Four CT rows, one per job the CT does. A dual-core CT — `1200/5/5A
 the single line, because its two cores feed different circuits: the feeder
 relay and the bus differential. That is why `ct_differential` is its own row
 rather than a wider label on `ct_protection`.
+
+`bus_differential` is filled on **one** cubicle: the one whose relay is the
+differential relay. Every `ct_differential` in the lineup is wired to it. Leave
+it blank everywhere and the differential CTs are still drawn — there is simply
+no run, because there is nothing for them to run to.
 
 `ct_class` is the one optional column. Each CT's ratio comes from its own cell;
 its accuracy class comes from `ct_class` when the job states one and from the
@@ -186,6 +191,40 @@ Two offsets are not interchangeable, and both were wrong once:
 - the PT secondary drops on its own `source_dx`, clear of the relay boxes. It
   runs the full height from the PT to the run, and at the risers' offset it
   went straight through the source cubicle's own relay box
+
+## Where a CT's output goes
+
+A CT drawn with a ratio and nothing else says what it measures and not what it
+protects, which is the thing a protection engineer opens the sheet for. So each
+CT names its destination in `standard.json`, and the secondary is drawn to it:
+
+| CT | leaves | goes to |
+|---|---|---|
+| `ct_protection` | upper terminal, +0.249 | its own cubicle's relay box |
+| `ct_differential` | lower terminal, −0.249 | the lineup-wide `bus_differential` run |
+
+Taking opposite terminals is what keeps the two leads from running one on top
+of the other. Both offsets are the block's own — the VXF1CT secondary terminals
+sit 0.249 either side of the insertion point, so a lead drawn from the symbol's
+centre would land on the iron between them.
+
+The differential run is the second lineup-wide run, and the mirror image of the
+PT reference one: the reference run **starts** at the cubicle that has the PT
+and drops into every cubicle with a relay, while the differential run **ends**
+at the cubicle named by `bus_differential` and is fed by every cubicle with a
+differential CT. Both ends of both runs come off the sheet, so moving either
+relay to another cubicle re-routes the drawing rather than the drawing needing
+an edit.
+
+It runs at 12.7 — above every CT compartment, below the reference run at 13.21.
+That band is the only one clear the full width of a lineup. The obvious place
+is down among the CTs, which is where 8508 draws its differential run, and that
+works there because the run spans two adjacent cubicles; one crossing a dozen
+would be drawn straight through every compartment box on the way.
+
+One run means one differential zone. A real two-zone scheme — 87B1 and 87B2
+either side of the tie — is two entries in `control.buses` with two columns
+behind them, not a change to the mechanism.
 
 ## Checking a sheet before you build
 

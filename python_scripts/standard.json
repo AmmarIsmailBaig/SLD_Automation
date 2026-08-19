@@ -101,7 +101,13 @@
       "name": "ct_protection",
       "when": "ct_protection",
       "gap": 2.245,
-      "phase_note": true,
+      "secondary": {
+        "dy": 0.249,
+        "dx_from": 0.224,
+        "dx": 0.966,
+        "to": "relay"
+      },
+      "_secondary_note": "Out of the CT's upper secondary terminal to 0.966, then up into the bottom edge of its own relay box. dy 0.249 and dx_from 0.224 are the terminal itself, read off the VXF1CT block; 0.966 is the offset 8508 uses on a feeder. So a generated feeder's secondary starts on the terminal and lands where a draughtsman would have put it.",
       "role": {
         "kind": "block",
         "block": "VXF1CT",
@@ -122,7 +128,13 @@
       "name": "ct_differential",
       "when": "ct_differential",
       "gap": 1.699,
-      "phase_note": true,
+      "secondary": {
+        "dy": -0.249,
+        "dx_from": 0.224,
+        "dx": 1.789,
+        "to": "bus_differential"
+      },
+      "_secondary_note": "This core does not go to its own relay -- it goes to the differential relay, which lives in another cubicle. So it leaves the LOWER terminal, steps out to 1.789 (8508's offset for a CT secondary that leaves the unit) and rises onto the lineup-wide bus_differential run instead of into the relay box above it. Taking the other terminal from ct_protection is what keeps the two leads from running one on top of the other where the CTs are close.",
       "role": {
         "kind": "block",
         "block": "VXF1CT",
@@ -144,7 +156,6 @@
       "name": "ct_metering",
       "when": "ct_metering",
       "gap": 1.699,
-      "phase_note": true,
       "role": {
         "kind": "block",
         "block": "VXF1CT",
@@ -286,15 +297,6 @@
       "_note": "Sized from the CTs actually present instead of from a remembered span. On a unit with a protection and a ground CT this yields 12.378..9.907, against the 12.465..9.912 drawn by hand on 8508 -- so the rule reproduces the reference without copying its number."
     }
   },
-  "phase_note": {
-    "kind": "note",
-    "dx": -0.777,
-    "dy": -0.233,
-    "height": 0.1,
-    "align": "centre",
-    "text": "@1%%C",
-    "_note": "Single-phase mark beside a CT. %%C is AutoCAD's phase symbol."
-  },
   "conductor": {
     "layer": "SLD_WIRE",
     "_note": "The vertical run down the cubicle centreline. build_sld draws it between the series roles' gaps."
@@ -333,12 +335,26 @@
         "end_dx": 1.336,
         "_end_dx_note": "Must reach the LAST riser, not the last centreline. The risers drop at +1.336 (the relay box centre), so an end_dx of 0 leaves the final unit's drop hanging in mid-air just short of the run. start_dx stays 0 because the run originates under the PT cubicle's own centreline.",
         "source": "pt",
+        "source_anchor": "pt",
         "reaches": "relay",
+        "reach_anchor": "relay_bottom",
         "riser_dx": 1.336,
         "_y_note": "Below the relay boxes (bottom 14.043) and above the CT compartment (top 12.378), so it crosses neither. The riser at dx 1.336 is the relay box centreline, clear of the compartment's -1.081..0.290 span.",
         "_note": "A run needs two participants to be drawn, so a single-unit lineup, or one where only the PT cubicle carries a relay, correctly produces no run at all.",
         "source_dx": 2.1,
         "_source_dx_note": "The PT secondary drops on its own offset, not the relay risers' 1.336 -- that line runs from the PT all the way down to the run and would pass straight through the source cubicle's own relay box. 2.1 clears the box's right edge at 1.925 and stays inside the cubicle, whose right edge is 2.313."
+      },
+      {
+        "name": "bus_differential",
+        "y": 12.7,
+        "start_dx": 1.789,
+        "end_dx": 1.789,
+        "source": "bus_differential",
+        "source_anchor": "relay_bottom",
+        "riser_dx": 1.789,
+        "_y_note": "In the only horizontal band that is clear the whole width of the lineup: above every CT compartment (top 12.378, fixed by the first CT's elevation) and below the PT reference run at 13.21. The obvious place -- down among the CTs, where 8508 draws its diff run at 10.255 -- works there because that run spans two adjacent cubicles. This one has to cross a dozen, and at CT elevation it would be drawn straight through every compartment box on the way.",
+        "_source_note": "No 'reaches': the differential CTs put themselves on this run through their own secondaries, declared on the stack entry. What the run still needs is somewhere to end, and that is this -- the cubicle whose relay is the differential relay, named by the 'bus_differential' column. Move the relay to another cubicle and the run re-routes to it, exactly as the PT reference run follows the PT.",
+        "_zone_note": "One run, so one differential zone. A lineup with a real two-zone scheme (87B1 and 87B2 either side of the tie) is two entries here with two columns behind them, not a change to the mechanism."
       }
     ]
   },

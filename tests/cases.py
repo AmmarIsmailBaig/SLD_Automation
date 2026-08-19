@@ -111,6 +111,11 @@ CASES = [
     # the mirrored control run, and a plain single-high unit in the same lineup.
     # Every upper-deck rule -- the unreflected PT branch, unrotated attribute
     # text, the hidden duplicate header, conductor_top -- fails visibly here.
+    # Unit 3 also carries a differential CT while no cubicle in the lineup is
+    # the differential relay, which is the only place the drop-a-run-with-one-
+    # participant rule is exercised: the CT is drawn, and its secondary is not,
+    # because there is nothing for it to run to. Without that the sheet grows a
+    # lead out of the CT ending in mid-air.
     IntakeCase("intake_twohigh", "excel/intake_twohigh.xlsx"),
 
     # A 16-panel double-bus lineup: two incomers, two bus PTs, a bustie, a
@@ -118,7 +123,9 @@ CASES = [
     # the widest fixture, the only one with empty cubicles, and the only one
     # where a CT's accuracy class comes from the job (ct_class) rather than
     # the house default -- these CTs are dual-core 5P20/5P20, so the metering
-    # role's own 0.3B1.8 would be wrong on every feeder.
+    # role's own 0.3B1.8 would be wrong on every feeder. It is also the only
+    # lineup that states a bus_differential cubicle, so the differential run
+    # and its source riser exist nowhere else.
     IntakeCase("intake_substation_c", "excel/intake_substation_c.xlsx"),
 ]
 

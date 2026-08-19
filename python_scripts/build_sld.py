@@ -632,6 +632,10 @@ def draw_control_wiring(msp, cfg, units, buses, conductors):
     dropped_bus_ys = {round(b["y"], 4)
                       for b in cfg.get("control", {}).get("buses", [])
                       if round(b["y"], 4) not in drawn_bus_ys}
+    drawn_bus_names = {b.get("name") for b in buses}
+    dropped_bus_names = {b.get("name")
+                         for b in cfg.get("control", {}).get("buses", [])
+                         if b.get("name") not in drawn_bus_names}
 
     def riser_is_orphaned(riser):
         # A riser exists to reach a bus, so one whose end lands on a declared
@@ -657,6 +661,12 @@ def draw_control_wiring(msp, cfg, units, buses, conductors):
         risers = wiring.get("risers", [])
 
         for spur in wiring.get("spurs", []):
+            # A spur that exists to reach a named run has nothing to reach when
+            # this lineup dropped that run, and would otherwise be drawn as a
+            # stub off the CT. Spurs that name no bus stay: they end on
+            # something inside their own cubicle.
+            if spur.get("bus") in dropped_bus_names and spur.get("bus"):
+                continue
             sx0, sx1 = sorted((x + spur["dx_from"], x + spur["dx_to"]))
             crossings = conductor_crossings(spur["y"], sx0, sx1)
             # Which way a spur/riser intersection resolves is drawing
