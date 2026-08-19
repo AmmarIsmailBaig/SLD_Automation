@@ -499,10 +499,19 @@ def connects_to_bus(cfg, archetype, bus_y, bus_name=None, tol=1e-6):
     # infer from, so that archetype names the bus outright.
     if bus_name and bus_name in (wiring.get("joins") or []):
         return True
+    # Elevation alone is not enough once a run is per-bus: 87B1 and 87B2 sit
+    # at the same y on opposite sides of the tie, and a riser matched by height
+    # would put every cubicle on both, running each the full width of the
+    # sheet. A riser or spur that names its run is only ever on that one.
+    def mine(item):
+        return not item.get("bus") or item["bus"] == bus_name
+
     for riser in wiring.get("risers", []):
-        if any(abs(riser[k] - bus_y) < tol for k in ("y_from", "y_to")):
+        if mine(riser) and any(abs(riser[k] - bus_y) < tol
+                               for k in ("y_from", "y_to")):
             return True
-    return any(abs(spur["y"] - bus_y) < tol for spur in wiring.get("spurs", []))
+    return any(mine(spur) and abs(spur["y"] - bus_y) < tol
+               for spur in wiring.get("spurs", []))
 
 
 def bus_dx_override(cfg, archetype, bus_name, default):
@@ -669,6 +678,11 @@ def draw_control_wiring(msp, cfg, units, buses, conductors):
         # bus that this lineup dropped has nothing to connect to. Risers that
         # end nowhere in particular are left alone -- the feeder CT risers stop
         # below the cubicle at an elevation no bus declares.
+        #
+        # A riser that names its run is judged by that name, because with
+        # per-bus runs an elevation can be both drawn and dropped at once.
+        if riser.get("bus"):
+            return riser["bus"] in dropped_bus_names
         return any(round(riser[end], 4) in dropped_bus_ys
                    for end in ("y_from", "y_to"))
 

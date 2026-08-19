@@ -235,9 +235,20 @@ is down among the CTs, which is where 8508 draws its differential run, and that
 works there because the run spans two adjacent cubicles; one crossing a dozen
 would be drawn straight through every compartment box on the way.
 
-One run means one differential zone. A real two-zone scheme — 87B1 and 87B2
-either side of the tie — is two entries in `control.buses` with two columns
-behind them, not a change to the mechanism.
+**A differential run is per zone, and a lineup with a tie has two.** The run is
+declared once, marked `per_bus`, and built once per bus in the sheet — 87B1 and
+87B2, each fed by the cubicles on its own bus and each ending at the relay in
+that bus's cubicle. A three-bus lineup needs no edit to get three.
+
+Both runs sit at the same elevation, on opposite sides of the tie, so nothing
+downstream can tell them apart by height. Every riser and spur therefore names
+the run it serves. Matching by elevation alone put every cubicle on both runs
+and ran each the full width of the sheet.
+
+A cubicle with no breaker can still hold a relay — the differential relays live
+in the PT cubicles — so a relay box with no breaker to hang off falls back to
+the row the rest of the lineup's relays sit on. That row is the stack's own
+arithmetic, not a number written down twice.
 
 ## The bus tie
 

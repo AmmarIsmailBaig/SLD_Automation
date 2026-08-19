@@ -519,6 +519,8 @@
       },
       {
         "name": "bus_differential",
+        "per_bus": true,
+        "_per_bus_note": "Declared once and built once per bus in the sheet, so a lineup with two buses gets 87B1 and 87B2 without a second entry here to keep in step with the first. Each cubicle feeds, and each relay terminates, the run belonging to its OWN bus -- which is what the customer sheet states: R-12 takes the five bus-1 cubicles, R-13 the five bus-2 ones, and the tie is in neither.",
         "y": 12.7,
         "start_dx": 1.789,
         "end_dx": 1.789,

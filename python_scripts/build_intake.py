@@ -134,9 +134,17 @@ def stack_unit(std, row, key):
         spec.pop("_note", None)
 
         if entry["anchor"] == "breaker":
-            if breaker_top is None:
-                continue
-            spec["y_top"] = round(breaker_top + entry["dy"], 4)
+            top = breaker_top
+            if top is None:
+                # A PT cubicle has no breaker and can still hold a relay -- the
+                # bus differential relay lives in one. Every breaker in the
+                # lineup sits at the same elevation, so the row the relay
+                # boxes line up on is the stack's own arithmetic, not a number
+                # to be written down again here.
+                top = round(std["sheet"]["bus_y"] - sum(
+                    e["gap"] for e in std["stack"]
+                    if e["name"] in ("drawout_upper", "breaker")), 4)
+            spec["y_top"] = round(top + entry["dy"], 4)
             spec["y_bottom"] = round(spec["y_top"] - spec.pop("height"), 4)
             anchors["relay_bottom"] = spec["y_bottom"]
             anchors["relay_top"] = spec["y_top"]
@@ -277,11 +285,40 @@ def reflect(roles, anchors, bus_y, skip=()):
     return {k: flip(v) for k, v in anchors.items()}
 
 
+def expand_buses(std, rows):
+    """The control runs this lineup actually has.
+
+    Most are one run across the whole sheet. A run marked 'per_bus' is one run
+    per bus instead -- the bus differential is per zone by definition, and a
+    lineup with a tie has two zones. Building them from the sheet's own 'bus'
+    column rather than declaring each one means the standard has a single
+    description of what a differential run is, and a three-bus lineup needs no
+    edit to get three.
+    """
+    out = []
+    for bus in std.get("control", {}).get("buses", []):
+        if not bus.get("per_bus"):
+            out.append(bus)
+            continue
+        seen = []
+        for row in rows:
+            name = (row.get("bus") or "").strip()
+            if name and name not in seen:
+                seen.append(name)
+        for name in seen:
+            entry = {k: v for k, v in bus.items() if k != "per_bus"}
+            entry["name"] = f"{bus['name']}_{name}"
+            entry["_base"] = bus["name"]
+            entry["_bus"] = name
+            out.append(entry)
+    return out
+
+
 def bus_name_for(bus, mirrored):
     return bus["name"] + ("_upper" if mirrored else "")
 
 
-def control_wiring(std, row, anchors, mirrored, bus_y):
+def control_wiring(std, row, anchors, mirrored, bus_y, buses):
     """How this unit meets the lineup-wide control runs.
 
     Participation is declared per unit rather than per type, so the PT
@@ -301,10 +338,17 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
     """
     wiring, extra = {}, {}
     bus_ys = {}
-    for bus in std.get("control", {}).get("buses", []):
+    for bus in buses:
+        # A per-bus run belongs to one bus, so a cubicle on another bus neither
+        # feeds it nor ends it -- and a CT naming the run by its base name gets
+        # the one for its own bus, because that is the only one still here.
+        if bus.get("_bus") and bus["_bus"] != (row.get("bus") or "").strip():
+            continue
         y = round(2 * bus_y - bus["y"], 4) if mirrored else bus["y"]
         name = bus_name_for(bus, mirrored)
         bus_ys[bus["name"]] = (name, y)
+        if bus.get("_base"):
+            bus_ys[bus["_base"]] = (name, y)
 
         if bus.get("source") and present(bus["source"], row, std):
             wiring.setdefault("joins", []).append(name)
@@ -321,6 +365,7 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
                     "y_from": y,
                     "y_to": anchor,
                     "dx": bus.get("source_dx", bus["riser_dx"]),
+                    "bus": name,
                 }
                 # Broken where it passes the main bus so the crossing does not
                 # read as a tap -- but only when it actually passes it. A riser
@@ -335,7 +380,8 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
         # deck's run, so the same anchor is correct either way up.
         reach = anchors.get(bus.get("reach_anchor", "relay_bottom"))
         if bus.get("reaches") and present(bus["reaches"], row, std)                 and reach is not None:
-            riser = {"y_from": y, "y_to": reach, "dx": bus["riser_dx"]}
+            riser = {"y_from": y, "y_to": reach, "dx": bus["riser_dx"],
+                     "bus": name}
             # A relay's supply is fused where it leaves the run, so the fuse
             # sits ON this riser rather than beside it: the riser breaks for
             # the body and the block fills the gap. Placed at the midpoint,
@@ -385,8 +431,10 @@ def control_wiring(std, row, anchors, mirrored, bus_y):
         if target is None:
             continue
         wiring.setdefault("spurs", []).append(spur)
-        wiring.setdefault("risers", []).append(
-            {"y_from": y, "y_to": target, "dx": sec["dx"]})
+        riser = {"y_from": y, "y_to": target, "dx": sec["dx"]}
+        if spur.get("bus"):
+            riser["bus"] = spur["bus"]
+        wiring.setdefault("risers", []).append(riser)
 
     return wiring, extra
 
@@ -411,6 +459,7 @@ def build_config(std, job, rows):
         "control": {k: v for k, v in std.get("control", {}).items()
                     if not k.startswith("_")},
     }
+    cfg["control"]["buses"] = expand_buses(std, rows)
 
     bus_y = std["sheet"]["bus_y"]
     decks = std.get("decks", {})
@@ -482,7 +531,8 @@ def build_config(std, job, rows):
         cfg["archetypes"][key] = arch
 
         mirrored = bool(decks[deck].get("mirror"))
-        wiring, extra = control_wiring(std, row, anchors, mirrored, bus_y)
+        wiring, extra = control_wiring(std, row, anchors, mirrored, bus_y,
+                                       cfg["control"]["buses"])
         if wiring:
             cfg["archetypes"][key]["control_wiring"] = wiring
         # Devices that belong to the control wiring rather than to the stack.
