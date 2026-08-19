@@ -379,5 +379,6 @@
       }
     ]
   },
+  "_ct_label_note": "The ratio and class print BELOW the CT, which is the VXF1CT block's own attribute position and 8508's. 8513 pulls them out to the left instead, and that is not an improvement to copy here: 8513 draws no dashed CT compartment, so its labels sit in the space our box occupies. Asked for and settled -- leave them below.",
   "_ct_class_note": "A CT's ratio comes from its own column; its accuracy class comes from 'ct_class' if the unit row states one, and from the house default for that CT's job if it does not. One column rather than three because a cubicle's CTs almost always share a class -- a lineup that genuinely mixes them leaves it blank and takes the defaults."
 }
